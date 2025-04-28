@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Milk, Coffee, Apple, Egg, Banana, Tomato, Plus } from "lucide-react";
+import { Milk, Coffee, Apple, Egg, Banana, Trash, Plus } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
 
 const icons = [
@@ -14,7 +13,7 @@ const icons = [
   { value: 'apple', label: 'Apple', icon: <Apple className="h-5 w-5" /> },
   { value: 'egg', label: 'Egg', icon: <Egg className="h-5 w-5" /> },
   { value: 'banana', label: 'Banana', icon: <Banana className="h-5 w-5" /> },
-  { value: 'tomato', label: 'Tomato', icon: <Tomato className="h-5 w-5" /> },
+  { value: 'trash', label: 'Trash', icon: <Trash className="h-5 w-5" /> },
 ];
 
 const categories = [
@@ -46,7 +45,6 @@ const AddItemDialog: React.FC = () => {
       customDuration: customDuration ? parseInt(customDuration, 10) : undefined,
     });
     
-    // Reset form and close dialog
     setName('');
     setSelectedIcon('milk');
     setCategory('dairy');
