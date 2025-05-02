@@ -9,7 +9,7 @@ const DEFAULT_SHELF_LIFE: Record<string, number> = {
   coffee: 14,
   produce: 5, // fruits, vegetables
   bakery: 5,
-  ready-meals: 3,
+  "ready-meals": 3, // Added quotes around ready-meals
   snacks: 14,
   other: 7 // default
 };
