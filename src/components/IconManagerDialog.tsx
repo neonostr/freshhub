@@ -97,7 +97,7 @@ const IconManagerDialog: React.FC = () => {
                     }}
                   >
                     {icon.icon}
-                    <span className="text-xs mt-1">{icon.label}</span>
+                    <span className="text-xs mt-1 text-center">{icon.label}</span>
                   </Button>
                 ))}
               </div>
