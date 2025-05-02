@@ -1,12 +1,44 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ItemsProvider } from '@/context/ItemsContext';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
+  const { toast } = useToast();
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  
+  // Handle online/offline status
   useEffect(() => {
-    // Register service worker for PWA
+    const handleOnlineStatus = () => {
+      setIsOnline(true);
+      toast({
+        title: "You're back online",
+        description: "Changes will now synchronize.",
+      });
+    };
+    
+    const handleOfflineStatus = () => {
+      setIsOnline(false);
+      toast({
+        title: "You're offline",
+        description: "App will continue to work with local data.",
+        variant: "destructive",
+      });
+    };
+    
+    window.addEventListener('online', handleOnlineStatus);
+    window.addEventListener('offline', handleOfflineStatus);
+    
+    return () => {
+      window.removeEventListener('online', handleOnlineStatus);
+      window.removeEventListener('offline', handleOfflineStatus);
+    };
+  }, [toast]);
+  
+  // Register service worker for PWA
+  useEffect(() => {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then((registration) => {
@@ -14,9 +46,17 @@ const Index = () => {
         }, (err) => {
           console.log('ServiceWorker registration failed: ', err);
         });
+        
+        // Handle service worker updates
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          toast({
+            title: "App updated",
+            description: "The app has been updated to the latest version.",
+          });
+        });
       });
     }
-  }, []);
+  }, [toast]);
   
   return (
     <ItemsProvider>
@@ -27,6 +67,12 @@ const Index = () => {
             Track how long your perishable items have been open
           </p>
         </header>
+        
+        {!isOnline && (
+          <div className="bg-amber-100 text-amber-800 p-2 mb-4 rounded text-center text-sm">
+            You're currently offline. Data is saved locally.
+          </div>
+        )}
         
         <main className="my-6">
           <ItemsList />

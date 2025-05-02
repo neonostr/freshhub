@@ -6,7 +6,7 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#4ade80",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -17,6 +17,12 @@
     {
       "src": "/icon-512x512.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lovable-uploads/0cd5dd6f-eea3-49de-8947-b6b427a13b05.png",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any maskable"
     }

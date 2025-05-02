@@ -9,6 +9,8 @@ const DEFAULT_SHELF_LIFE: Record<string, number> = {
   coffee: 14,
   produce: 5, // fruits, vegetables
   bakery: 5,
+  ready-meals: 3,
+  snacks: 14,
   other: 7 // default
 };
 
@@ -56,4 +58,29 @@ export const saveItems = (items: Item[]): void => {
 export const loadItems = (): Item[] => {
   const storedItems = localStorage.getItem('freshTrackerItems');
   return storedItems ? JSON.parse(storedItems) : [];
+};
+
+// New function to suggest a category based on the selected icon
+export const getCategoryForIcon = (iconName: string): string => {
+  switch (iconName) {
+    case 'milk':
+      return 'dairy';
+    case 'coffee':
+      return 'coffee';
+    case 'apple':
+    case 'banana':
+      return 'produce';
+    case 'egg':
+      return 'dairy';
+    case 'cookie':
+      return 'bakery';
+    case 'pizza':
+      return 'ready-meals';
+    case 'bottle':
+      return 'condiments';
+    case 'box':
+    case 'trash':
+    default:
+      return 'other';
+  }
 };
