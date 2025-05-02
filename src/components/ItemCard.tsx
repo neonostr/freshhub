@@ -1,7 +1,7 @@
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
-import { Milk, Coffee, Apple, Egg, Banana, Trash, Calendar, Clock, Box, Bottle, Cookie, Pizza, Sandwich, Beef } from "lucide-react";
+import { Milk, Coffee, Apple, Egg, Banana, Trash, Calendar, Clock, Box, Cookie, Pizza } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
@@ -23,7 +23,6 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
       case 'egg': return <Egg />;
       case 'banana': return <Banana />;
       case 'trash': return <Trash />;
-      case 'bottle': return <Bottle />;
       case 'cookie': return <Cookie />;
       case 'pizza': return <Pizza />;
       case 'box': return <Box />;

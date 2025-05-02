@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Milk, Coffee, Apple, Egg, Banana, Trash, Plus, Box, Bottle, Cookie, Pizza, Sandwich, Beef } from "lucide-react";
+import { Milk, Coffee, Apple, Egg, Banana, Trash, Plus, Box, Cookie, Pizza } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
 import { getCategoryForIcon } from '@/utils/itemUtils';
 
@@ -16,9 +15,9 @@ const icons = [
   { value: 'apple', label: 'Apple', icon: <Apple className="h-5 w-5" /> },
   { value: 'egg', label: 'Egg', icon: <Egg className="h-5 w-5" /> },
   { value: 'banana', label: 'Banana', icon: <Banana className="h-5 w-5" /> },
-  { value: 'bottle', label: 'Bottle', icon: <Bottle className="h-5 w-5" /> },
   { value: 'cookie', label: 'Cookie', icon: <Cookie className="h-5 w-5" /> },
   { value: 'pizza', label: 'Pizza', icon: <Pizza className="h-5 w-5" /> },
+  { value: 'trash', label: 'Trash', icon: <Trash className="h-5 w-5" /> },
   { value: 'box', label: 'Generic', icon: <Box className="h-5 w-5" /> },
 ];
 
