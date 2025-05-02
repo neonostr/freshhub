@@ -1,24 +1,16 @@
-
 import { Item, FreshnessLevel } from "@/types/item";
 import { format, formatDistanceToNow, differenceInDays } from "date-fns";
-
-// Default shelf life in days for common perishables
-const DEFAULT_SHELF_LIFE: Record<string, number> = {
-  dairy: 7, // milk, yogurt
-  condiments: 30, // ketchup, mayo
-  coffee: 14,
-  produce: 5, // fruits, vegetables
-  bakery: 5,
-  "ready-meals": 3, // Added quotes around ready-meals
-  snacks: 14,
-  meat: 3,
-  seafood: 2,
-  drinks: 5,
-  other: 7 // default
-};
+import { ALL_ICONS } from "@/context/IconManagerContext";
 
 export const getShelfLife = (item: Item): number => {
-  return item.customDuration ?? DEFAULT_SHELF_LIFE[item.category] ?? DEFAULT_SHELF_LIFE.other;
+  // If item has custom duration, use that
+  if (item.customDuration) {
+    return item.customDuration;
+  }
+  
+  // Otherwise use the default shelf life for the icon
+  // Fall back to 7 days if icon not found
+  return ALL_ICONS[item.icon]?.shelfLife ?? 7;
 };
 
 export const calculateFreshnessLevel = (item: Item): FreshnessLevel => {

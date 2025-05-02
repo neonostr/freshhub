@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManagerContext';
@@ -12,11 +11,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const AddItemDialog: React.FC = () => {
   const { addItem } = useItems();
-  const { availableIcons, categories, allIcons } = useIconManager();
+  const { availableIcons, allIcons } = useIconManager();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('');
-  const [category, setCategory] = useState('dairy');
   const [customDuration, setCustomDuration] = useState<string>('');
   const [isNameFieldFocused, setIsNameFieldFocused] = useState(false);
 
@@ -27,17 +25,12 @@ const AddItemDialog: React.FC = () => {
     }
   }, [open, availableIcons, selectedIcon]);
 
-  // Update name and category when icon is selected
+  // Update name when icon is selected
   useEffect(() => {
     if (!isNameFieldFocused && selectedIcon) {
       const selectedIconObj = allIcons[selectedIcon];
       if (selectedIconObj) {
         setName(selectedIconObj.label || '');
-        
-        // Set appropriate category based on icon
-        if (selectedIconObj.defaultCategory) {
-          setCategory(selectedIconObj.defaultCategory);
-        }
       }
     }
   }, [selectedIcon, isNameFieldFocused, allIcons]);
@@ -50,13 +43,11 @@ const AddItemDialog: React.FC = () => {
     addItem({
       name: name.trim(),
       icon: selectedIcon,
-      category,
       customDuration: customDuration ? parseInt(customDuration, 10) : undefined,
     });
     
     setName('');
     setSelectedIcon(availableIcons[0]?.value || '');
-    setCategory(availableIcons[0]?.defaultCategory || 'dairy');
     setCustomDuration('');
     setOpen(false);
   };
@@ -79,6 +70,11 @@ const AddItemDialog: React.FC = () => {
         setName(selectedIconObj.label || '');
       }
     }
+  };
+
+  const getShelfLifeText = (iconValue: string) => {
+    const icon = allIcons[iconValue];
+    return icon ? `(${icon.shelfLife} days)` : '';
   };
 
   return (
@@ -109,6 +105,7 @@ const AddItemDialog: React.FC = () => {
                   >
                     {icon.icon}
                     <span className="text-xs mt-1">{icon.label}</span>
+                    <span className="text-xs text-muted-foreground">{getShelfLifeText(icon.value)}</span>
                   </Button>
                 ))}
               </div>
@@ -129,23 +126,6 @@ const AddItemDialog: React.FC = () => {
             />
           </div>
           
-          {/* Category selection */}
-          <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat.value} value={cat.value}>
-                    {cat.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
           {/* Custom shelf life */}
           <div className="space-y-2">
             <Label htmlFor="customDuration">
@@ -156,7 +136,7 @@ const AddItemDialog: React.FC = () => {
               type="number"
               inputMode="numeric"
               min="1"
-              placeholder="Leave empty for default"
+              placeholder={`Default: ${allIcons[selectedIcon]?.shelfLife || 7} days`}
               value={customDuration}
               onChange={(e) => setCustomDuration(e.target.value)}
             />
