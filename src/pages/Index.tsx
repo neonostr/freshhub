@@ -1,8 +1,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { ItemsProvider } from '@/context/ItemsContext';
+import { IconManagerProvider } from '@/context/IconManagerContext';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
+import IconManagerDialog from '@/components/IconManagerDialog';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
@@ -59,28 +61,31 @@ const Index = () => {
   }, [toast]);
   
   return (
-    <ItemsProvider>
-      <div className="container max-w-5xl mx-auto p-4">
-        <header className="py-6 text-center">
-          <h1 className="text-3xl font-bold">Fresh Tracker</h1>
-          <p className="text-gray-500 mt-2">
-            Track how long your perishable items have been open
-          </p>
-        </header>
-        
-        {!isOnline && (
-          <div className="bg-amber-100 text-amber-800 p-2 mb-4 rounded text-center text-sm">
-            You're currently offline. Data is saved locally.
-          </div>
-        )}
-        
-        <main className="my-6">
-          <ItemsList />
-        </main>
-        
-        <AddItemDialog />
-      </div>
-    </ItemsProvider>
+    <IconManagerProvider>
+      <ItemsProvider>
+        <div className="container max-w-5xl mx-auto p-4">
+          <header className="py-6 text-center">
+            <h1 className="text-3xl font-bold">Fresh Tracker</h1>
+            <p className="text-gray-500 mt-2">
+              Track how long your perishable items have been open
+            </p>
+          </header>
+          
+          {!isOnline && (
+            <div className="bg-amber-100 text-amber-800 p-2 mb-4 rounded text-center text-sm">
+              You're currently offline. Data is saved locally.
+            </div>
+          )}
+          
+          <main className="my-6">
+            <ItemsList />
+          </main>
+          
+          <IconManagerDialog />
+          <AddItemDialog />
+        </div>
+      </ItemsProvider>
+    </IconManagerProvider>
   );
 };
 

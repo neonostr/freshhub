@@ -1,10 +1,12 @@
+
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
-import { Milk, Coffee, Apple, Egg, Banana, Trash, Calendar, Clock, Box, Cookie, Pizza } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
+import { useIconManager } from '@/context/IconManagerContext';
 
 interface ItemCardProps {
   item: Item;
@@ -12,22 +14,17 @@ interface ItemCardProps {
 
 const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
   const { deleteItem, resetItem } = useItems();
+  const { allIcons } = useIconManager();
   
   const freshnessLevel = calculateFreshnessLevel(item);
   
   const getIconComponent = () => {
-    switch (item.icon) {
-      case 'milk': return <Milk />;
-      case 'coffee': return <Coffee />;
-      case 'apple': return <Apple />;
-      case 'egg': return <Egg />;
-      case 'banana': return <Banana />;
-      case 'trash': return <Trash />;
-      case 'cookie': return <Cookie />;
-      case 'pizza': return <Pizza />;
-      case 'box': return <Box />;
-      default: return <Box />;
+    // Try to get the icon from our icon manager
+    if (item.icon in allIcons) {
+      return allIcons[item.icon].icon;
     }
+    // Fallback to Box icon if not found
+    return allIcons['box'].icon;
   };
   
   const getFreshnessColor = (level: FreshnessLevel): string => {

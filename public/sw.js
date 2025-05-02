@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'fresh-tracker-v2';
+const CACHE_NAME = 'fresh-tracker-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -46,7 +46,8 @@ self.addEventListener('fetch', (event) => {
         
         // Clone the request because it's a one-time-use stream
         const fetchRequest = event.request.clone();
-
+        
+        // For non-navigation requests, try the network first, then cache the response
         return fetch(fetchRequest)
           .then((response) => {
             // Check if valid response
@@ -59,8 +60,8 @@ self.addEventListener('fetch', (event) => {
 
             caches.open(CACHE_NAME)
               .then((cache) => {
-                // Don't cache local storage API calls
-                if (!event.request.url.includes('api.lovable')) {
+                // Don't cache API calls
+                if (!event.request.url.includes('/api/')) {
                   cache.put(event.request, responseToCache);
                 }
               });
@@ -68,13 +69,14 @@ self.addEventListener('fetch', (event) => {
             return response;
           })
           .catch(() => {
-            // If the network fails, try to return a fallback for HTML pages
-            if (event.request.destination === 'document') {
+            // If the network fails for navigation requests, return the cached homepage
+            if (event.request.mode === 'navigate') {
               return caches.match('/');
             }
             
-            return new Response('Network error occurred', {
-              status: 408,
+            // For other types of requests, return a simple offline message
+            return new Response('Network error occurred. App is in offline mode.', {
+              status: 200,
               headers: { 'Content-Type': 'text/plain' }
             });
           });
@@ -82,9 +84,18 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Listen for messages from clients
+// Handle messages from clients
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  }
+});
+
+// Periodically check for updates when online
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'check-updates') {
+    event.waitUntil(
+      self.registration.update()
+    );
   }
 });

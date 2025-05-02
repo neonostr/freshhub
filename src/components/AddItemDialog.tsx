@@ -1,62 +1,51 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Milk, Coffee, Apple, Egg, Banana, Trash, Plus, Box, Cookie, Pizza } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
-import { getCategoryForIcon } from '@/utils/itemUtils';
-
-// Expanded icons list with 9 total options including a generic one
-const icons = [
-  { value: 'milk', label: 'Milk', icon: <Milk className="h-5 w-5" /> },
-  { value: 'coffee', label: 'Coffee', icon: <Coffee className="h-5 w-5" /> },
-  { value: 'apple', label: 'Apple', icon: <Apple className="h-5 w-5" /> },
-  { value: 'egg', label: 'Egg', icon: <Egg className="h-5 w-5" /> },
-  { value: 'banana', label: 'Banana', icon: <Banana className="h-5 w-5" /> },
-  { value: 'cookie', label: 'Cookie', icon: <Cookie className="h-5 w-5" /> },
-  { value: 'pizza', label: 'Pizza', icon: <Pizza className="h-5 w-5" /> },
-  { value: 'trash', label: 'Trash', icon: <Trash className="h-5 w-5" /> },
-  { value: 'box', label: 'Generic', icon: <Box className="h-5 w-5" /> },
-];
-
-// Categories with shelf life in days shown
-const categories = [
-  { value: 'dairy', label: 'Dairy (7 days)' },
-  { value: 'condiments', label: 'Condiments (30 days)' },
-  { value: 'coffee', label: 'Coffee & Tea (14 days)' },
-  { value: 'produce', label: 'Fruits & Vegetables (5 days)' },
-  { value: 'bakery', label: 'Bakery (5 days)' },
-  { value: 'ready-meals', label: 'Ready Meals (3 days)' },
-  { value: 'snacks', label: 'Snacks (14 days)' },
-  { value: 'other', label: 'Other (7 days)' },
-];
+import { useIconManager } from '@/context/IconManagerContext';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const AddItemDialog: React.FC = () => {
   const { addItem } = useItems();
+  const { availableIcons, categories, allIcons } = useIconManager();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState('milk');
+  const [selectedIcon, setSelectedIcon] = useState('');
   const [category, setCategory] = useState('dairy');
   const [customDuration, setCustomDuration] = useState<string>('');
   const [isNameFieldFocused, setIsNameFieldFocused] = useState(false);
 
+  // Set initial selected icon when dialog opens
+  useEffect(() => {
+    if (open && availableIcons.length > 0 && !selectedIcon) {
+      setSelectedIcon(availableIcons[0].value);
+    }
+  }, [open, availableIcons, selectedIcon]);
+
   // Update name and category when icon is selected
   useEffect(() => {
-    if (!isNameFieldFocused) {
-      setName(icons.find(icon => icon.value === selectedIcon)?.label || '');
+    if (!isNameFieldFocused && selectedIcon) {
+      const selectedIconObj = allIcons[selectedIcon];
+      if (selectedIconObj) {
+        setName(selectedIconObj.label || '');
+        
+        // Set appropriate category based on icon
+        if (selectedIconObj.defaultCategory) {
+          setCategory(selectedIconObj.defaultCategory);
+        }
+      }
     }
-    
-    // Set appropriate category based on icon
-    const suggestedCategory = getCategoryForIcon(selectedIcon);
-    setCategory(suggestedCategory);
-  }, [selectedIcon, isNameFieldFocused]);
+  }, [selectedIcon, isNameFieldFocused, allIcons]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim()) return;
+    if (!name.trim() || !selectedIcon) return;
     
     addItem({
       name: name.trim(),
@@ -66,8 +55,8 @@ const AddItemDialog: React.FC = () => {
     });
     
     setName('');
-    setSelectedIcon('milk');
-    setCategory('dairy');
+    setSelectedIcon(availableIcons[0]?.value || '');
+    setCategory(availableIcons[0]?.defaultCategory || 'dairy');
     setCustomDuration('');
     setOpen(false);
   };
@@ -84,8 +73,11 @@ const AddItemDialog: React.FC = () => {
 
   const handleNameBlur = () => {
     setIsNameFieldFocused(false);
-    if (name.trim() === '') {
-      setName(icons.find(icon => icon.value === selectedIcon)?.label || '');
+    if (name.trim() === '' && selectedIcon) {
+      const selectedIconObj = allIcons[selectedIcon];
+      if (selectedIconObj) {
+        setName(selectedIconObj.label || '');
+      }
     }
   };
 
@@ -102,23 +94,25 @@ const AddItemDialog: React.FC = () => {
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          {/* Icon selection moved to the top */}
+          {/* Icon selection at the top */}
           <div className="space-y-2">
             <Label>Choose an Icon</Label>
-            <div className="grid grid-cols-3 gap-2">
-              {icons.map((icon) => (
-                <Button
-                  key={icon.value}
-                  type="button"
-                  variant={selectedIcon === icon.value ? "default" : "outline"}
-                  className="flex flex-col items-center justify-center h-20 py-2"
-                  onClick={() => handleIconSelect(icon.value)}
-                >
-                  {icon.icon}
-                  <span className="text-xs mt-1">{icon.label}</span>
-                </Button>
-              ))}
-            </div>
+            <ScrollArea className="h-[200px]">
+              <div className="grid grid-cols-3 gap-2">
+                {availableIcons.map((icon) => (
+                  <Button
+                    key={icon.value}
+                    type="button"
+                    variant={selectedIcon === icon.value ? "default" : "outline"}
+                    className="flex flex-col items-center justify-center h-20 py-2"
+                    onClick={() => handleIconSelect(icon.value)}
+                  >
+                    {icon.icon}
+                    <span className="text-xs mt-1">{icon.label}</span>
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
           </div>
           
           {/* Item name field */}

@@ -11,6 +11,9 @@ const DEFAULT_SHELF_LIFE: Record<string, number> = {
   bakery: 5,
   "ready-meals": 3, // Added quotes around ready-meals
   snacks: 14,
+  meat: 3,
+  seafood: 2,
+  drinks: 5,
   other: 7 // default
 };
 
@@ -60,7 +63,7 @@ export const loadItems = (): Item[] => {
   return storedItems ? JSON.parse(storedItems) : [];
 };
 
-// New function to suggest a category based on the selected icon
+// Update getCategoryForIcon to use our centralized mapping
 export const getCategoryForIcon = (iconName: string): string => {
   switch (iconName) {
     case 'milk':
@@ -69,15 +72,27 @@ export const getCategoryForIcon = (iconName: string): string => {
       return 'coffee';
     case 'apple':
     case 'banana':
+    case 'carrot':
+    case 'cherry':
+    case 'salad':
       return 'produce';
     case 'egg':
+    case 'iceCream':
       return 'dairy';
     case 'cookie':
+    case 'cake':
+    case 'croissant':
       return 'bakery';
     case 'pizza':
+    case 'sandwich':
       return 'ready-meals';
-    case 'bottle':
-      return 'condiments';
+    case 'beef':
+    case 'drumstick':
+      return 'meat';
+    case 'beer':
+      return 'drinks';
+    case 'fish':
+      return 'seafood';
     case 'box':
     case 'trash':
     default:
