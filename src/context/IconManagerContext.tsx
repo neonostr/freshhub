@@ -1,241 +1,91 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { 
-  Apple, Banana, Beer, Beef, Cake, CircleAlert, Carrot, Cherry, Coffee, Cookie, Croissant, Droplet,
-  Drumstick, Egg, Fish, IceCream, Milk, Pizza, Salad, Sandwich, Wine, Box, Trash,
-  ChevronDown, Filter, FlaskConical as Flask, Circle as LemonIcon, Grape as GrapeIcon, Circle as Orange, 
-  Bookmark as BreadIcon, Circle as SaltIcon, Circle as PepperIcon, 
-  Martini, BowlFood as BowlIcon, Baby, Axe, BookOpen, Flame as FlameKindling, Bookmark, BookPlus, Cactus as CactusIcon, Calculator, 
-  Calendar, CandlestickChart as Candlestick, Candy, Cake as CakeIcon, IceCream as IceCreamIcon, Bus, Package,
-  QrCode as CerealIcon, Cat, ChefHat as Chef, ChevronRight, Eye as ChocolateIcon, Gift as CherryIcon, Heart as ChiliIcon, 
-  CircleEllipsis, CircleDot, CirclePlus, Clock as CinnamonIcon, ClipboardList, Clock, Clock as ClockIcon, CloudFog, Cloud as CloudIcon, Cookie as CookieIcon,
-  Cloud, Cloud as CloudRainIcon, Coffee as CoffeeIcon, CupSoda as CoffeeIcon2, Cog, Command, Compass, Contact, Container,
-  Soup as CookingPotIcon, Copy, Copyright, Wheat as CornIcon, Sandwich as CrackerIcon, Crop, CreditCard, Crown, Map as DessertIcon,
-  Diamond, Dice1, Donut, Droplets, EggFried, Eye, Factory, BurgerMenu as FastFoodIcon, Film, FilterX as MintIcon,
-  Fish as SalmonIcon, Fish as TunaIcon, Fish as FishIcon, Ship as FishingRodIcon, 
-  Wheat as FlourIcon, Flower as FlowerIcon, FolderIcon as Folder, FolderArchive, FolderDown,
-  FolderLock, Footprints, Utensils as ForkIcon, UtensilsCrossed as FriesIcon, 
-  Snowflake as FrozenIcon, Apple as FruitIcon, Fuel,
-  Sprout as GardenIcon, Sprout, Circle as GarlicIcon, Gift, Gift as GiftIcon, 
-  Flower as GingerIcon, FlowerIcon, Cookie as GingerbreadIcon, 
-  Circle as Glass, Glasses as GlassWaterIcon, Wine as GlassWineIcon, Globe, Globe as GlobeIcon, Wheat as GrainIcon, 
-  GrapeIcon as GrapeClusterIcon, Citrus as GrapefruitIcon, Bean as GreenBeansIcon, Leaf as GreenOnionIcon,
-  Flame as GrilledIcon, Cat as HatIcon, Chef as ChefHatIcon,
-  Heart as HerbIcon, Leaf as HerbsIcon, Bell as HotelBellIcon, Flame as HotIcon, Sandwich as HotDogIcon,
-  IceCream as IceCreamScoopIcon, Martini as IceCreamShakeIcon, Image, Inbox, IndentDecrease, IndianRupee, Pumpkin as PumpkinIcon,
-  Circle as JamJarIcon, Car as JarIcon, Soup as JelloBowlIcon, Coffee as JugIcon, 
-  UtensilsCrossed as KebabIcon, Circle as KetchupIcon, Cherry as KiwiIcon, Circle as KnifeIcon, Scissors as KnifeIcon2,
-  Layers as LayerIcon, Layers, Circle as LemonSliceIcon, Salad as LettuceIcon, Timer as LimeIcon, 
-  Circle as LiquidsoapIcon, Fish as LobsterIcon,
-  Lock as LockedIcon, Cookie as MacaronIcon, User as ManIcon, Circle as MandarinIcon, Circle as MangoIcon, Store as MarketIcon, 
-  Store as GroceryIcon, Target as MarsIcon, Candy as MarshmallowIcon,
-  Maximize, Medal, Circle as MelonIcon, Menu, MessageCircle, Mic, Milk as MilkBottleIcon, Minimize, 
-  Flower as MintLeafIcon, UtensilsCrossed as MixingBowlIcon,
-  Moon as MoonIcon, Moon, MoreHorizontal, MousePointer, Circle as MushroomIcon, Dumbbell, Music, Navigation, Egg as NestingDollsIcon, Network,
-  Newspaper, FileText as NotepadTextIcon, Notebook, Nut as NutIcon, Beef as NutritionIcon, Wheat as OatsIcon, Octagon, Circle as OliveOilIcon, 
-  Citrus as OliveIcon, CircleDot as OnionIcon,
-  CircleDot as OnionIcon2, Circle as OrangeSliceIcon, Circle as OvenIcon, Box as OvenIcon2, PaintBucket, Paintbrush, Palette, Pizza as PancakeIcon, 
-  Layers as PancakesIcon,
-  Flower as PaprikaIcon, Circle as PastaIcon, Sandwich as PastaIcon2, Circle as PeachIcon, Circle as PearIcon, Circle as PearIcon2, 
-  Pen, Circle as PepperShakerIcon, Flower as PeppermintIcon, Percent,
-  Phone, PictureInPicture, Circle as PieIcon, PieChart, PieChart as PieIcon2, Pill, Pin, Package as PickleJarIcon, Circle as PineappleIcon, 
-  Pizza as PizzaSliceIcon,
-  Loader as PlaceholderIcon, Plane, CalendarDays as PlanningIcon, Sprout as PlantIcon, Plant as Plant2Icon, Flower as PlantPotIcon, 
-  Play, Cherry as PlumIcon, Plus, Pocket,
-  Circle as PopcornIcon, Circle as PopsicleIcon, Soup as PotIcon, Soup as PotIcon2, Flower as PotFlowerIcon, CircleDot as PotatoIcon, 
-  CircleDot as PotatoesIcon, PoundSterling, Shrimp as PrawnIcon, Circle as PretzelIcon,
-  Printer, Projector, Dumbbell as ProteinIcon, Martini as ProteinShakeIcon, 
-  Circle as CannedPumpkinIcon, Circle as PumpkinIcon2, Puzzle, QrCode, Quote, Circle as RabbitIcon,
-  Radio, CircleDot as RadishIcon, Radio as RadioIcon, Receipt, Dumbbell as RecipeBoxIcon, 
-  Recycle, Redo, RefreshCw, Regex, Repeat,
-  Reply, UtensilsCrossed as RestaurantIcon, Rewind, Ribbon, Wheat as RiceIcon, Sandwich as RiceBallIcon, 
-  Soup as RiceBowlIcon, Rocket, RotateCw, Route,
-  Router, Rss, Ruler, Running as RunningIcon, Martini as RumIcon, Flower as SageIcon, 
-  Circle as SaltShakerIcon, Scale, Scissors, ScreenShare,
-  Search, Shield as SecurityIcon, Send, Server, Settings, Share, Shield, ShoppingBag, ShoppingCart, Shovel,
-  Shrimp as ShrimpIcon, Shrink, Shuffle, Sidebar, Sigma, Signal, SkipBack, SkipForward, Skull,
-  Pizza as SliceIcon, SlidersHorizontal, Smartphone, SmilePlus as SmileIcon, Smile as SmilieIcon, 
-  IceCream as SnowconeIcon, Snowflake, Sofa, SortAsc, SortDesc,
-  Soup as SoupBowlIcon, Bean as SoyIcon, Milk as SoyMilkIcon, Flower as SpaIcon, Speaker, SpellCheck, 
-  Circle as SpiceIcon, Circle as SpiceRackIcon, Salad as SpinachIcon,
-  UtensilsCrossed as SpoonIcon, UtensilsCrossed as SpoonKnifeIcon, Square, Users as StaffIcon, Star, 
-  Star as StarfruitIcon, Beef as StirFryIcon, Footprints as StoolIcon, StopCircle, Store,
-  Cherry as StrawberryIcon, Store as StuffedIcon, Suitcase, Sun, Flower as SunflowerIcon, 
-  Headphones as SupportIcon, Circle as SushiIcon, 
-  Circle as SushiRollIcon, Table, LampFloor as TableLampIcon,
-  Table as DiningTableIcon, Tag, Target, Coffee as TeaIcon, CupSoda as TeaCupIcon, Soup as KettleIcon, 
-  Text, FileText as TextIcon, Thermometer,
-  ThumbsDown, ThumbsUp, Ticket, Timer, Timer as TimerIcon, TimerOff, TimerReset, ToggleLeft, ToggleRight, Cherry as TomatoIcon,
-  Tool, Cherry as TomatoSliceIcon, Tooth as ToothIcon, Toothbrush, Hat, Trophy, Truck, Tv, Twitch, Twitter,
-  Umbrella, Underline, Undo, Unlink, Upload, User, Users, UtensilsCrossed, UtensilsCrossed as UtensilsIcon, Salad as VeganIcon,
-  Salad as VegetableIcon, Video, Video as VideoIcon, Eye as ViewIcon, Voicemail, Volume, Wallet, Nut as WalnutIcon, 
-  Droplets as WashIcon, WashingMachine,
-  Watch, Bottle as WaterBottleIcon, Droplet as WaterDropIcon, Circle as WaterGlassIcon, Circle as WatermelonIcon, 
-  Wave, WaveSine, Wave as WaveSawtoothIcon, 
-  Square as WaveSquareIcon, Triangle as WaveTriangleIcon,
-  Webcam, Wheat as WheatIcon, Circle as WhiskeyIcon, BookOpen as WhiteBreadIcon, Cookie as WhiteChocolateIcon, 
-  Wifi, Wind, Wine as WineGlassIcon, Wrench, X,
-  Dumbbell as YogaIcon, Soup as YogurtIcon, Youtube, Zap, ZoomIn, ZoomOut
-} from "lucide-react";
 
-export type IconOption = {
-  value: string;
-  label: string;
-  icon: React.ReactElement;
-  shelfLife: number; // Default shelf life in days
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { ALL_ICONS, DEFAULT_SELECTED_ICONS, IconOption } from '../utils/iconDefinitions';
+
+interface IconManagerContextType {
+  availableIcons: IconOption[];
+  allIcons: Record<string, IconOption>;
+  toggleIcon: (iconValue: string) => void;
+  isIconSelected: (iconValue: string) => boolean;
+  updateIconShelfLife: (iconValue: string, days: number) => void;
+}
+
+const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
+
+export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
+  const [selectedIconValues, setSelectedIconValues] = useState<string[]>(() => {
+    const saved = localStorage.getItem('freshTrackerSelectedIcons');
+    return saved ? JSON.parse(saved) : DEFAULT_SELECTED_ICONS;
+  });
+  
+  const [customShelfLife, setCustomShelfLife] = useState<Record<string, number>>(() => {
+    const saved = localStorage.getItem('freshTrackerCustomShelfLife');
+    return saved ? JSON.parse(saved) : {};
+  });
+  
+  // Create a copy of ALL_ICONS with custom shelf life values applied
+  const iconsWithCustomShelfLife = { ...ALL_ICONS };
+  Object.keys(customShelfLife).forEach(iconKey => {
+    if (iconsWithCustomShelfLife[iconKey]) {
+      iconsWithCustomShelfLife[iconKey] = {
+        ...iconsWithCustomShelfLife[iconKey],
+        shelfLife: customShelfLife[iconKey]
+      };
+    }
+  });
+  
+  // Update available icons based on selected values
+  const availableIcons = selectedIconValues.map(value => iconsWithCustomShelfLife[value]).filter(Boolean);
+  
+  useEffect(() => {
+    localStorage.setItem('freshTrackerSelectedIcons', JSON.stringify(selectedIconValues));
+  }, [selectedIconValues]);
+  
+  useEffect(() => {
+    localStorage.setItem('freshTrackerCustomShelfLife', JSON.stringify(customShelfLife));
+  }, [customShelfLife]);
+
+  const toggleIcon = (iconValue: string) => {
+    setSelectedIconValues(prev => {
+      if (prev.includes(iconValue)) {
+        return prev.filter(v => v !== iconValue);
+      } else {
+        return [...prev, iconValue];
+      }
+    });
+  };
+
+  const isIconSelected = (iconValue: string) => {
+    return selectedIconValues.includes(iconValue);
+  };
+  
+  const updateIconShelfLife = (iconValue: string, days: number) => {
+    setCustomShelfLife(prev => ({
+      ...prev,
+      [iconValue]: days
+    }));
+  };
+
+  return (
+    <IconManagerContext.Provider value={{ 
+      availableIcons, 
+      allIcons: iconsWithCustomShelfLife,
+      toggleIcon, 
+      isIconSelected,
+      updateIconShelfLife
+    }}>
+      {children}
+    </IconManagerContext.Provider>
+  );
 };
 
-// Define all possible icons - sorted alphabetically
-export const ALL_ICONS: Record<string, IconOption> = {
-  apple: { value: 'apple', label: 'Apple', icon: <Apple className="h-5 w-5" />, shelfLife: 14 },
-  avocado: { value: 'avocado', label: 'Avocado', icon: <FruitIcon className="h-5 w-5" />, shelfLife: 5 },
-  bacon: { value: 'bacon', label: 'Bacon', icon: <Beef className="h-5 w-5" />, shelfLife: 7 },
-  baguette: { value: 'baguette', label: 'Baguette', icon: <BreadIcon className="h-5 w-5" />, shelfLife: 3 },
-  banana: { value: 'banana', label: 'Banana', icon: <Banana className="h-5 w-5" />, shelfLife: 5 },
-  bean: { value: 'bean', label: 'Beans', icon: <SoyIcon className="h-5 w-5" />, shelfLife: 5 },
-  beef: { value: 'beef', label: 'Beef', icon: <Beef className="h-5 w-5" />, shelfLife: 3 },
-  beer: { value: 'beer', label: 'Beer', icon: <Beer className="h-5 w-5" />, shelfLife: 30 },
-  box: { value: 'box', label: 'Generic', icon: <Box className="h-5 w-5" />, shelfLife: 7 },
-  bread: { value: 'bread', label: 'Bread', icon: <BreadIcon className="h-5 w-5" />, shelfLife: 5 },
-  cake: { value: 'cake', label: 'Cake', icon: <Cake className="h-5 w-5" />, shelfLife: 5 },
-  cake2: { value: 'cake2', label: 'Birthday Cake', icon: <CakeIcon className="h-5 w-5" />, shelfLife: 4 },
-  candy: { value: 'candy', label: 'Candy', icon: <Candy className="h-5 w-5" />, shelfLife: 180 },
-  cardboardBox: { value: 'cardboardBox', label: 'Cardboard Box', icon: <Package className="h-5 w-5" />, shelfLife: 365 },
-  carrot: { value: 'carrot', label: 'Carrot', icon: <Carrot className="h-5 w-5" />, shelfLife: 14 },
-  cannedPumpkin: { value: 'cannedPumpkin', label: 'Canned Pumpkin', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 365 },
-  cereal: { value: 'cereal', label: 'Cereal', icon: <CerealIcon className="h-5 w-5" />, shelfLife: 180 },
-  cheese: { value: 'cheese', label: 'Cheese', icon: <ChevronDown className="h-5 w-5" />, shelfLife: 14 },
-  chefHat: { value: 'chefHat', label: 'Chef Hat', icon: <Chef className="h-5 w-5" />, shelfLife: 7 },
-  chefHat2: { value: 'chefHat2', label: 'Chef Hat (Alt)', icon: <ChefHatIcon className="h-5 w-5" />, shelfLife: 7 },
-  cherry: { value: 'cherry', label: 'Cherry', icon: <Cherry className="h-5 w-5" />, shelfLife: 7 },
-  cherrySymbol: { value: 'cherrySymbol', label: 'Cherry Symbol', icon: <CherryIcon className="h-5 w-5" />, shelfLife: 7 },
-  chili: { value: 'chili', label: 'Chili', icon: <ChiliIcon className="h-5 w-5" />, shelfLife: 7 },
-  chocolateIcon: { value: 'chocolateIcon', label: 'Chocolate', icon: <ChocolateIcon className="h-5 w-5" />, shelfLife: 180 },
-  cinnamon: { value: 'cinnamon', label: 'Cinnamon', icon: <CinnamonIcon className="h-5 w-5" />, shelfLife: 365 },
-  coffee: { value: 'coffee', label: 'Coffee', icon: <Coffee className="h-5 w-5" />, shelfLife: 14 },
-  coffeeBag: { value: 'coffeeBag', label: 'Coffee Bag', icon: <CoffeeIcon className="h-5 w-5" />, shelfLife: 30 },
-  coffeeIcon: { value: 'coffeeIcon', label: 'Coffee Cup', icon: <CoffeeIcon2 className="h-5 w-5" />, shelfLife: 1 },
-  container: { value: 'container', label: 'Container', icon: <Container className="h-5 w-5" />, shelfLife: 7 },
-  cookieJar: { value: 'cookieJar', label: 'Cookie Jar', icon: <Compass className="h-5 w-5" />, shelfLife: 14 },
-  cookie: { value: 'cookie', label: 'Cookie', icon: <Cookie className="h-5 w-5" />, shelfLife: 7 },
-  cloudCookie: { value: 'cloudCookie', label: 'Cloud Cookie', icon: <CookieIcon className="h-5 w-5" />, shelfLife: 7 },
-  cookingPot: { value: 'cookingPot', label: 'Cooking Pot', icon: <CookingPotIcon className="h-5 w-5" />, shelfLife: 5 },
-  corn: { value: 'corn', label: 'Corn', icon: <CornIcon className="h-5 w-5" />, shelfLife: 5 },
-  cracker: { value: 'cracker', label: 'Cracker', icon: <CrackerIcon className="h-5 w-5" />, shelfLife: 30 },
-  croissant: { value: 'croissant', label: 'Croissant', icon: <Croissant className="h-5 w-5" />, shelfLife: 3 },
-  cupSoda: { value: 'cupSoda', label: 'Cup Soda', icon: <Droplet className="h-5 w-5" />, shelfLife: 1 },
-  custard: { value: 'custard', label: 'Custard', icon: <Bookmark className="h-5 w-5" />, shelfLife: 5 },
-  desertIcon: { value: 'desertIcon', label: 'Dessert', icon: <DessertIcon className="h-5 w-5" />, shelfLife: 5 },
-  diningTable: { value: 'diningTable', label: 'Dining Table', icon: <DiningTableIcon className="h-5 w-5" />, shelfLife: 7 },
-  donutIcon: { value: 'donutIcon', label: 'Donut', icon: <Donut className="h-5 w-5" />, shelfLife: 3 },
-  drumstick: { value: 'drumstick', label: 'Chicken', icon: <Drumstick className="h-5 w-5" />, shelfLife: 3 },
-  egg: { value: 'egg', label: 'Egg', icon: <Egg className="h-5 w-5" />, shelfLife: 30 },
-  eggFried: { value: 'eggFried', label: 'Fried Egg', icon: <EggFried className="h-5 w-5" />, shelfLife: 1 },
-  filter: { value: 'filter', label: 'Filter', icon: <Filter className="h-5 w-5" />, shelfLife: 30 },
-  fish: { value: 'fish', label: 'Fish', icon: <Fish className="h-5 w-5" />, shelfLife: 2 },
-  fishIcon: { value: 'fishIcon', label: 'Fish Icon', icon: <FishIcon className="h-5 w-5" />, shelfLife: 2 },
-  flame: { value: 'flame', label: 'Flame', icon: <FlameKindling className="h-5 w-5" />, shelfLife: 7 },
-  flaskConical: { value: 'flaskConical', label: 'Flask', icon: <Flask className="h-5 w-5" />, shelfLife: 7 },
-  flour: { value: 'flour', label: 'Flour', icon: <FlourIcon className="h-5 w-5" />, shelfLife: 180 },
-  fork: { value: 'fork', label: 'Fork', icon: <ForkIcon className="h-5 w-5" />, shelfLife: 7 },
-  fries: { value: 'fries', label: 'French Fries', icon: <FriesIcon className="h-5 w-5" />, shelfLife: 1 },
-  frozenIcon: { value: 'frozenIcon', label: 'Frozen Food', icon: <FrozenIcon className="h-5 w-5" />, shelfLife: 90 },
-  garlic: { value: 'garlic', label: 'Garlic', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 90 },
-  ginger: { value: 'ginger', label: 'Ginger', icon: <GingerIcon className="h-5 w-5" />, shelfLife: 14 },
-  gingerbreadCookie: { value: 'gingerbreadCookie', label: 'Gingerbread Cookie', icon: <GingerbreadIcon className="h-5 w-5" />, shelfLife: 14 },
-  glassWater: { value: 'glassWater', label: 'Glass Water', icon: <GlassWaterIcon className="h-5 w-5" />, shelfLife: 1 },
-  glassWine: { value: 'glassWine', label: 'Glass Wine', icon: <GlassWineIcon className="h-5 w-5" />, shelfLife: 5 },
-  grape: { value: 'grape', label: 'Grape', icon: <GrapeIcon className="h-5 w-5" />, shelfLife: 7 },
-  grapeCluster: { value: 'grapeCluster', label: 'Grape Cluster', icon: <GrapeClusterIcon className="h-5 w-5" />, shelfLife: 7 },
-  grapefruit: { value: 'grapefruit', label: 'Grapefruit', icon: <Citrus className="h-5 w-5" />, shelfLife: 14 },
-  greenBeans: { value: 'greenBeans', label: 'Green Beans', icon: <GreenBeansIcon className="h-5 w-5" />, shelfLife: 7 },
-  greenOnion: { value: 'greenOnion', label: 'Green Onion', icon: <GreenOnionIcon className="h-5 w-5" />, shelfLife: 7 },
-  grocery: { value: 'grocery', label: 'Grocery', icon: <GroceryIcon className="h-5 w-5" />, shelfLife: 7 },
-  hamburger: { value: 'hamburger', label: 'Hamburger', icon: <FastFoodIcon className="h-5 w-5" />, shelfLife: 1 },
-  ham: { value: 'ham', label: 'Ham', icon: <Beef className="h-5 w-5" />, shelfLife: 7 },
-  herbIcon: { value: 'herbIcon', label: 'Herb', icon: <Heart className="h-5 w-5" />, shelfLife: 7 },
-  herbs: { value: 'herbs', label: 'Herbs', icon: <HerbsIcon className="h-5 w-5" />, shelfLife: 7 },
-  honey: { value: 'honey', label: 'Honey', icon: <Heart className="h-5 w-5" />, shelfLife: 365 },
-  hotDog: { value: 'hotDog', label: 'Hot Dog', icon: <HotDogIcon className="h-5 w-5" />, shelfLife: 1 },
-  hotIcon: { value: 'hotIcon', label: 'Hot', icon: <Flame className="h-5 w-5" />, shelfLife: 7 },
-  hotSauce: { value: 'hotSauce', label: 'Hot Sauce', icon: <Heart className="h-5 w-5" />, shelfLife: 180 },
-  iceCream: { value: 'iceCream', label: 'Ice Cream', icon: <IceCream className="h-5 w-5" />, shelfLife: 14 },
-  iceCreamCone: { value: 'iceCreamCone', label: 'Ice Cream Cone', icon: <IceCreamIcon className="h-5 w-5" />, shelfLife: 1 },
-  iceCreamScoop: { value: 'iceCreamScoop', label: 'Ice Cream Scoop', icon: <IceCreamScoopIcon className="h-5 w-5" />, shelfLife: 14 },
-  iceCreamShake: { value: 'iceCreamShake', label: 'Ice Cream Shake', icon: <Martini className="h-5 w-5" />, shelfLife: 1 },
-  icePop: { value: 'icePop', label: 'Ice Pop', icon: <IceCreamIcon className="h-5 w-5" />, shelfLife: 180 },
-  jam: { value: 'jam', label: 'Jam', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 30 },
-  jarIcon: { value: 'jarIcon', label: 'Jar', icon: <Car className="h-5 w-5" />, shelfLife: 30 },
-  jello: { value: 'jello', label: 'Jello', icon: <Soup className="h-5 w-5" />, shelfLife: 7 },
-  jug: { value: 'jug', label: 'Jug', icon: <Coffee className="h-5 w-5" />, shelfLife: 7 },
-  kebab: { value: 'kebab', label: 'Kebab', icon: <UtensilsCrossed className="h-5 w-5" />, shelfLife: 1 },
-  kettle: { value: 'kettle', label: 'Kettle', icon: <Soup className="h-5 w-5" />, shelfLife: 7 },
-  ketchup: { value: 'ketchup', label: 'Ketchup', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 180 },
-  kiwi: { value: 'kiwi', label: 'Kiwi', icon: <Cherry className="h-5 w-5" />, shelfLife: 7 },
-  knife: { value: 'knife', label: 'Knife', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 7 },
-  lemon: { value: 'lemon', label: 'Lemon', icon: <LemonIcon className="h-5 w-5" />, shelfLife: 14 },
-  lemonSlice: { value: 'lemonSlice', label: 'Lemon Slice', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 3 },
-  lettuce: { value: 'lettuce', label: 'Lettuce', icon: <Salad className="h-5 w-5" />, shelfLife: 7 },
-  lime: { value: 'lime', label: 'Lime', icon: <Timer className="h-5 w-5" />, shelfLife: 14 },
-  lobster: { value: 'lobster', label: 'Lobster', icon: <Fish className="h-5 w-5" />, shelfLife: 1 },
-  macaron: { value: 'macaron', label: 'Macaron', icon: <Cookie className="h-5 w-5" />, shelfLife: 5 },
-  mandarin: { value: 'mandarin', label: 'Mandarin', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 14 },
-  mango: { value: 'mango', label: 'Mango', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 5 },
-  market: { value: 'market', label: 'Market', icon: <Store className="h-5 w-5" />, shelfLife: 7 },
-  marshmallow: { value: 'marshmallow', label: 'Marshmallow', icon: <Candy className="h-5 w-5" />, shelfLife: 180 },
-  melon: { value: 'melon', label: 'Melon', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 7 },
-  milk: { value: 'milk', label: 'Milk', icon: <Milk className="h-5 w-5" />, shelfLife: 7 },
-  milkBottle: { value: 'milkBottle', label: 'Milk Bottle', icon: <MilkBottleIcon className="h-5 w-5" />, shelfLife: 7 },
-  mint: { value: 'mint', label: 'Mint', icon: <FilterX className="h-5 w-5" />, shelfLife: 5 },
-  mintLeaf: { value: 'mintLeaf', label: 'Mint Leaf', icon: <Flower className="h-5 w-5" />, shelfLife: 5 },
-  mixingBowl: { value: 'mixingBowl', label: 'Mixing Bowl', icon: <UtensilsCrossed className="h-5 w-5" />, shelfLife: 7 },
-  muffin: { value: 'muffin', label: 'Muffin', icon: <Candy className="h-5 w-5" />, shelfLife: 5 },
-  mushroom: { value: 'mushroom', label: 'Mushroom', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 7 },
-  nut: { value: 'nut', label: 'Nut', icon: <NutIcon className="h-5 w-5" />, shelfLife: 180 },
-  oats: { value: 'oats', label: 'Oats', icon: <Wheat className="h-5 w-5" />, shelfLife: 365 },
-  oil: { value: 'oil', label: 'Oil', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 365 },
-  olive: { value: 'olive', label: 'Olive', icon: <Citrus className="h-5 w-5" />, shelfLife: 14 },
-  oliveOil: { value: 'oliveOil', label: 'Olive Oil', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 365 },
-  onion: { value: 'onion', label: 'Onion', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
-  orange: { value: 'orange', label: 'Orange', icon: <Orange className="h-5 w-5" />, shelfLife: 14 },
-  orangeSlice: { value: 'orangeSlice', label: 'Orange Slice', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 3 },
-  pancake: { value: 'pancake', label: 'Pancake', icon: <Pizza className="h-5 w-5" />, shelfLife: 1 },
-  pancakes: { value: 'pancakes', label: 'Pancakes Stack', icon: <Layers className="h-5 w-5" />, shelfLife: 1 },
-  paprika: { value: 'paprika', label: 'Paprika', icon: <Flower className="h-5 w-5" />, shelfLife: 365 },
-  pasta: { value: 'pasta', label: 'Pasta', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 365 },
-  pastaIcon: { value: 'pastaIcon', label: 'Pasta Icon', icon: <Sandwich className="h-5 w-5" />, shelfLife: 365 },
-  peach: { value: 'peach', label: 'Peach', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 5 },
-  pear: { value: 'pear', label: 'Pear', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 7 },
-  pearIcon: { value: 'pearIcon', label: 'Pear Icon', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 7 },
-  pepper: { value: 'pepper', label: 'Pepper', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 365 },
-  pepperShaker: { value: 'pepperShaker', label: 'Pepper Shaker', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 365 },
-  peppermint: { value: 'peppermint', label: 'Peppermint', icon: <Flower className="h-5 w-5" />, shelfLife: 7 },
-  pickleJar: { value: 'pickleJar', label: 'Pickle Jar', icon: <Package className="h-5 w-5" />, shelfLife: 30 },
-  pie: { value: 'pie', label: 'Pie', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 5 },
-  pieIcon: { value: 'pieIcon', label: 'Pie Icon', icon: <PieChart className="h-5 w-5" />, shelfLife: 5 },
-  pineapple: { value: 'pineapple', label: 'Pineapple', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 7 },
-  pizza: { value: 'pizza', label: 'Pizza', icon: <Pizza className="h-5 w-5" />, shelfLife: 3 },
-  pizzaSlice: { value: 'pizzaSlice', label: 'Pizza Slice', icon: <PizzaSliceIcon className="h-5 w-5" />, shelfLife: 3 },
-  plant: { value: 'plant', label: 'Plant', icon: <Sprout className="h-5 w-5" />, shelfLife: 7 },
-  plant2: { value: 'plant2', label: 'Plant 2', icon: <Plant className="h-5 w-5" />, shelfLife: 7 },
-  plantPot: { value: 'plantPot', label: 'Plant Pot', icon: <Flower className="h-5 w-5" />, shelfLife: 7 },
-  plum: { value: 'plum', label: 'Plum', icon: <Cherry className="h-5 w-5" />, shelfLife: 5 },
-  popcorn: { value: 'popcorn', label: 'Popcorn', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 7 },
-  popsicle: { value: 'popsicle', label: 'Popsicle', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 7 },
-  pot: { value: 'pot', label: 'Pot', icon: <Soup className="h-5 w-5" />, shelfLife: 7 },
-  potIcon: { value: 'potIcon', label: 'Pot Icon', icon: <Soup className="h-5 w-5" />, shelfLife: 7 },
-  potato: { value: 'potato', label: 'Potato', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
-  potatoes: { value: 'potatoes', label: 'Potatoes', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
-  prawn: { value: 'prawn', label: 'Prawn', icon: <Shrimp className="h-5 w-5" />, shelfLife: 2 },
-  pretzel: { value: 'pretzel', label: 'Pretzel', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 5 },
-  protein: { value: 'protein', label: 'Protein', icon: <Dumbbell className="h-5 w-5" />, shelfLife: 30 },
-  proteinShake: { value: 'proteinShake', label: 'Protein Shake', icon: <Martini className="h-5 w-5" />, shelfLife: 1 },
-  pumpkin: { value: 'pumpkin', label: 'Pumpkin', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 30 },
-  pumpkinIcon: { value: 'pumpkinIcon', label: 'Pumpkin Icon', icon: <Circle as React.ComponentType<React.Props<any>>> className="h-5 w-5" />, shelfLife: 30 },
-  radish: { value: 'radish', label: 'Radish', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
-  recipeBox: { value: 'recipeBox', label: 'Recipe Box', icon: <Dumbbell className="h-5 w-5" />, shelfLife: 7 },
-  restaurant: { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-5 w-5" />, shelfLife: 7 },
-  rice: { value: 'rice', label: 'Rice', icon: <Wheat className="h-5 w-5" />, shelfLife: 365 },
-  riceBall: { value: 'riceBall', label: 'Rice Ball', icon: <Sandwich className="h-5 w-5" />, shelfLife: 1 },
-  riceBowl: { value: 'riceBowl', label: 'Rice Bowl', icon: <Soup className="h-5 w-5" />, shelfLife: 1 },
-  rum: { value: 'rum', label: 'Rum', icon: <Martini className="h-5 w-5" />, shelfLife: 365 },
-  sage: { value: 'sage', label: 'Sage', icon: <Flower className="h
+export const useIconManager = (): IconManagerContextType => {
+  const context = useContext(IconManagerContext);
+  if (context === undefined) {
+    throw new Error('useIconManager must be used within an IconManagerProvider');
+  }
+  return context;
+};
+
+// Re-export ALL_ICONS to avoid breaking changes in existing imports
+export { ALL_ICONS };
