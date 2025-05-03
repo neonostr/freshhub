@@ -18,14 +18,15 @@ const AddItemDialog: React.FC = () => {
   const [customDuration, setCustomDuration] = useState<string>('');
   const [isNameFieldFocused, setIsNameFieldFocused] = useState(false);
 
-  // Icons are already sorted alphabetically in the context
+  // Sort available icons alphabetically by label
+  const sortedIcons = [...availableIcons].sort((a, b) => a.label.localeCompare(b.label));
 
   // Set initial selected icon when dialog opens
   useEffect(() => {
-    if (open && availableIcons.length > 0 && !selectedIcon) {
-      setSelectedIcon(availableIcons[0].value);
+    if (open && sortedIcons.length > 0 && !selectedIcon) {
+      setSelectedIcon(sortedIcons[0].value);
     }
-  }, [open, availableIcons, selectedIcon]);
+  }, [open, sortedIcons, selectedIcon]);
 
   // Update name when icon is selected
   useEffect(() => {
@@ -49,7 +50,7 @@ const AddItemDialog: React.FC = () => {
     });
     
     setName('');
-    setSelectedIcon(availableIcons[0]?.value || '');
+    setSelectedIcon(sortedIcons[0]?.value || '');
     setCustomDuration('');
     setOpen(false);
   };
@@ -92,7 +93,7 @@ const AddItemDialog: React.FC = () => {
             <Label>Choose an Icon</Label>
             <ScrollArea className="h-[200px]">
               <div className="grid grid-cols-3 gap-2">
-                {availableIcons.map((icon) => (
+                {sortedIcons.map((icon) => (
                   <Button
                     key={icon.value}
                     type="button"
@@ -101,7 +102,7 @@ const AddItemDialog: React.FC = () => {
                     onClick={() => handleIconSelect(icon.value)}
                   >
                     {icon.icon}
-                    <span className="text-xs mt-1 text-center">{icon.label}</span>
+                    <span className="text-xs mt-1">{icon.label}</span>
                   </Button>
                 ))}
               </div>
