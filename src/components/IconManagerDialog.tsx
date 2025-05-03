@@ -11,15 +11,52 @@ import { Label } from '@/components/ui/label';
 
 const IconManagerDialog: React.FC = () => {
   const { toggleIcon, isIconSelected, allIcons, updateIconShelfLife } = useIconManager();
+  const [editingValues, setEditingValues] = useState<Record<string, string>>({});
   
   // Get sorted icons list by label
   const sortedIcons = Object.values(ALL_ICONS).sort((a, b) => a.label.localeCompare(b.label));
   
+  const handleShelfLifeFocus = (iconValue: string) => {
+    // Save current value as string when focusing
+    setEditingValues(prev => ({
+      ...prev,
+      [iconValue]: ''
+    }));
+  };
+  
   const handleShelfLifeChange = (iconValue: string, value: string) => {
+    setEditingValues(prev => ({
+      ...prev,
+      [iconValue]: value
+    }));
+    
+    // Update if valid number
     const numValue = parseInt(value, 10);
     if (!isNaN(numValue) && numValue > 0) {
       updateIconShelfLife(iconValue, numValue);
     }
+  };
+  
+  const handleShelfLifeBlur = (iconValue: string) => {
+    // If empty or invalid, restore to current value from allIcons
+    const currentValue = editingValues[iconValue];
+    const numValue = parseInt(currentValue, 10);
+    
+    if (currentValue === '' || isNaN(numValue) || numValue <= 0) {
+      // Clear the editing state for this field
+      setEditingValues(prev => {
+        const newValues = {...prev};
+        delete newValues[iconValue];
+        return newValues;
+      });
+    }
+  };
+  
+  // Helper function to get display value for shelf life input
+  const getDisplayValue = (iconValue: string) => {
+    return editingValues[iconValue] !== undefined 
+      ? editingValues[iconValue] 
+      : allIcons[iconValue].shelfLife.toString();
   };
   
   return (
@@ -42,7 +79,7 @@ const IconManagerDialog: React.FC = () => {
           
           <TabsContent value="selection" className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Select the products you want available when adding new items.
+              Select the products you want available when adding new products.
               You must select at least one product.
             </p>
             
@@ -98,8 +135,11 @@ const IconManagerDialog: React.FC = () => {
                         <Input
                           type="number"
                           min="1"
-                          value={allIcons[icon.value].shelfLife}
+                          inputMode="numeric"
+                          value={getDisplayValue(icon.value)}
                           onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
+                          onFocus={() => handleShelfLifeFocus(icon.value)}
+                          onBlur={() => handleShelfLifeBlur(icon.value)}
                           className="w-20"
                         />
                         <span className="text-sm">days</span>

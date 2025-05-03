@@ -72,13 +72,6 @@ const AddItemDialog: React.FC = () => {
     }
   };
 
-  const getShelfLifeText = (iconValue: string) => {
-    const icon = allIcons[iconValue];
-    return icon ? `(${icon.shelfLife} days)` : '';
-  };
-
-  // availableIcons is already sorted alphabetically in the context
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -88,7 +81,7 @@ const AddItemDialog: React.FC = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Item</DialogTitle>
+          <DialogTitle>Add New Product</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -107,16 +100,15 @@ const AddItemDialog: React.FC = () => {
                   >
                     {icon.icon}
                     <span className="text-xs mt-1">{icon.label}</span>
-                    <span className="text-xs text-muted-foreground">{getShelfLifeText(icon.value)}</span>
                   </Button>
                 ))}
               </div>
             </ScrollArea>
           </div>
           
-          {/* Item name field */}
+          {/* Product name field */}
           <div className="space-y-2">
-            <Label htmlFor="name">Item Name</Label>
+            <Label htmlFor="name">Product Name</Label>
             <Input 
               id="name" 
               value={name} 
@@ -145,7 +137,7 @@ const AddItemDialog: React.FC = () => {
           </div>
           
           <Button type="submit" className="w-full">
-            Add Item
+            Add Product
           </Button>
         </form>
       </DialogContent>
