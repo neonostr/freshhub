@@ -11,22 +11,14 @@ import { Label } from '@/components/ui/label';
 
 const IconManagerDialog: React.FC = () => {
   const { toggleIcon, isIconSelected, allIcons, updateIconShelfLife } = useIconManager();
-  const [shelfLifeValues, setShelfLifeValues] = useState<Record<string, string>>({});
   
   // Get sorted icons list by label
   const sortedIcons = Object.values(ALL_ICONS).sort((a, b) => a.label.localeCompare(b.label));
   
   const handleShelfLifeChange = (iconValue: string, value: string) => {
-    setShelfLifeValues(prev => ({
-      ...prev,
-      [iconValue]: value
-    }));
-  };
-  
-  const handleShelfLifeSubmit = (iconValue: string) => {
-    const value = shelfLifeValues[iconValue];
-    if (value && !isNaN(Number(value))) {
-      updateIconShelfLife(iconValue, Number(value));
+    const numValue = parseInt(value, 10);
+    if (!isNaN(numValue) && numValue > 0) {
+      updateIconShelfLife(iconValue, numValue);
     }
   };
   
@@ -39,19 +31,19 @@ const IconManagerDialog: React.FC = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Manage Icons</DialogTitle>
+          <DialogTitle>Manage Products</DialogTitle>
         </DialogHeader>
         
         <Tabs defaultValue="selection" className="w-full">
           <TabsList className="grid grid-cols-2">
-            <TabsTrigger value="selection">Icon Selection</TabsTrigger>
+            <TabsTrigger value="selection">Product Selection</TabsTrigger>
             <TabsTrigger value="shelfLife">Shelf Life</TabsTrigger>
           </TabsList>
           
           <TabsContent value="selection" className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Select the icons you want available when adding new items.
-              You must select at least one icon.
+              Select the products you want available when adding new items.
+              You must select at least one product.
             </p>
             
             <ScrollArea className="h-[400px] pr-4">
@@ -86,7 +78,7 @@ const IconManagerDialog: React.FC = () => {
           
           <TabsContent value="shelfLife" className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Customize the shelf life (in days) for each selected icon.
+              Customize the shelf life (in days) for each selected product.
             </p>
             
             <ScrollArea className="h-[400px] pr-4">
@@ -106,19 +98,11 @@ const IconManagerDialog: React.FC = () => {
                         <Input
                           type="number"
                           min="1"
-                          value={shelfLifeValues[icon.value] ?? allIcons[icon.value].shelfLife}
+                          value={allIcons[icon.value].shelfLife}
                           onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
                           className="w-20"
                         />
                         <span className="text-sm">days</span>
-                        
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleShelfLifeSubmit(icon.value)}
-                        >
-                          Update
-                        </Button>
                       </div>
                     </div>
                   ))}

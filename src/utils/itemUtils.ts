@@ -1,7 +1,7 @@
 
 import { Item, FreshnessLevel } from "@/types/item";
 import { format, formatDistanceToNow, differenceInDays } from "date-fns";
-import { ALL_ICONS } from "@/context/IconManagerContext";
+import { ALL_ICONS } from "@/data/productData";
 
 export const getShelfLife = (item: Item): number => {
   // If item has custom duration, use that
