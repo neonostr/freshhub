@@ -1,6 +1,5 @@
 import { Item, FreshnessLevel } from "@/types/item";
 import { format, formatDistanceToNow, differenceInDays } from "date-fns";
-import { ALL_ICONS } from "@/context/IconManagerContext";
 
 export const getShelfLife = (item: Item): number => {
   // If item has custom duration, use that
@@ -10,7 +9,8 @@ export const getShelfLife = (item: Item): number => {
   
   // Otherwise use the default shelf life for the icon
   // Fall back to 7 days if icon not found
-  return ALL_ICONS[item.icon]?.shelfLife ?? 7;
+  const iconData = item.icon ? global.iconData?.[item.icon] : null;
+  return iconData?.shelfLife ?? 7;
 };
 
 export const calculateFreshnessLevel = (item: Item): FreshnessLevel => {
@@ -57,37 +57,47 @@ export const loadItems = (): Item[] => {
 
 // Update getCategoryForIcon to use our centralized mapping
 export const getCategoryForIcon = (iconName: string): string => {
-  switch (iconName) {
-    case 'milk':
-      return 'dairy';
-    case 'coffee':
-      return 'coffee';
-    case 'apple':
-    case 'banana':
-    case 'carrot':
-    case 'cherry':
-    case 'salad':
-      return 'produce';
-    case 'egg':
-    case 'iceCream':
-      return 'dairy';
-    case 'cookie':
-    case 'cake':
-    case 'croissant':
-      return 'bakery';
-    case 'pizza':
-    case 'sandwich':
-      return 'ready-meals';
-    case 'beef':
-    case 'drumstick':
-      return 'meat';
-    case 'beer':
-      return 'drinks';
-    case 'fish':
-      return 'seafood';
-    case 'box':
-    case 'trash':
-    default:
-      return 'other';
+  // Simple category mapping based on product types
+  if (iconName.includes('milk') || iconName.includes('cream') || 
+      iconName.includes('cheese') || iconName === 'eggs') {
+    return 'dairy';
   }
+  
+  if (iconName.includes('coffee')) {
+    return 'coffee';
+  }
+  
+  if (iconName.includes('apple') || iconName.includes('banana') || 
+      iconName.includes('carrot') || iconName.includes('cherry') || 
+      iconName.includes('salad') || iconName.includes('fruit') || 
+      iconName.includes('vegetable')) {
+    return 'produce';
+  }
+  
+  if (iconName.includes('cookie') || iconName.includes('cake') || 
+      iconName.includes('bread') || iconName.includes('bagel')) {
+    return 'bakery';
+  }
+  
+  if (iconName.includes('pizza') || iconName.includes('sandwich')) {
+    return 'ready-meals';
+  }
+  
+  if (iconName.includes('beef') || iconName.includes('chicken') || 
+      iconName.includes('meat') || iconName.includes('turkey') || 
+      iconName.includes('pork')) {
+    return 'meat';
+  }
+  
+  if (iconName.includes('beer') || iconName.includes('wine') || 
+      iconName.includes('juice')) {
+    return 'drinks';
+  }
+  
+  if (iconName.includes('fish') || iconName.includes('shrimp')) {
+    return 'seafood';
+  }
+  
+  // Default category
+  return 'other';
 };

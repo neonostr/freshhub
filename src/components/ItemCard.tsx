@@ -2,7 +2,7 @@
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, Package } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
@@ -23,8 +23,8 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
     if (item.icon in allIcons) {
       return allIcons[item.icon].icon;
     }
-    // Fallback to Box icon if not found
-    return allIcons['box'].icon;
+    // Fallback to Package icon if not found
+    return <Package className="h-5 w-5" />;
   };
   
   const getFreshnessColor = (level: FreshnessLevel): string => {
