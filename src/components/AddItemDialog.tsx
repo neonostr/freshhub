@@ -87,7 +87,7 @@ const AddItemDialog: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           {/* Icon selection at the top */}
           <div className="space-y-2">
-            <Label>Choose an Icon</Label>
+            <Label>Choose a Product</Label>
             <ScrollArea className="h-[200px]">
               <div className="grid grid-cols-3 gap-2">
                 {availableIcons.map((icon) => (
