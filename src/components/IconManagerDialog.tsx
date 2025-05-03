@@ -12,7 +12,6 @@ import { Label } from '@/components/ui/label';
 const IconManagerDialog: React.FC = () => {
   const { toggleIcon, isIconSelected, allIcons, updateIconShelfLife } = useIconManager();
   const [shelfLifeValues, setShelfLifeValues] = useState<Record<string, string>>({});
-  const [searchTerm, setSearchTerm] = useState('');
   
   const handleShelfLifeChange = (iconValue: string, value: string) => {
     setShelfLifeValues(prev => ({
@@ -27,19 +26,6 @@ const IconManagerDialog: React.FC = () => {
       updateIconShelfLife(iconValue, Number(value));
     }
   };
-
-  // Get all icons and sort them alphabetically by label
-  const sortedIcons = Object.values(ALL_ICONS).sort((a, b) => a.label.localeCompare(b.label));
-  
-  // Filter icons by search term if provided
-  const filteredIcons = searchTerm ? 
-    sortedIcons.filter(icon => icon.label.toLowerCase().includes(searchTerm.toLowerCase())) : 
-    sortedIcons;
-  
-  // Get selected icons only for shelf life tab, sorted alphabetically
-  const selectedIcons = Object.values(allIcons)
-    .filter(icon => isIconSelected(icon.value))
-    .sort((a, b) => a.label.localeCompare(b.label));
   
   return (
     <Dialog>
@@ -65,18 +51,9 @@ const IconManagerDialog: React.FC = () => {
               You must select at least one icon.
             </p>
             
-            <div className="mb-4">
-              <Input 
-                placeholder="Search icons..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="mb-2"
-              />
-            </div>
-            
             <ScrollArea className="h-[400px] pr-4">
               <div className="grid grid-cols-3 gap-2">
-                {filteredIcons.map((icon) => (
+                {Object.values(ALL_ICONS).map((icon) => (
                   <Button
                     key={icon.value}
                     type="button"
@@ -106,12 +83,12 @@ const IconManagerDialog: React.FC = () => {
           
           <TabsContent value="shelfLife" className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Customize the shelf life (in days) for each selected icon.
+              Customize the shelf life (in days) for each icon.
             </p>
             
             <ScrollArea className="h-[400px] pr-4">
               <div className="space-y-4">
-                {selectedIcons.map((icon) => (
+                {Object.values(allIcons).map((icon) => (
                   <div key={icon.value} className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                       <div className="p-2 bg-muted rounded-md">

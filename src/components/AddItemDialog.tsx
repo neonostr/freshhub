@@ -18,15 +18,12 @@ const AddItemDialog: React.FC = () => {
   const [customDuration, setCustomDuration] = useState<string>('');
   const [isNameFieldFocused, setIsNameFieldFocused] = useState(false);
 
-  // Sort available icons alphabetically by label
-  const sortedIcons = [...availableIcons].sort((a, b) => a.label.localeCompare(b.label));
-
   // Set initial selected icon when dialog opens
   useEffect(() => {
-    if (open && sortedIcons.length > 0 && !selectedIcon) {
-      setSelectedIcon(sortedIcons[0].value);
+    if (open && availableIcons.length > 0 && !selectedIcon) {
+      setSelectedIcon(availableIcons[0].value);
     }
-  }, [open, sortedIcons, selectedIcon]);
+  }, [open, availableIcons, selectedIcon]);
 
   // Update name when icon is selected
   useEffect(() => {
@@ -50,7 +47,7 @@ const AddItemDialog: React.FC = () => {
     });
     
     setName('');
-    setSelectedIcon(sortedIcons[0]?.value || '');
+    setSelectedIcon(availableIcons[0]?.value || '');
     setCustomDuration('');
     setOpen(false);
   };
@@ -75,6 +72,11 @@ const AddItemDialog: React.FC = () => {
     }
   };
 
+  const getShelfLifeText = (iconValue: string) => {
+    const icon = allIcons[iconValue];
+    return icon ? `(${icon.shelfLife} days)` : '';
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -93,7 +95,7 @@ const AddItemDialog: React.FC = () => {
             <Label>Choose an Icon</Label>
             <ScrollArea className="h-[200px]">
               <div className="grid grid-cols-3 gap-2">
-                {sortedIcons.map((icon) => (
+                {availableIcons.map((icon) => (
                   <Button
                     key={icon.value}
                     type="button"
@@ -103,6 +105,7 @@ const AddItemDialog: React.FC = () => {
                   >
                     {icon.icon}
                     <span className="text-xs mt-1">{icon.label}</span>
+                    <span className="text-xs text-muted-foreground">{getShelfLifeText(icon.value)}</span>
                   </Button>
                 ))}
               </div>
