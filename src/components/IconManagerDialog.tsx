@@ -13,6 +13,9 @@ const IconManagerDialog: React.FC = () => {
   const { toggleIcon, isIconSelected, allIcons, updateIconShelfLife } = useIconManager();
   const [shelfLifeValues, setShelfLifeValues] = useState<Record<string, string>>({});
   
+  // Get sorted icons list by label
+  const sortedIcons = Object.values(ALL_ICONS).sort((a, b) => a.label.localeCompare(b.label));
+  
   const handleShelfLifeChange = (iconValue: string, value: string) => {
     setShelfLifeValues(prev => ({
       ...prev,
@@ -53,7 +56,7 @@ const IconManagerDialog: React.FC = () => {
             
             <ScrollArea className="h-[400px] pr-4">
               <div className="grid grid-cols-3 gap-2">
-                {Object.values(ALL_ICONS).map((icon) => (
+                {sortedIcons.map((icon) => (
                   <Button
                     key={icon.value}
                     type="button"
@@ -83,40 +86,42 @@ const IconManagerDialog: React.FC = () => {
           
           <TabsContent value="shelfLife" className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Customize the shelf life (in days) for each icon.
+              Customize the shelf life (in days) for each selected icon.
             </p>
             
             <ScrollArea className="h-[400px] pr-4">
               <div className="space-y-4">
-                {Object.values(allIcons).map((icon) => (
-                  <div key={icon.value} className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 bg-muted rounded-md">
-                        {icon.icon}
+                {sortedIcons
+                  .filter(icon => isIconSelected(icon.value))
+                  .map((icon) => (
+                    <div key={icon.value} className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 bg-muted rounded-md">
+                          {icon.icon}
+                        </div>
+                        <Label>{icon.label}</Label>
                       </div>
-                      <Label>{icon.label}</Label>
-                    </div>
-                    
-                    <div className="flex-1 flex items-center gap-2">
-                      <Input
-                        type="number"
-                        min="1"
-                        value={shelfLifeValues[icon.value] ?? icon.shelfLife}
-                        onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
-                        className="w-20"
-                      />
-                      <span className="text-sm">days</span>
                       
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleShelfLifeSubmit(icon.value)}
-                      >
-                        Update
-                      </Button>
+                      <div className="flex-1 flex items-center gap-2">
+                        <Input
+                          type="number"
+                          min="1"
+                          value={shelfLifeValues[icon.value] ?? allIcons[icon.value].shelfLife}
+                          onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
+                          className="w-20"
+                        />
+                        <span className="text-sm">days</span>
+                        
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleShelfLifeSubmit(icon.value)}
+                        >
+                          Update
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </ScrollArea>
           </TabsContent>

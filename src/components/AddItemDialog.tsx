@@ -77,6 +77,8 @@ const AddItemDialog: React.FC = () => {
     return icon ? `(${icon.shelfLife} days)` : '';
   };
 
+  // availableIcons is already sorted alphabetically in the context
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
