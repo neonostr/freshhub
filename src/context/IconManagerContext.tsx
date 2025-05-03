@@ -1,17 +1,15 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { 
   Milk, Apple, Carrot, Cherry, Coffee, Cookie, Egg, Fish, 
   Wine, Package as Box, Trash, Banana, Beef, Cake, Beer, BookmarkIcon as Bread,
   Scissors, CircleDot, Bird, Croissant,
   ShoppingBag, Salad, Calendar, Leaf, Lemon,
-  Sandwich, Pizza, Wheat, Timer, IceCream, Utensils,
-  Drumstick, Citrus, CircleDot as Salt, Flame, Frown as Cheese, Workflow as Pasta,
-  KanbanSquare as Crackers, CircleDot as Sugar, CircleDot as Syrup, LayoutGrid as Cereal,
-  FileText as Floor, Square as Chocolate, CircleDot as HotSauce,
-  CircleDot as Donut, Zap as Battery, PalmTree as Coconut,
-  CircleDot as Butter, Timer as Cream, CircleDot as Icing,
-  Grape, CircleDot as Jam, CircleDot as Yogurt,
-  CircleDot as Pita, LucideIcon
+  Pizza, Wheat, Timer, IceCream, Utensils,
+  Drumstick, Citrus, Flame, Frown as Cheese,
+  KanbanSquare as Crackers, FileText as Floor, Square as Chocolate,
+  Zap as Battery, PalmTree as Coconut,
+  Timer as Cream, Grape
 } from "lucide-react";
 
 export type IconOption = {
@@ -51,13 +49,13 @@ export const ALL_ICONS: Record<string, IconOption> = {
   chocolate: { value: 'chocolate', label: 'Chocolate', icon: <Chocolate className="h-5 w-5" />, shelfLife: 14 },
   cilantro: { value: 'cilantro', label: 'Cilantro', icon: <Leaf className="h-5 w-5" />, shelfLife: 3 },
   cinnamon: { value: 'cinnamon', label: 'Cinnamon', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
-  coconutMilk: { value: 'coconutMilk', label: 'Coconut milk', icon: <PalmTree className="h-5 w-5" />, shelfLife: 3 },
+  coconutMilk: { value: 'coconutMilk', label: 'Coconut milk', icon: <Coconut className="h-5 w-5" />, shelfLife: 3 },
   coffee: { value: 'coffee', label: 'Coffee', icon: <Coffee className="h-5 w-5" />, shelfLife: 7 },
   cookies: { value: 'cookies', label: 'Cookies', icon: <Cookie className="h-5 w-5" />, shelfLife: 2 },
   corn: { value: 'corn', label: 'Corn', icon: <Wheat className="h-5 w-5" />, shelfLife: 5 },
   cottageCheese: { value: 'cottageCheese', label: 'Cottage cheese', icon: <Cheese className="h-5 w-5" />, shelfLife: 5 },
   crackers: { value: 'crackers', label: 'Crackers', icon: <Crackers className="h-5 w-5" />, shelfLife: 5 },
-  cream: { value: 'cream', label: 'Cream', icon: <Timer className="h-5 w-5" />, shelfLife: 3 },
+  cream: { value: 'cream', label: 'Cream', icon: <Cream className="h-5 w-5" />, shelfLife: 3 },
   creamCheese: { value: 'creamCheese', label: 'Cream cheese', icon: <Cheese className="h-5 w-5" />, shelfLife: 7 },
   cucumber: { value: 'cucumber', label: 'Cucumber', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
   dates: { value: 'dates', label: 'Dates', icon: <Calendar className="h-5 w-5" />, shelfLife: 14 },
@@ -67,12 +65,12 @@ export const ALL_ICONS: Record<string, IconOption> = {
   figs: { value: 'figs', label: 'Figs', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
   fishCooked: { value: 'fishCooked', label: 'Fish (cooked)', icon: <Fish className="h-5 w-5" />, shelfLife: 3 },
   fishRaw: { value: 'fishRaw', label: 'Fish (raw)', icon: <Fish className="h-5 w-5" />, shelfLife: 1 },
-  flour: { value: 'flour', label: 'Flour', icon: <FileText className="h-5 w-5" />, shelfLife: 30 },
+  flour: { value: 'flour', label: 'Flour', icon: <Floor className="h-5 w-5" />, shelfLife: 30 },
   frankfurters: { value: 'frankfurters', label: 'Frankfurters', icon: <Utensils className="h-5 w-5" />, shelfLife: 5 },
   garlic: { value: 'garlic', label: 'Garlic', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   ginger: { value: 'ginger', label: 'Ginger', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   grapes: { value: 'grapes', label: 'Grapes', icon: <Grape className="h-5 w-5" />, shelfLife: 5 },
-  granola: { value: 'granola', label: 'Granola', icon: <Cereal className="h-5 w-5" />, shelfLife: 14 },
+  granola: { value: 'granola', label: 'Granola', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   greekYogurt: { value: 'greekYogurt', label: 'Greek yogurt', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   greenBeans: { value: 'greenBeans', label: 'Green beans', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   groundTurkey: { value: 'groundTurkey', label: 'Ground turkey', icon: <Bird className="h-5 w-5" />, shelfLife: 1 },
@@ -82,9 +80,6 @@ export const ALL_ICONS: Record<string, IconOption> = {
   honey: { value: 'honey', label: 'Honey', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   hummus: { value: 'hummus', label: 'Hummus', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   iceCream: { value: 'iceCream', label: 'Ice cream', icon: <IceCream className="h-5 w-5" />, shelfLife: 7 },
-  icing: { value: 'icing', label: 'Icing', icon: <CircleDot className="h-5 w-5" />, shelfLife: 2 },
-  jam: { value: 'jam', label: 'Jam', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
-  juice: { value: 'juice', label: 'Juice (orange)', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
   kale: { value: 'kale', label: 'Kale', icon: <Leaf className="h-5 w-5" />, shelfLife: 3 },
   kiwi: { value: 'kiwi', label: 'Kiwi', icon: <Citrus className="h-5 w-5" />, shelfLife: 5 },
   lambCooked: { value: 'lambCooked', label: 'Lamb (cooked)', icon: <Drumstick className="h-5 w-5" />, shelfLife: 3 },
@@ -97,15 +92,14 @@ export const ALL_ICONS: Record<string, IconOption> = {
   mushrooms: { value: 'mushrooms', label: 'Mushrooms', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
   mustard: { value: 'mustard', label: 'Mustard', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   nuts: { value: 'nuts', label: 'Nuts (almonds, walnuts, etc.)', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
-  oatmeal: { value: 'oatmeal', label: 'Oatmeal', icon: <Cereal className="h-5 w-5" />, shelfLife: 14 },
+  oatmeal: { value: 'oatmeal', label: 'Oatmeal', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   oliveOil: { value: 'oliveOil', label: 'Olive oil', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   olives: { value: 'olives', label: 'Olives', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   onions: { value: 'onions', label: 'Onions', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   orangeJuice: { value: 'orangeJuice', label: 'Orange juice', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
   oranges: { value: 'oranges', label: 'Oranges', icon: <Citrus className="h-5 w-5" />, shelfLife: 10 },
   pancakes: { value: 'pancakes', label: 'Pancakes', icon: <CircleDot className="h-5 w-5" />, shelfLife: 2 },
-  pastaCooked: { value: 'pastaCooked', label: 'Pasta (cooked)', icon: <Pasta className="h-5 w-5" />, shelfLife: 3 },
-  pastaDried: { value: 'pastaDried', label: 'Pasta (dried)', icon: <Pasta className="h-5 w-5" />, shelfLife: 30 },
+  pasta: { value: 'pasta', label: 'Pasta', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   peaches: { value: 'peaches', label: 'Peaches', icon: <Citrus className="h-5 w-5" />, shelfLife: 5 },
   pears: { value: 'pears', label: 'Pears', icon: <CircleDot className="h-5 w-5" />, shelfLife: 10 },
   peas: { value: 'peas', label: 'Peas', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
@@ -129,8 +123,7 @@ export const ALL_ICONS: Record<string, IconOption> = {
   ramenNoodles: { value: 'ramenNoodles', label: 'Ramen noodles', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   raspberryJam: { value: 'raspberryJam', label: 'Raspberry jam', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   rhubarb: { value: 'rhubarb', label: 'Rhubarb', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
-  riceCooked: { value: 'riceCooked', label: 'Rice (cooked)', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
-  riceUncooked: { value: 'riceUncooked', label: 'Rice (uncooked)', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
+  rice: { value: 'rice', label: 'Rice', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   ricottaCheese: { value: 'ricottaCheese', label: 'Ricotta cheese', icon: <Cheese className="h-5 w-5" />, shelfLife: 5 },
   roastBeef: { value: 'roastBeef', label: 'Roast beef', icon: <Beef className="h-5 w-5" />, shelfLife: 5 },
   salsa: { value: 'salsa', label: 'Salsa', icon: <Salad className="h-5 w-5" />, shelfLife: 5 },
@@ -139,9 +132,9 @@ export const ALL_ICONS: Record<string, IconOption> = {
   sausages: { value: 'sausages', label: 'Sausages', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   shrimpCooked: { value: 'shrimpCooked', label: 'Shrimp (cooked)', icon: <Fish className="h-5 w-5" />, shelfLife: 3 },
   shrimpRaw: { value: 'shrimpRaw', label: 'Shrimp (raw)', icon: <Fish className="h-5 w-5" />, shelfLife: 1 },
-  sourCream: { value: 'sourCream', label: 'Sour cream', icon: <Timer className="h-5 w-5" />, shelfLife: 5 },
+  sourCream: { value: 'sourCream', label: 'Sour cream', icon: <Cream className="h-5 w-5" />, shelfLife: 5 },
   soyMilk: { value: 'soyMilk', label: 'Soy milk', icon: <Milk className="h-5 w-5" />, shelfLife: 3 },
-  spaghetti: { value: 'spaghetti', label: 'Spaghetti', icon: <Pasta className="h-5 w-5" />, shelfLife: 3 },
+  spaghetti: { value: 'spaghetti', label: 'Spaghetti', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
   spinach: { value: 'spinach', label: 'Spinach', icon: <Leaf className="h-5 w-5" />, shelfLife: 3 },
   squash: { value: 'squash', label: 'Squash', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   strawberries: { value: 'strawberries', label: 'Strawberries', icon: <Cherry className="h-5 w-5" />, shelfLife: 3 },
@@ -158,13 +151,13 @@ export const ALL_ICONS: Record<string, IconOption> = {
   turkeyCooked: { value: 'turkeyCooked', label: 'Turkey (cooked)', icon: <Bird className="h-5 w-5" />, shelfLife: 3 },
   turkeyRaw: { value: 'turkeyRaw', label: 'Turkey (raw)', icon: <Bird className="h-5 w-5" />, shelfLife: 1 },
   turnips: { value: 'turnips', label: 'Turnips', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
-  udonNoodles: { value: 'udonNoodles', label: 'Udon noodles', icon: <Pasta className="h-5 w-5" />, shelfLife: 30 },
+  udonNoodles: { value: 'udonNoodles', label: 'Udon noodles', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   vegetableOil: { value: 'vegetableOil', label: 'Vegetable oil', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   vinegar: { value: 'vinegar', label: 'Vinegar', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   waterFilter: { value: 'waterFilter', label: 'Water filter cartridge', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   watermelon: { value: 'watermelon', label: 'Watermelon', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   wheatBread: { value: 'wheatBread', label: 'Wheat bread', icon: <Bread className="h-5 w-5" />, shelfLife: 2 },
-  whippedCream: { value: 'whippedCream', label: 'Whipped cream', icon: <Timer className="h-5 w-5" />, shelfLife: 2 },
+  whippedCream: { value: 'whippedCream', label: 'Whipped cream', icon: <Cream className="h-5 w-5" />, shelfLife: 2 },
   wine: { value: 'wine', label: 'Wine', icon: <Wine className="h-5 w-5" />, shelfLife: 14 },
   yogurt: { value: 'yogurt', label: 'Yogurt', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   zucchini: { value: 'zucchini', label: 'Zucchini', icon: <CircleDot className="h-5 w-5" />, shelfLife: 3 },
@@ -173,13 +166,12 @@ export const ALL_ICONS: Record<string, IconOption> = {
   cannedBeans: { value: 'cannedBeans', label: 'Canned beans', icon: <Box className="h-5 w-5" />, shelfLife: 30 },
   cannedCorn: { value: 'cannedCorn', label: 'Canned corn', icon: <Box className="h-5 w-5" />, shelfLife: 30 },
   cannedTomatoes: { value: 'cannedTomatoes', label: 'Canned tomatoes', icon: <Box className="h-5 w-5" />, shelfLife: 30 },
-  cereal: { value: 'cereal', label: 'Cereal', icon: <Cereal className="h-5 w-5" />, shelfLife: 14 },
+  cereal: { value: 'cereal', label: 'Cereal', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   coffeeCreamer: { value: 'coffeeCreamer', label: 'Coffee creamer', icon: <Milk className="h-5 w-5" />, shelfLife: 14 },
   croutons: { value: 'croutons', label: 'Croutons', icon: <Bread className="h-5 w-5" />, shelfLife: 5 },
   driedApricots: { value: 'driedApricots', label: 'Dried apricots', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   driedCranberries: { value: 'driedCranberries', label: 'Dried cranberries', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   energyBars: { value: 'energyBars', label: 'Energy bars', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
-  flourTortillas: { value: 'flourTortillas', label: 'Flour tortillas', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   freshBasil: { value: 'freshBasil', label: 'Fresh basil', icon: <Leaf className="h-5 w-5" />, shelfLife: 3 },
   freshParsley: { value: 'freshParsley', label: 'Fresh parsley', icon: <Leaf className="h-5 w-5" />, shelfLife: 3 },
   frozenPeas: { value: 'frozenPeas', label: 'Frozen peas', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
@@ -187,8 +179,8 @@ export const ALL_ICONS: Record<string, IconOption> = {
   greenTea: { value: 'greenTea', label: 'Green tea', icon: <Coffee className="h-5 w-5" />, shelfLife: 14 },
   groundCoffee: { value: 'groundCoffee', label: 'Ground coffee', icon: <Coffee className="h-5 w-5" />, shelfLife: 14 },
   hamburgerBuns: { value: 'hamburgerBuns', label: 'Hamburger buns', icon: <Bread className="h-5 w-5" />, shelfLife: 5 },
-  hotSauce: { value: 'hotSauce', label: 'Hot sauce', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
-  instantNoodles: { value: 'instantNoodles', label: 'Instant noodles', icon: <Pasta className="h-5 w-5" />, shelfLife: 30 },
+  hotSauce: { value: 'hotSauce', label: 'Hot sauce', icon: <Flame className="h-5 w-5" />, shelfLife: 14 },
+  instantNoodles: { value: 'instantNoodles', label: 'Instant noodles', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   jelly: { value: 'jelly', label: 'Jelly', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   ketchup: { value: 'ketchup', label: 'Ketchup', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   lemonJuice: { value: 'lemonJuice', label: 'Lemon juice', icon: <Lemon className="h-5 w-5" />, shelfLife: 5 },
@@ -203,9 +195,9 @@ export const ALL_ICONS: Record<string, IconOption> = {
   pickleRelish: { value: 'pickleRelish', label: 'Pickle relish', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   pitaBread: { value: 'pitaBread', label: 'Pita bread', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
   pretzels: { value: 'pretzels', label: 'Pretzels', icon: <CircleDot className="h-5 w-5" />, shelfLife: 5 },
-  raisinBran: { value: 'raisinBran', label: 'Raisin bran', icon: <Cereal className="h-5 w-5" />, shelfLife: 14 },
+  raisinBran: { value: 'raisinBran', label: 'Raisin bran', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   relish: { value: 'relish', label: 'Relish', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
-  salt: { value: 'salt', label: 'Salt', icon: <Salt className="h-5 w-5" />, shelfLife: 30 },
+  salt: { value: 'salt', label: 'Salt', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   sesameOil: { value: 'sesameOil', label: 'Sesame oil', icon: <CircleDot className="h-5 w-5" />, shelfLife: 30 },
   sesameSeeds: { value: 'sesameSeeds', label: 'Sesame seeds', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   soySauce: { value: 'soySauce', label: 'Soy sauce', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
@@ -220,4 +212,139 @@ export const ALL_ICONS: Record<string, IconOption> = {
   yellowMustard: { value: 'yellowMustard', label: 'Yellow mustard', icon: <CircleDot className="h-5 w-5" />, shelfLife: 14 },
   // Fallback options
   box: { value: 'box', label: 'Generic', icon: <Box className="h-5 w-5" />, shelfLife: 7 },
-  trash: { value: 'trash', label: 'Trash', icon: <Trash className="h-5 w-5
+  trash: { value: 'trash', label: 'Trash', icon: <Trash className="h-5 w-5" />, shelfLife: 0 }
+};
+
+// Interface for the context
+interface IconManagerContextType {
+  allIcons: Record<string, IconOption>;
+  selectedIcons: string[];
+  availableIcons: IconOption[];
+  isIconSelected: (iconValue: string) => boolean;
+  toggleIcon: (iconValue: string) => void;
+  updateIconShelfLife: (iconValue: string, shelfLife: number) => void;
+}
+
+// Create context with default values
+const IconManagerContext = createContext<IconManagerContextType>({
+  allIcons: ALL_ICONS,
+  selectedIcons: [],
+  availableIcons: [],
+  isIconSelected: () => false,
+  toggleIcon: () => {},
+  updateIconShelfLife: () => {}
+});
+
+// Custom hook to use the context
+export const useIconManager = () => useContext(IconManagerContext);
+
+// Provider component
+interface IconManagerProviderProps {
+  children: ReactNode;
+}
+
+export const IconManagerProvider: React.FC<IconManagerProviderProps> = ({ children }) => {
+  const [selectedIcons, setSelectedIcons] = useState<string[]>([]);
+  const [allIcons, setAllIcons] = useState<Record<string, IconOption>>(ALL_ICONS);
+
+  // Load selected icons from localStorage on mount
+  useEffect(() => {
+    const savedIcons = localStorage.getItem('selectedIcons');
+    
+    if (savedIcons) {
+      setSelectedIcons(JSON.parse(savedIcons));
+    } else {
+      // Default to some common icons if nothing is saved
+      const defaultIcons = ['milk', 'eggs', 'bread', 'cheese', 'apple', 'banana'];
+      setSelectedIcons(defaultIcons);
+      localStorage.setItem('selectedIcons', JSON.stringify(defaultIcons));
+    }
+
+    // Load custom shelf life values
+    const savedShelfLife = localStorage.getItem('iconShelfLife');
+    if (savedShelfLife) {
+      const parsedShelfLife = JSON.parse(savedShelfLife);
+      
+      // Update allIcons with saved shelf life values
+      const updatedIcons = { ...ALL_ICONS };
+      
+      Object.entries(parsedShelfLife).forEach(([iconValue, days]) => {
+        if (updatedIcons[iconValue]) {
+          updatedIcons[iconValue] = {
+            ...updatedIcons[iconValue],
+            shelfLife: days as number
+          };
+        }
+      });
+      
+      setAllIcons(updatedIcons);
+    }
+  }, []);
+
+  // Get available icons based on selected icons
+  const availableIcons = React.useMemo(() => {
+    return selectedIcons
+      .map(iconValue => allIcons[iconValue])
+      .filter(Boolean)
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [selectedIcons, allIcons]);
+
+  // Check if an icon is selected
+  const isIconSelected = useCallback(
+    (iconValue: string) => selectedIcons.includes(iconValue),
+    [selectedIcons]
+  );
+
+  // Toggle selection of an icon
+  const toggleIcon = useCallback((iconValue: string) => {
+    setSelectedIcons(prev => {
+      const newSelectedIcons = prev.includes(iconValue)
+        ? prev.filter(i => i !== iconValue)
+        : [...prev, iconValue];
+      
+      localStorage.setItem('selectedIcons', JSON.stringify(newSelectedIcons));
+      return newSelectedIcons;
+    });
+  }, []);
+
+  // Update shelf life for an icon
+  const updateIconShelfLife = useCallback((iconValue: string, shelfLife: number) => {
+    setAllIcons(prev => {
+      if (!prev[iconValue]) return prev;
+      
+      const updatedIcons = {
+        ...prev,
+        [iconValue]: {
+          ...prev[iconValue],
+          shelfLife
+        }
+      };
+      
+      // Save custom shelf life values to localStorage
+      const savedShelfLife = localStorage.getItem('iconShelfLife');
+      const parsedShelfLife = savedShelfLife ? JSON.parse(savedShelfLife) : {};
+      
+      localStorage.setItem('iconShelfLife', JSON.stringify({
+        ...parsedShelfLife,
+        [iconValue]: shelfLife
+      }));
+      
+      return updatedIcons;
+    });
+  }, []);
+
+  const contextValue: IconManagerContextType = {
+    allIcons,
+    selectedIcons,
+    availableIcons,
+    isIconSelected,
+    toggleIcon,
+    updateIconShelfLife
+  };
+
+  return (
+    <IconManagerContext.Provider value={contextValue}>
+      {children}
+    </IconManagerContext.Provider>
+  );
+};
