@@ -1,5 +1,7 @@
+
 import { Item, FreshnessLevel } from "@/types/item";
 import { format, formatDistanceToNow, differenceInDays } from "date-fns";
+import { ALL_ICONS } from "@/context/IconManagerContext";
 
 export const getShelfLife = (item: Item): number => {
   // If item has custom duration, use that
@@ -9,8 +11,7 @@ export const getShelfLife = (item: Item): number => {
   
   // Otherwise use the default shelf life for the icon
   // Fall back to 7 days if icon not found
-  const iconData = item.icon ? global.iconData?.[item.icon] : null;
-  return iconData?.shelfLife ?? 7;
+  return ALL_ICONS[item.icon]?.shelfLife ?? 7;
 };
 
 export const calculateFreshnessLevel = (item: Item): FreshnessLevel => {
