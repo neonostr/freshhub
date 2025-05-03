@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { 
   Milk, Apple, Carrot, Cherry, Coffee, Cookie, Egg, Fish, 
   Wine, Banana, Beef, Cake, Beer,
   Salad, Drumstick, Pizza, IceCream, Sandwich, Package,
-  Utensils, Bottle, Flask, Bean, Grape, Ham, Soup, Noodles
+  Utensils, Package as BottleIcon, Flask as FlaskIcon, Bean, Grape, Ham, Soup, Noodles as NoodlesIcon
 } from "lucide-react";
 
 export type IconOption = {
@@ -91,7 +92,7 @@ export const ALL_ICONS: Record<string, IconOption> = {
   mustard: { value: 'mustard', label: 'Mustard', icon: <Soup className="h-5 w-5" />, shelfLife: 14 },
   nuts: { value: 'nuts', label: 'Nuts', icon: <Bean className="h-5 w-5" />, shelfLife: 14 },
   oatmeal: { value: 'oatmeal', label: 'Oatmeal', icon: <Soup className="h-5 w-5" />, shelfLife: 14 },
-  oliveOil: { value: 'oliveOil', label: 'Olive oil', icon: <Bottle className="h-5 w-5" />, shelfLife: 30 },
+  oliveOil: { value: 'oliveOil', label: 'Olive oil', icon: <BottleIcon className="h-5 w-5" />, shelfLife: 30 },
   olives: { value: 'olives', label: 'Olives', icon: <Cherry className="h-5 w-5" />, shelfLife: 14 },
   onions: { value: 'onions', label: 'Onions', icon: <Salad className="h-5 w-5" />, shelfLife: 14 },
   orangeJuice: { value: 'orangeJuice', label: 'Orange juice', icon: <Milk className="h-5 w-5" />, shelfLife: 3 },
@@ -151,8 +152,8 @@ export const ALL_ICONS: Record<string, IconOption> = {
   turkeyRaw: { value: 'turkeyRaw', label: 'Turkey (raw)', icon: <Drumstick className="h-5 w-5" />, shelfLife: 1 },
   turnips: { value: 'turnips', label: 'Turnips', icon: <Salad className="h-5 w-5" />, shelfLife: 5 },
   udonNoodles: { value: 'udonNoodles', label: 'Udon Noodles', icon: <Soup className="h-5 w-5" />, shelfLife: 30 },
-  vegetableOil: { value: 'vegetableOil', label: 'Vegetable Oil', icon: <Bottle className="h-5 w-5" />, shelfLife: 30 },
-  vinegar: { value: 'vinegar', label: 'Vinegar', icon: <Flask className="h-5 w-5" />, shelfLife: 30 },
+  vegetableOil: { value: 'vegetableOil', label: 'Vegetable Oil', icon: <BottleIcon className="h-5 w-5" />, shelfLife: 30 },
+  vinegar: { value: 'vinegar', label: 'Vinegar', icon: <FlaskIcon className="h-5 w-5" />, shelfLife: 30 },
   waterFilter: { value: 'waterFilter', label: 'Water Filter', icon: <Utensils className="h-5 w-5" />, shelfLife: 30 },
   watermelon: { value: 'watermelon', label: 'Watermelon', icon: <Cherry className="h-5 w-5" />, shelfLife: 5 },
   wheatBread: { value: 'wheatBread', label: 'Wheat bread', icon: <Cookie className="h-5 w-5" />, shelfLife: 2 },
