@@ -4,7 +4,7 @@ import {
   Milk, Apple, Carrot, Cherry, Coffee, Cookie, Egg, Fish, 
   Wine, Banana, Beef, Cake, Beer,
   Salad, Drumstick, Pizza, IceCream, Sandwich, Package,
-  Utensils, Package as BottleIcon, Flask as FlaskIcon, Bean, Grape, Ham, Soup, Noodles as NoodlesIcon
+  Utensils, Package as BottleIcon, Beaker, Bean, Grape, Ham, Soup
 } from "lucide-react";
 
 export type IconOption = {
@@ -153,7 +153,7 @@ export const ALL_ICONS: Record<string, IconOption> = {
   turnips: { value: 'turnips', label: 'Turnips', icon: <Salad className="h-5 w-5" />, shelfLife: 5 },
   udonNoodles: { value: 'udonNoodles', label: 'Udon Noodles', icon: <Soup className="h-5 w-5" />, shelfLife: 30 },
   vegetableOil: { value: 'vegetableOil', label: 'Vegetable Oil', icon: <BottleIcon className="h-5 w-5" />, shelfLife: 30 },
-  vinegar: { value: 'vinegar', label: 'Vinegar', icon: <FlaskIcon className="h-5 w-5" />, shelfLife: 30 },
+  vinegar: { value: 'vinegar', label: 'Vinegar', icon: <Beaker className="h-5 w-5" />, shelfLife: 30 },
   waterFilter: { value: 'waterFilter', label: 'Water Filter', icon: <Utensils className="h-5 w-5" />, shelfLife: 30 },
   watermelon: { value: 'watermelon', label: 'Watermelon', icon: <Cherry className="h-5 w-5" />, shelfLife: 5 },
   wheatBread: { value: 'wheatBread', label: 'Wheat bread', icon: <Cookie className="h-5 w-5" />, shelfLife: 2 },
