@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { 
   Milk, Apple, Carrot, Cherry, Coffee, Cookie, Egg, Fish, 
   Wine, Banana, Beef, Cake, Beer,
   Salad, Drumstick, Pizza, IceCream, Sandwich, Package,
-  Utensils, Oil, Vinegar, Bean, Grape, Ham, Soup, Noodles
+  Utensils, Bottle, Flask, Bean, Grape, Ham, Soup, Noodles
 } from "lucide-react";
 
 export type IconOption = {
@@ -92,14 +91,14 @@ export const ALL_ICONS: Record<string, IconOption> = {
   mustard: { value: 'mustard', label: 'Mustard', icon: <Soup className="h-5 w-5" />, shelfLife: 14 },
   nuts: { value: 'nuts', label: 'Nuts', icon: <Bean className="h-5 w-5" />, shelfLife: 14 },
   oatmeal: { value: 'oatmeal', label: 'Oatmeal', icon: <Soup className="h-5 w-5" />, shelfLife: 14 },
-  oliveOil: { value: 'oliveOil', label: 'Olive oil', icon: <Oil className="h-5 w-5" />, shelfLife: 30 },
+  oliveOil: { value: 'oliveOil', label: 'Olive oil', icon: <Bottle className="h-5 w-5" />, shelfLife: 30 },
   olives: { value: 'olives', label: 'Olives', icon: <Cherry className="h-5 w-5" />, shelfLife: 14 },
   onions: { value: 'onions', label: 'Onions', icon: <Salad className="h-5 w-5" />, shelfLife: 14 },
   orangeJuice: { value: 'orangeJuice', label: 'Orange juice', icon: <Milk className="h-5 w-5" />, shelfLife: 3 },
   oranges: { value: 'oranges', label: 'Oranges', icon: <Cherry className="h-5 w-5" />, shelfLife: 10 },
   pancakes: { value: 'pancakes', label: 'Pancakes', icon: <Cookie className="h-5 w-5" />, shelfLife: 2 },
-  pastaCooked: { value: 'pastaCooked', label: 'Pasta (Cooked)', icon: <Noodles className="h-5 w-5" />, shelfLife: 3 },
-  pastaDried: { value: 'pastaDried', label: 'Pasta (Dried)', icon: <Noodles className="h-5 w-5" />, shelfLife: 30 },
+  pastaCooked: { value: 'pastaCooked', label: 'Pasta (Cooked)', icon: <Soup className="h-5 w-5" />, shelfLife: 3 },
+  pastaDried: { value: 'pastaDried', label: 'Pasta (Dried)', icon: <Package className="h-5 w-5" />, shelfLife: 30 },
   peaches: { value: 'peaches', label: 'Peaches', icon: <Cherry className="h-5 w-5" />, shelfLife: 5 },
   pears: { value: 'pears', label: 'Pears', icon: <Cherry className="h-5 w-5" />, shelfLife: 10 },
   peas: { value: 'peas', label: 'Peas', icon: <Bean className="h-5 w-5" />, shelfLife: 5 },
@@ -120,7 +119,7 @@ export const ALL_ICONS: Record<string, IconOption> = {
   quinoa: { value: 'quinoa', label: 'Quinoa', icon: <Bean className="h-5 w-5" />, shelfLife: 14 },
   radishes: { value: 'radishes', label: 'Radishes', icon: <Salad className="h-5 w-5" />, shelfLife: 3 },
   raisins: { value: 'raisins', label: 'Raisins', icon: <Grape className="h-5 w-5" />, shelfLife: 14 },
-  ramenNoodles: { value: 'ramenNoodles', label: 'Ramen noodles', icon: <Noodles className="h-5 w-5" />, shelfLife: 30 },
+  ramenNoodles: { value: 'ramenNoodles', label: 'Ramen noodles', icon: <Soup className="h-5 w-5" />, shelfLife: 30 },
   raspberryJam: { value: 'raspberryJam', label: 'Raspberry jam', icon: <Soup className="h-5 w-5" />, shelfLife: 14 },
   rhubarb: { value: 'rhubarb', label: 'Rhubarb', icon: <Salad className="h-5 w-5" />, shelfLife: 3 },
   riceCooked: { value: 'riceCooked', label: 'Rice (cooked)', icon: <Bean className="h-5 w-5" />, shelfLife: 3 },
@@ -135,7 +134,7 @@ export const ALL_ICONS: Record<string, IconOption> = {
   shrimpRaw: { value: 'shrimpRaw', label: 'Shrimp (raw)', icon: <Fish className="h-5 w-5" />, shelfLife: 1 },
   sourCream: { value: 'sourCream', label: 'Sour cream', icon: <Milk className="h-5 w-5" />, shelfLife: 5 },
   soyMilk: { value: 'soyMilk', label: 'Soy milk', icon: <Milk className="h-5 w-5" />, shelfLife: 3 },
-  spaghetti: { value: 'spaghetti', label: 'Spaghetti', icon: <Noodles className="h-5 w-5" />, shelfLife: 3 },
+  spaghetti: { value: 'spaghetti', label: 'Spaghetti', icon: <Soup className="h-5 w-5" />, shelfLife: 3 },
   spinach: { value: 'spinach', label: 'Spinach', icon: <Salad className="h-5 w-5" />, shelfLife: 3 },
   squash: { value: 'squash', label: 'Squash', icon: <Salad className="h-5 w-5" />, shelfLife: 5 },
   strawberries: { value: 'strawberries', label: 'Strawberries', icon: <Cherry className="h-5 w-5" />, shelfLife: 3 },
@@ -151,9 +150,9 @@ export const ALL_ICONS: Record<string, IconOption> = {
   turkeyCooked: { value: 'turkeyCooked', label: 'Turkey (cooked)', icon: <Drumstick className="h-5 w-5" />, shelfLife: 3 },
   turkeyRaw: { value: 'turkeyRaw', label: 'Turkey (raw)', icon: <Drumstick className="h-5 w-5" />, shelfLife: 1 },
   turnips: { value: 'turnips', label: 'Turnips', icon: <Salad className="h-5 w-5" />, shelfLife: 5 },
-  udonNoodles: { value: 'udonNoodles', label: 'Udon Noodles', icon: <Noodles className="h-5 w-5" />, shelfLife: 30 },
-  vegetableOil: { value: 'vegetableOil', label: 'Vegetable Oil', icon: <Oil className="h-5 w-5" />, shelfLife: 30 },
-  vinegar: { value: 'vinegar', label: 'Vinegar', icon: <Vinegar className="h-5 w-5" />, shelfLife: 30 },
+  udonNoodles: { value: 'udonNoodles', label: 'Udon Noodles', icon: <Soup className="h-5 w-5" />, shelfLife: 30 },
+  vegetableOil: { value: 'vegetableOil', label: 'Vegetable Oil', icon: <Bottle className="h-5 w-5" />, shelfLife: 30 },
+  vinegar: { value: 'vinegar', label: 'Vinegar', icon: <Flask className="h-5 w-5" />, shelfLife: 30 },
   waterFilter: { value: 'waterFilter', label: 'Water Filter', icon: <Utensils className="h-5 w-5" />, shelfLife: 30 },
   watermelon: { value: 'watermelon', label: 'Watermelon', icon: <Cherry className="h-5 w-5" />, shelfLife: 5 },
   wheatBread: { value: 'wheatBread', label: 'Wheat bread', icon: <Cookie className="h-5 w-5" />, shelfLife: 2 },
