@@ -2,21 +2,16 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { 
-  Settings, Edit, Trash2, Plus, Check, X, 
-  Milk, Apple, Carrot, Cherry, Coffee, Cookie, Egg, Fish, 
-  Wine, Banana, Beef, Cake, Beer, Salad, Drumstick, Pizza, 
-  IceCream, Sandwich, Package, Utensils, Beaker, Bean, Grape, Ham, Soup
-} from 'lucide-react';
-import { useIconManager, ALL_ICONS } from '@/context/IconManagerContext';
+import { Settings } from 'lucide-react';
+import { useIconManager } from '@/context/IconManagerContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IconOption } from '@/data/productData';
 import { toast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import ProductsList from './IconSelector/ProductsList';
 import ShelfLifeList from './IconSelector/ShelfLifeList';
 import AddCustomProductForm from './IconSelector/AddCustomProductForm';
 import CustomProductsList from './IconSelector/CustomProductsList';
+import CustomIconSelector from './IconSelector/CustomIconSelector';
 
 const IconManagerDialog: React.FC = () => {
   const { 
@@ -39,35 +34,9 @@ const IconManagerDialog: React.FC = () => {
   const [productToDelete, setProductToDelete] = useState('');
   
   // Get sorted icons list by label
-  const sortedIcons = Object.values(ALL_ICONS).sort((a, b) => a.label.localeCompare(b.label));
-  
-  // Available food/beverage related icons for custom products
-  const availableCustomIcons = [
-    { name: 'Apple', component: <Apple /> },
-    { name: 'Banana', component: <Banana /> },
-    { name: 'Beef', component: <Beef /> },
-    { name: 'Beer', component: <Beer /> },
-    { name: 'Cake', component: <Cake /> },
-    { name: 'Carrot', component: <Carrot /> },
-    { name: 'Cherry', component: <Cherry /> },
-    { name: 'Coffee', component: <Coffee /> },
-    { name: 'Cookie', component: <Cookie /> },
-    { name: 'Drumstick', component: <Drumstick /> },
-    { name: 'Egg', component: <Egg /> },
-    { name: 'Fish', component: <Fish /> },
-    { name: 'Grape', component: <Grape /> },
-    { name: 'Ham', component: <Ham /> },
-    { name: 'IceCream', component: <IceCream /> },
-    { name: 'Milk', component: <Milk /> },
-    { name: 'Pizza', component: <Pizza /> },
-    { name: 'Salad', component: <Salad /> },
-    { name: 'Sandwich', component: <Sandwich /> },
-    { name: 'Soup', component: <Soup /> },
-    { name: 'Wine', component: <Wine /> },
-    { name: 'Bean', component: <Bean /> },
-    { name: 'Utensils', component: <Utensils /> },
-    { name: 'Beaker', component: <Beaker /> }
-  ];
+  const sortedIcons = Object.values(allIcons)
+    .filter(icon => !isCustomProduct(icon.value))
+    .sort((a, b) => a.label.localeCompare(b.label));
   
   // Helper function to safely render icons
   const renderIcon = (icon: React.ReactNode): React.ReactNode => {
@@ -157,7 +126,7 @@ const IconManagerDialog: React.FC = () => {
   };
   
   // Handle adding a new custom product
-  const handleAddCustomProduct = (newProduct: IconOption) => {
+  const handleAddCustomProduct = (newProduct: any) => {
     addCustomProduct(newProduct);
     setIsAddingProduct(false);
   };
@@ -241,17 +210,35 @@ const IconManagerDialog: React.FC = () => {
                         size="sm" 
                         variant="outline" 
                         onClick={() => setIsAddingProduct(true)}
-                        className="flex items-center gap-1"
                       >
-                        <Plus className="h-4 w-4" />
-                        New Product
+                        <span className="flex items-center gap-1">+&nbsp;New Product</span>
                       </Button>
                     )}
                   </div>
                   
                   {isAddingProduct && (
                     <AddCustomProductForm 
-                      availableIcons={availableCustomIcons}
+                      availableIcons={[
+                        { name: 'Apple', icon: 'apple' },
+                        { name: 'Banana', icon: 'banana' },
+                        { name: 'Beer', icon: 'beer' },
+                        { name: 'Cake', icon: 'cake' },
+                        { name: 'Carrot', icon: 'carrot' },
+                        { name: 'Cherry', icon: 'cherry' },
+                        { name: 'Coffee', icon: 'coffee' },
+                        { name: 'Cookie', icon: 'cookie' },
+                        { name: 'Egg', icon: 'egg' },
+                        { name: 'Fish', icon: 'fish' },
+                        { name: 'Grape', icon: 'grape' },
+                        { name: 'Ham', icon: 'ham' },
+                        { name: 'Ice Cream', icon: 'ice-cream-cone' },
+                        { name: 'Milk', icon: 'milk' },
+                        { name: 'Pizza', icon: 'pizza' },
+                        { name: 'Salad', icon: 'salad' },
+                        { name: 'Sandwich', icon: 'sandwich' },
+                        { name: 'Soup', icon: 'soup' },
+                        { name: 'Wine', icon: 'wine' }
+                      ]}
                       onAdd={handleAddCustomProduct}
                       onCancel={() => setIsAddingProduct(false)}
                     />

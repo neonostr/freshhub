@@ -30,7 +30,18 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
   
   const [customProducts, setCustomProducts] = useState<Record<string, IconOption>>(() => {
     const saved = localStorage.getItem('freshTrackerCustomProducts');
-    return saved ? JSON.parse(saved) : {};
+    if (saved) {
+      try {
+        // Parse the saved custom products, but exclude the React component 'icon' property
+        // which will be recreated from the iconName
+        const parsed = JSON.parse(saved);
+        return parsed;
+      } catch (e) {
+        console.error("Error parsing custom products:", e);
+        return {};
+      }
+    }
+    return {};
   });
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
@@ -62,7 +73,18 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
   }, [customShelfLife]);
   
   useEffect(() => {
-    localStorage.setItem('freshTrackerCustomProducts', JSON.stringify(customProducts));
+    // When saving to localStorage, serialize only the necessary properties
+    // without the React component which causes the cyclic reference
+    const serializableProducts = Object.entries(customProducts).reduce((acc, [key, product]) => {
+      // Remove the React component icon property before saving to localStorage
+      const { icon, ...serializableProduct } = product;
+      return {
+        ...acc,
+        [key]: serializableProduct
+      };
+    }, {});
+    
+    localStorage.setItem('freshTrackerCustomProducts', JSON.stringify(serializableProducts));
   }, [customProducts]);
 
   const toggleIcon = (iconValue: string) => {
