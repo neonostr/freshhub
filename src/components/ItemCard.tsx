@@ -6,7 +6,7 @@ import { Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
-import { useIconManager } from '@/context/IconManagerContext';
+import { ALL_ICONS } from '@/data/productData';
 
 interface ItemCardProps {
   item: Item;
@@ -14,15 +14,13 @@ interface ItemCardProps {
 
 const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
   const { deleteItem, resetItem } = useItems();
-  const { allIcons } = useIconManager();
   
   const freshnessLevel = calculateFreshnessLevel(item);
   
-  const renderIcon = () => {
+  const getIconComponent = () => {
     // Try to get the icon from our icon manager
-    if (item.icon in allIcons) {
-      // Directly return the icon element
-      return allIcons[item.icon].icon;
+    if (item.icon in ALL_ICONS) {
+      return ALL_ICONS[item.icon].icon;
     }
     // If the icon isn't found, show the item name in a styled div
     return <div className="font-medium text-sm">{item.name.charAt(0)}</div>;
@@ -53,7 +51,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-gray-100 rounded-full">
-              {renderIcon()}
+              {getIconComponent()}
             </div>
             <h3 className="font-medium text-lg">{item.name}</h3>
           </div>

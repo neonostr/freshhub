@@ -1,3 +1,4 @@
+
 import { Item, FreshnessLevel } from "@/types/item";
 import { format, formatDistanceToNow, differenceInDays } from "date-fns";
 import { ALL_ICONS } from "@/data/productData";
@@ -6,32 +7,6 @@ export const getShelfLife = (item: Item): number => {
   // If item has custom duration, use that
   if (item.customDuration) {
     return item.customDuration;
-  }
-  
-  // Try to get shelf life from local storage custom products
-  const customProductsStr = localStorage.getItem('freshTrackerCustomProducts');
-  if (customProductsStr) {
-    try {
-      const customProducts = JSON.parse(customProductsStr);
-      if (customProducts[item.icon]) {
-        return customProducts[item.icon].shelfLife;
-      }
-    } catch (e) {
-      console.error('Error parsing custom products:', e);
-    }
-  }
-  
-  // Get custom shelf life if available
-  const customShelfLifeStr = localStorage.getItem('freshTrackerCustomShelfLife');
-  if (customShelfLifeStr) {
-    try {
-      const customShelfLife = JSON.parse(customShelfLifeStr);
-      if (customShelfLife[item.icon]) {
-        return customShelfLife[item.icon];
-      }
-    } catch (e) {
-      console.error('Error parsing custom shelf life:', e);
-    }
   }
   
   // Otherwise use the default shelf life for the icon
@@ -83,11 +58,6 @@ export const loadItems = (): Item[] => {
 
 // Update getCategoryForIcon to use our centralized mapping
 export const getCategoryForIcon = (iconName: string): string => {
-  // Check if it's a custom product
-  if (iconName.startsWith('custom_')) {
-    return 'custom';
-  }
-  
   // Simple category mapping based on product types
   if (iconName.includes('milk') || iconName.includes('cream') || 
       iconName.includes('cheese') || iconName === 'eggs') {
