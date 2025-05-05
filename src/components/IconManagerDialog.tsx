@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { IconOption } from '@/data/productData';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -32,7 +31,6 @@ const IconManagerDialog: React.FC = () => {
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [newProductName, setNewProductName] = useState('');
   const [newProductShelfLife, setNewProductShelfLife] = useState('7');
-  const [selectedIcon, setSelectedIcon] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState('');
   
@@ -41,14 +39,17 @@ const IconManagerDialog: React.FC = () => {
   
   // Helper function to safely render icons
   const renderIcon = (icon: React.ReactElement) => {
-    return React.cloneElement(icon, { className: "h-5 w-5" });
+    if (React.isValidElement(icon)) {
+      return React.cloneElement(icon, { className: "h-5 w-5" });
+    }
+    return null;
   };
   
   const handleShelfLifeFocus = (iconValue: string) => {
     // Save current value as string when focusing
     setEditingValues(prev => ({
       ...prev,
-      [iconValue]: ''
+      [iconValue]: allIcons[iconValue].shelfLife.toString()
     }));
   };
   
@@ -196,16 +197,16 @@ const IconManagerDialog: React.FC = () => {
             <DialogTitle>Manage Products</DialogTitle>
           </DialogHeader>
           
-          <div className="flex flex-col h-[500px]"> {/* Fixed height container */}
-            <Tabs defaultValue="selection" className="w-full flex-1 flex flex-col">
+          <div className="flex flex-col h-[500px]">
+            <Tabs defaultValue="selection" className="w-full h-full flex flex-col">
               <TabsList className="grid grid-cols-3">
                 <TabsTrigger value="selection">Products</TabsTrigger>
                 <TabsTrigger value="shelfLife">Shelf Life</TabsTrigger>
                 <TabsTrigger value="custom">Custom Products</TabsTrigger>
               </TabsList>
               
-              <div className="flex-1 overflow-hidden"> {/* This wrapper maintains consistent height */}
-                <TabsContent value="selection" className="py-4 h-full flex flex-col">
+              <div className="flex-1 overflow-hidden mt-4">
+                <TabsContent value="selection" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
                   <p className="text-sm text-muted-foreground mb-4">
                     Select the products you want available when adding new products.
                     You must select at least one product.
@@ -241,7 +242,7 @@ const IconManagerDialog: React.FC = () => {
                   </ScrollArea>
                 </TabsContent>
                 
-                <TabsContent value="shelfLife" className="py-4 h-full flex flex-col">
+                <TabsContent value="shelfLife" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
                   <p className="text-sm text-muted-foreground mb-4">
                     Customize the shelf life (in days) for each selected product.
                   </p>
@@ -281,7 +282,7 @@ const IconManagerDialog: React.FC = () => {
                   </ScrollArea>
                 </TabsContent>
                 
-                <TabsContent value="custom" className="py-4 h-full flex flex-col">
+                <TabsContent value="custom" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-sm text-muted-foreground">
                       Add your own custom products or edit existing ones.
