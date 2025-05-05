@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -410,22 +409,7 @@ const IconManagerDialog: React.FC = () => {
                       ))}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-32 text-center">
-                    <p className="text-sm text-muted-foreground">
-                      You haven't created any custom products yet.
-                    </p>
-                    {!isAddingProduct && (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="mt-2"
-                        onClick={() => setIsAddingProduct(true)}
-                      >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add Custom Product
-                      </Button>
-                    )}
-                  </div>
+                  <div className="h-4"></div> // Empty div with minimal height instead of message
                 )}
               </ScrollArea>
             </TabsContent>
