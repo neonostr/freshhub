@@ -2,7 +2,7 @@
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
-import { Calendar, Clock, Package } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
@@ -22,8 +22,8 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
     if (item.icon in ALL_ICONS) {
       return ALL_ICONS[item.icon].icon;
     }
-    // Fallback to Package icon if not found
-    return <Package className="h-5 w-5" />;
+    // If the icon isn't found, show the item name in a styled div
+    return <div className="font-medium text-sm">{item.name.charAt(0)}</div>;
   };
   
   const getFreshnessColor = (level: FreshnessLevel): string => {
