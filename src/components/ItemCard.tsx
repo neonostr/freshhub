@@ -21,8 +21,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
   const renderIcon = () => {
     // Try to get the icon from our icon manager
     if (item.icon in allIcons) {
-      // Return the icon element directly, not the object itself
-      return allIcons[item.icon].icon;
+      // Clone the icon element to ensure it's a valid React element
+      const iconElement = allIcons[item.icon].icon;
+      return React.cloneElement(iconElement);
     }
     // If the icon isn't found, show the item name in a styled div
     return <div className="font-medium text-sm">{item.name.charAt(0)}</div>;
