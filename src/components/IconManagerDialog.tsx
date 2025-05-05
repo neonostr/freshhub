@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Settings } from 'lucide-react';
 import { useIconManager, ALL_ICONS } from '@/context/IconManagerContext';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -59,11 +58,16 @@ const IconManagerDialog: React.FC = () => {
       : allIcons[iconValue].shelfLife.toString();
   };
   
+  // Get first letter of product
+  const getInitial = (label: string) => {
+    return label.charAt(0).toUpperCase();
+  };
+  
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon" className="absolute top-6 right-6 rounded-full">
-          <Settings className="h-4 w-4" />
+          ⚙️
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
@@ -105,7 +109,9 @@ const IconManagerDialog: React.FC = () => {
                       }
                     }}
                   >
-                    {icon.icon}
+                    <div className="flex items-center justify-center h-8 w-8 bg-gray-100 rounded-full mb-1">
+                      <span className="font-medium">{getInitial(icon.label)}</span>
+                    </div>
                     <span className="text-xs mt-1">{icon.label}</span>
                   </Button>
                 ))}
@@ -125,8 +131,8 @@ const IconManagerDialog: React.FC = () => {
                   .map((icon) => (
                     <div key={icon.value} className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
-                        <div className="p-2 bg-muted rounded-md">
-                          {icon.icon}
+                        <div className="flex items-center justify-center h-8 w-8 bg-muted rounded-full">
+                          <span className="font-medium">{getInitial(icon.label)}</span>
                         </div>
                         <Label>{icon.label}</Label>
                       </div>
