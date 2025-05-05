@@ -22,7 +22,13 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
     // Try to get the icon from our icon manager
     if (item.icon in allIcons) {
       const IconComponent = allIcons[item.icon].icon;
-      return IconComponent;
+      // Check if IconComponent is a React element or a component function
+      if (React.isValidElement(IconComponent)) {
+        return IconComponent;
+      } else {
+        // If it's a component function, render it
+        return React.createElement(IconComponent);
+      }
     }
     // If the icon isn't found, show the item name in a styled div
     return (
