@@ -2,16 +2,21 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Settings, Edit, Trash2, Plus, Check, X, Package, Box, Archive, Gift, ShoppingBag, ShoppingCart, Store, Tag } from 'lucide-react';
+import { 
+  Settings, Edit, Trash2, Plus, Check, X, 
+  Milk, Apple, Carrot, Cherry, Coffee, Cookie, Egg, Fish, 
+  Wine, Banana, Beef, Cake, Beer, Salad, Drumstick, Pizza, 
+  IceCream, Sandwich, Package, Utensils, Beaker, Bean, Grape, Ham, Soup
+} from 'lucide-react';
 import { useIconManager, ALL_ICONS } from '@/context/IconManagerContext';
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { IconOption } from '@/data/productData';
 import { toast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import ProductsList from './IconSelector/ProductsList';
+import ShelfLifeList from './IconSelector/ShelfLifeList';
+import AddCustomProductForm from './IconSelector/AddCustomProductForm';
+import CustomProductsList from './IconSelector/CustomProductsList';
 
 const IconManagerDialog: React.FC = () => {
   const { 
@@ -26,40 +31,55 @@ const IconManagerDialog: React.FC = () => {
     customProducts
   } = useIconManager();
   
+  // States for UI management
   const [editingValues, setEditingValues] = useState<Record<string, string>>({});
   const [editingName, setEditingName] = useState<Record<string, string>>({});
   const [isAddingProduct, setIsAddingProduct] = useState(false);
-  const [newProductName, setNewProductName] = useState('');
-  const [newProductShelfLife, setNewProductShelfLife] = useState('7');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState('');
-  const [selectedCustomIcon, setSelectedCustomIcon] = useState<string>('Package');
   
   // Get sorted icons list by label
   const sortedIcons = Object.values(ALL_ICONS).sort((a, b) => a.label.localeCompare(b.label));
   
-  // Available icons for custom products
+  // Available food/beverage related icons for custom products
   const availableCustomIcons = [
-    { name: 'Package', component: <Package /> },
-    { name: 'Box', component: <Box /> },
-    { name: 'Archive', component: <Archive /> },
-    { name: 'Gift', component: <Gift /> },
-    { name: 'ShoppingBag', component: <ShoppingBag /> },
-    { name: 'ShoppingCart', component: <ShoppingCart /> },
-    { name: 'Store', component: <Store /> },
-    { name: 'Tag', component: <Tag /> },
+    { name: 'Apple', component: <Apple /> },
+    { name: 'Banana', component: <Banana /> },
+    { name: 'Beef', component: <Beef /> },
+    { name: 'Beer', component: <Beer /> },
+    { name: 'Cake', component: <Cake /> },
+    { name: 'Carrot', component: <Carrot /> },
+    { name: 'Cherry', component: <Cherry /> },
+    { name: 'Coffee', component: <Coffee /> },
+    { name: 'Cookie', component: <Cookie /> },
+    { name: 'Drumstick', component: <Drumstick /> },
+    { name: 'Egg', component: <Egg /> },
+    { name: 'Fish', component: <Fish /> },
+    { name: 'Grape', component: <Grape /> },
+    { name: 'Ham', component: <Ham /> },
+    { name: 'IceCream', component: <IceCream /> },
+    { name: 'Milk', component: <Milk /> },
+    { name: 'Pizza', component: <Pizza /> },
+    { name: 'Salad', component: <Salad /> },
+    { name: 'Sandwich', component: <Sandwich /> },
+    { name: 'Soup', component: <Soup /> },
+    { name: 'Wine', component: <Wine /> },
+    { name: 'Bean', component: <Bean /> },
+    { name: 'Utensils', component: <Utensils /> },
+    { name: 'Beaker', component: <Beaker /> }
   ];
   
   // Helper function to safely render icons
-  const renderIcon = (icon: React.ReactElement | React.ReactNode) => {
+  const renderIcon = (icon: React.ReactNode): React.ReactNode => {
     if (React.isValidElement(icon)) {
       return React.cloneElement(icon, { className: "h-5 w-5" });
     }
     
-    // If it's not a valid element but still a ReactNode (like a string), just return it
-    return icon;
+    // If it's not a valid element, return a fallback
+    return <div className="h-5 w-5 flex items-center justify-center text-xs">?</div>;
   };
   
+  // Shelf life management functions
   const handleShelfLifeFocus = (iconValue: string) => {
     // Save current value as string when focusing
     setEditingValues(prev => ({
@@ -123,61 +143,22 @@ const IconManagerDialog: React.FC = () => {
     setEditingName({});
   };
   
+  // Update the editing name state
+  const updateEditingName = (iconValue: string, name: string) => {
+    setEditingName(prev => ({ 
+      ...prev, 
+      [iconValue]: name 
+    }));
+  };
+  
   // Cancel editing product name
   const cancelEditingName = () => {
     setEditingName({});
   };
   
-  // Generate a unique ID for new custom product
-  const generateUniqueId = () => {
-    return 'custom_' + Math.random().toString(36).substring(2, 15);
-  };
-  
-  // Add new custom product
-  const handleAddCustomProduct = () => {
-    if (!newProductName.trim()) {
-      toast({
-        title: "Name required",
-        description: "Please provide a name for the product",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    const numValue = parseInt(newProductShelfLife, 10);
-    if (isNaN(numValue) || numValue <= 0) {
-      toast({
-        title: "Invalid shelf life",
-        description: "Please provide a valid shelf life (days)",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    const productId = generateUniqueId();
-    
-    // Find the selected icon component
-    const selectedIcon = availableCustomIcons.find(icon => icon.name === selectedCustomIcon);
-    
-    // Create a new custom product with the selected icon
-    const newProduct: IconOption = {
-      value: productId,
-      label: newProductName.trim(),
-      icon: selectedIcon ? selectedIcon.component : <div className="font-medium text-sm">{newProductName.trim().charAt(0).toUpperCase()}</div>,
-      shelfLife: numValue
-    };
-    
+  // Handle adding a new custom product
+  const handleAddCustomProduct = (newProduct: IconOption) => {
     addCustomProduct(newProduct);
-    
-    toast({
-      title: "Product added",
-      description: `"${newProductName.trim()}" has been added to your products`,
-    });
-    
-    // Reset form
-    setNewProductName('');
-    setNewProductShelfLife('7');
-    setSelectedCustomIcon('Package'); // Reset to default icon
     setIsAddingProduct(false);
   };
   
@@ -226,79 +207,27 @@ const IconManagerDialog: React.FC = () => {
               
               <div className="flex-1 overflow-hidden mt-4">
                 <TabsContent value="selection" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Select the products you want available when adding new products.
-                    You must select at least one product.
-                  </p>
-                  
-                  <ScrollArea className="flex-1">
-                    <div className="grid grid-cols-3 gap-2">
-                      {sortedIcons.map((icon) => (
-                        <Button
-                          key={icon.value}
-                          type="button"
-                          variant={isIconSelected(icon.value) ? "default" : "outline"}
-                          className="flex flex-col items-center justify-center h-20 py-2"
-                          onClick={() => {
-                            // Prevent deselecting if it's the last selected icon
-                            if (isIconSelected(icon.value)) {
-                              const atLeastOneLeft = Object.keys(allIcons).some(
-                                key => key !== icon.value && isIconSelected(key)
-                              );
-                              if (atLeastOneLeft) {
-                                toggleIcon(icon.value);
-                              }
-                            } else {
-                              toggleIcon(icon.value);
-                            }
-                          }}
-                        >
-                          {renderIcon(icon.icon)}
-                          <span className="text-xs mt-1">{icon.label}</span>
-                        </Button>
-                      ))}
-                    </div>
-                  </ScrollArea>
+                  <ProductsList 
+                    icons={sortedIcons}
+                    isIconSelected={isIconSelected}
+                    toggleIcon={toggleIcon}
+                    renderIcon={renderIcon}
+                  />
                 </TabsContent>
                 
                 <TabsContent value="shelfLife" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Customize the shelf life (in days) for each selected product.
-                  </p>
-                  
-                  <ScrollArea className="flex-1">
-                    <div className="space-y-4">
-                      {Object.values(allIcons)
-                        .filter(icon => isIconSelected(icon.value))
-                        .sort((a, b) => a.label.localeCompare(b.label))
-                        .map((icon) => (
-                          <div key={icon.value} className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                              <div className="p-2 bg-muted rounded-md">
-                                {renderIcon(icon.icon)}
-                              </div>
-                              <Label className={cn(isCustomProduct(icon.value) ? "font-semibold" : "")}>
-                                {icon.label}
-                              </Label>
-                            </div>
-                            
-                            <div className="flex-1 flex items-center gap-2">
-                              <Input
-                                type="number"
-                                min="1"
-                                inputMode="numeric"
-                                value={getDisplayValue(icon.value)}
-                                onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
-                                onFocus={() => handleShelfLifeFocus(icon.value)}
-                                onBlur={() => handleShelfLifeBlur(icon.value)}
-                                className="w-20"
-                              />
-                              <span className="text-sm">days</span>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </ScrollArea>
+                  <ShelfLifeList 
+                    icons={Object.values(allIcons)
+                      .filter(icon => isIconSelected(icon.value))
+                      .sort((a, b) => a.label.localeCompare(b.label))}
+                    isCustomProduct={isCustomProduct}
+                    editingValues={editingValues}
+                    handleShelfLifeFocus={handleShelfLifeFocus}
+                    handleShelfLifeChange={handleShelfLifeChange}
+                    handleShelfLifeBlur={handleShelfLifeBlur}
+                    getDisplayValue={getDisplayValue}
+                    renderIcon={renderIcon}
+                  />
                 </TabsContent>
                 
                 <TabsContent value="custom" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
@@ -321,160 +250,26 @@ const IconManagerDialog: React.FC = () => {
                   </div>
                   
                   {isAddingProduct && (
-                    <div className="bg-muted/50 p-4 rounded-md mb-4">
-                      <h3 className="text-sm font-medium mb-3">Add New Product</h3>
-                      
-                      <div className="space-y-3">
-                        <div>
-                          <Label htmlFor="new-product-name">Product Name</Label>
-                          <Input
-                            id="new-product-name"
-                            value={newProductName}
-                            onChange={(e) => setNewProductName(e.target.value)}
-                            placeholder="e.g., Homemade Jam"
-                          />
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="new-product-icon">Icon</Label>
-                          <div className="grid grid-cols-4 gap-2 mt-2">
-                            {availableCustomIcons.map((icon) => (
-                              <Button
-                                key={icon.name}
-                                type="button"
-                                variant={selectedCustomIcon === icon.name ? "default" : "outline"}
-                                size="sm"
-                                className="p-2 h-10"
-                                onClick={() => setSelectedCustomIcon(icon.name)}
-                              >
-                                {React.cloneElement(icon.component, { className: "h-5 w-5" })}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="new-product-shelf-life">Shelf Life (days)</Label>
-                          <Input
-                            id="new-product-shelf-life"
-                            type="number"
-                            min="1"
-                            value={newProductShelfLife}
-                            onChange={(e) => setNewProductShelfLife(e.target.value)}
-                          />
-                        </div>
-                        
-                        <div className="flex justify-end gap-2 pt-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => setIsAddingProduct(false)}
-                          >
-                            Cancel
-                          </Button>
-                          <Button 
-                            size="sm"
-                            onClick={handleAddCustomProduct}
-                          >
-                            Add Product
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
+                    <AddCustomProductForm 
+                      availableIcons={availableCustomIcons}
+                      onAdd={handleAddCustomProduct}
+                      onCancel={() => setIsAddingProduct(false)}
+                    />
                   )}
                   
-                  <ScrollArea className="flex-1">
-                    {Object.values(customProducts).length > 0 ? (
-                      <div className="space-y-4">
-                        {Object.values(customProducts)
-                          .sort((a, b) => a.label.localeCompare(b.label))
-                          .map((product) => (
-                            <div key={product.value} className="flex items-center gap-2 border p-3 rounded-md">
-                              <div className="p-2 bg-muted rounded-md">
-                                {typeof product.icon === 'object' && React.isValidElement(product.icon) 
-                                  ? renderIcon(product.icon)
-                                  : <div className="w-5 h-5 flex items-center justify-center">{product.label.charAt(0).toUpperCase()}</div>}
-                              </div>
-                              
-                              {editingName[product.value] !== undefined ? (
-                                <div className="flex-1 flex items-center gap-2">
-                                  <Input
-                                    value={editingName[product.value]}
-                                    onChange={(e) => setEditingName(prev => ({ 
-                                      ...prev, 
-                                      [product.value]: e.target.value 
-                                    }))}
-                                    className="flex-1"
-                                    autoFocus
-                                  />
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    onClick={() => saveProductName(product.value)}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <Check className="h-4 w-4" />
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    onClick={cancelEditingName}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <X className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              ) : (
-                                <div className="flex-1 flex items-center justify-between">
-                                  <span className="font-medium">{product.label}</span>
-                                  <span className="text-sm text-muted-foreground">
-                                    {product.shelfLife} days
-                                  </span>
-                                </div>
-                              )}
-                              
-                              {editingName[product.value] === undefined && (
-                                <div className="flex items-center gap-1">
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    onClick={() => startEditingName(product.value)}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    onClick={() => confirmDelete(product.value)}
-                                    className="h-8 w-8 p-0 text-destructive"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-32 text-center">
-                        <p className="text-sm text-muted-foreground">
-                          You haven't created any custom products yet.
-                        </p>
-                        {!isAddingProduct && (
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="mt-2"
-                            onClick={() => setIsAddingProduct(true)}
-                          >
-                            <Plus className="h-4 w-4 mr-1" />
-                            Add Custom Product
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                  </ScrollArea>
+                  <CustomProductsList 
+                    products={Object.values(customProducts)
+                      .sort((a, b) => a.label.localeCompare(b.label))}
+                    editingName={editingName}
+                    startEditingName={startEditingName}
+                    saveProductName={saveProductName}
+                    cancelEditingName={cancelEditingName}
+                    confirmDelete={confirmDelete}
+                    renderIcon={renderIcon}
+                    onAddNewClick={() => setIsAddingProduct(true)}
+                    isAdding={isAddingProduct}
+                    updateEditingName={updateEditingName}
+                  />
                 </TabsContent>
               </div>
             </Tabs>
