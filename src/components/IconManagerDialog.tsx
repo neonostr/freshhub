@@ -196,247 +196,251 @@ const IconManagerDialog: React.FC = () => {
             <DialogTitle>Manage Products</DialogTitle>
           </DialogHeader>
           
-          <Tabs defaultValue="selection" className="w-full">
-            <TabsList className="grid grid-cols-3">
-              <TabsTrigger value="selection">Products</TabsTrigger>
-              <TabsTrigger value="shelfLife">Shelf Life</TabsTrigger>
-              <TabsTrigger value="custom">Custom Products</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="selection" className="py-4">
-              <p className="text-sm text-muted-foreground mb-4">
-                Select the products you want available when adding new products.
-                You must select at least one product.
-              </p>
+          <div className="flex flex-col h-[500px]"> {/* Fixed height container */}
+            <Tabs defaultValue="selection" className="w-full flex-1 flex flex-col">
+              <TabsList className="grid grid-cols-3">
+                <TabsTrigger value="selection">Products</TabsTrigger>
+                <TabsTrigger value="shelfLife">Shelf Life</TabsTrigger>
+                <TabsTrigger value="custom">Custom Products</TabsTrigger>
+              </TabsList>
               
-              <ScrollArea className="h-[400px] pr-4">
-                <div className="grid grid-cols-3 gap-2">
-                  {sortedIcons.map((icon) => (
-                    <Button
-                      key={icon.value}
-                      type="button"
-                      variant={isIconSelected(icon.value) ? "default" : "outline"}
-                      className="flex flex-col items-center justify-center h-20 py-2"
-                      onClick={() => {
-                        // Prevent deselecting if it's the last selected icon
-                        if (isIconSelected(icon.value)) {
-                          const atLeastOneLeft = Object.keys(allIcons).some(
-                            key => key !== icon.value && isIconSelected(key)
-                          );
-                          if (atLeastOneLeft) {
-                            toggleIcon(icon.value);
-                          }
-                        } else {
-                          toggleIcon(icon.value);
-                        }
-                      }}
-                    >
-                      {renderIcon(icon.icon)}
-                      <span className="text-xs mt-1">{icon.label}</span>
-                    </Button>
-                  ))}
-                </div>
-              </ScrollArea>
-            </TabsContent>
-            
-            <TabsContent value="shelfLife" className="py-4">
-              <p className="text-sm text-muted-foreground mb-4">
-                Customize the shelf life (in days) for each selected product.
-              </p>
-              
-              <ScrollArea className="h-[400px] pr-4">
-                <div className="space-y-4">
-                  {Object.values(allIcons)
-                    .filter(icon => isIconSelected(icon.value))
-                    .sort((a, b) => a.label.localeCompare(b.label))
-                    .map((icon) => (
-                      <div key={icon.value} className="flex items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          <div className="p-2 bg-muted rounded-md">
-                            {renderIcon(icon.icon)}
-                          </div>
-                          <Label className={cn(isCustomProduct(icon.value) ? "font-semibold" : "")}>
-                            {icon.label}
-                          </Label>
-                        </div>
-                        
-                        <div className="flex-1 flex items-center gap-2">
-                          <Input
-                            type="number"
-                            min="1"
-                            inputMode="numeric"
-                            value={getDisplayValue(icon.value)}
-                            onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
-                            onFocus={() => handleShelfLifeFocus(icon.value)}
-                            onBlur={() => handleShelfLifeBlur(icon.value)}
-                            className="w-20"
-                          />
-                          <span className="text-sm">days</span>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </ScrollArea>
-            </TabsContent>
-            
-            <TabsContent value="custom" className="py-4">
-              <div className="flex justify-between items-center mb-4">
-                <p className="text-sm text-muted-foreground">
-                  Add your own custom products or edit existing ones.
-                </p>
-                
-                {!isAddingProduct && (
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={() => setIsAddingProduct(true)}
-                    className="flex items-center gap-1"
-                  >
-                    <Plus className="h-4 w-4" />
-                    New Product
-                  </Button>
-                )}
-              </div>
-              
-              {isAddingProduct && (
-                <div className="bg-muted/50 p-4 rounded-md mb-4">
-                  <h3 className="text-sm font-medium mb-3">Add New Product</h3>
+              <div className="flex-1 overflow-hidden"> {/* This wrapper maintains consistent height */}
+                <TabsContent value="selection" className="py-4 h-full flex flex-col">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Select the products you want available when adding new products.
+                    You must select at least one product.
+                  </p>
                   
-                  <div className="space-y-3">
-                    <div>
-                      <Label htmlFor="new-product-name">Product Name</Label>
-                      <Input
-                        id="new-product-name"
-                        value={newProductName}
-                        onChange={(e) => setNewProductName(e.target.value)}
-                        placeholder="e.g., Homemade Jam"
-                      />
+                  <ScrollArea className="flex-1">
+                    <div className="grid grid-cols-3 gap-2">
+                      {sortedIcons.map((icon) => (
+                        <Button
+                          key={icon.value}
+                          type="button"
+                          variant={isIconSelected(icon.value) ? "default" : "outline"}
+                          className="flex flex-col items-center justify-center h-20 py-2"
+                          onClick={() => {
+                            // Prevent deselecting if it's the last selected icon
+                            if (isIconSelected(icon.value)) {
+                              const atLeastOneLeft = Object.keys(allIcons).some(
+                                key => key !== icon.value && isIconSelected(key)
+                              );
+                              if (atLeastOneLeft) {
+                                toggleIcon(icon.value);
+                              }
+                            } else {
+                              toggleIcon(icon.value);
+                            }
+                          }}
+                        >
+                          {renderIcon(icon.icon)}
+                          <span className="text-xs mt-1">{icon.label}</span>
+                        </Button>
+                      ))}
                     </div>
-                    
-                    <div>
-                      <Label htmlFor="new-product-shelf-life">Shelf Life (days)</Label>
-                      <Input
-                        id="new-product-shelf-life"
-                        type="number"
-                        min="1"
-                        value={newProductShelfLife}
-                        onChange={(e) => setNewProductShelfLife(e.target.value)}
-                      />
-                    </div>
-                    
-                    <div className="flex justify-end gap-2 pt-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setIsAddingProduct(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button 
-                        size="sm"
-                        onClick={handleAddCustomProduct}
-                      >
-                        Add Product
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              <ScrollArea className="h-[320px] pr-4">
-                {Object.values(customProducts).length > 0 ? (
-                  <div className="space-y-4">
-                    {Object.values(customProducts)
-                      .sort((a, b) => a.label.localeCompare(b.label))
-                      .map((product) => (
-                        <div key={product.value} className="flex items-center gap-2 border p-3 rounded-md">
-                          <div className="p-2 bg-muted rounded-md">
-                            {typeof product.icon === 'object' && React.isValidElement(product.icon) 
-                              ? renderIcon(product.icon)
-                              : <div className="w-5 h-5 flex items-center justify-center">{product.label.charAt(0).toUpperCase()}</div>}
-                          </div>
-                          
-                          {editingName[product.value] !== undefined ? (
+                  </ScrollArea>
+                </TabsContent>
+                
+                <TabsContent value="shelfLife" className="py-4 h-full flex flex-col">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Customize the shelf life (in days) for each selected product.
+                  </p>
+                  
+                  <ScrollArea className="flex-1">
+                    <div className="space-y-4">
+                      {Object.values(allIcons)
+                        .filter(icon => isIconSelected(icon.value))
+                        .sort((a, b) => a.label.localeCompare(b.label))
+                        .map((icon) => (
+                          <div key={icon.value} className="flex items-center gap-4">
+                            <div className="flex items-center gap-2">
+                              <div className="p-2 bg-muted rounded-md">
+                                {renderIcon(icon.icon)}
+                              </div>
+                              <Label className={cn(isCustomProduct(icon.value) ? "font-semibold" : "")}>
+                                {icon.label}
+                              </Label>
+                            </div>
+                            
                             <div className="flex-1 flex items-center gap-2">
                               <Input
-                                value={editingName[product.value]}
-                                onChange={(e) => setEditingName(prev => ({ 
-                                  ...prev, 
-                                  [product.value]: e.target.value 
-                                }))}
-                                className="flex-1"
-                                autoFocus
+                                type="number"
+                                min="1"
+                                inputMode="numeric"
+                                value={getDisplayValue(icon.value)}
+                                onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
+                                onFocus={() => handleShelfLifeFocus(icon.value)}
+                                onBlur={() => handleShelfLifeBlur(icon.value)}
+                                className="w-20"
                               />
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => saveProductName(product.value)}
-                                className="h-8 w-8 p-0"
-                              >
-                                <Check className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={cancelEditingName}
-                                className="h-8 w-8 p-0"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
+                              <span className="text-sm">days</span>
                             </div>
-                          ) : (
-                            <div className="flex-1 flex items-center justify-between">
-                              <span className="font-medium">{product.label}</span>
-                              <span className="text-sm text-muted-foreground">
-                                {product.shelfLife} days
-                              </span>
-                            </div>
-                          )}
-                          
-                          {editingName[product.value] === undefined && (
-                            <div className="flex items-center gap-1">
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => startEditingName(product.value)}
-                                className="h-8 w-8 p-0"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => confirmDelete(product.value)}
-                                className="h-8 w-8 p-0 text-destructive"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-32 text-center">
+                          </div>
+                        ))}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+                
+                <TabsContent value="custom" className="py-4 h-full flex flex-col">
+                  <div className="flex justify-between items-center mb-4">
                     <p className="text-sm text-muted-foreground">
-                      You haven't created any custom products yet.
+                      Add your own custom products or edit existing ones.
                     </p>
+                    
                     {!isAddingProduct && (
                       <Button 
-                        variant="outline" 
                         size="sm" 
-                        className="mt-2"
+                        variant="outline" 
                         onClick={() => setIsAddingProduct(true)}
+                        className="flex items-center gap-1"
                       >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add Custom Product
+                        <Plus className="h-4 w-4" />
+                        New Product
                       </Button>
                     )}
                   </div>
-                )}
-              </ScrollArea>
-            </TabsContent>
-          </Tabs>
+                  
+                  {isAddingProduct && (
+                    <div className="bg-muted/50 p-4 rounded-md mb-4">
+                      <h3 className="text-sm font-medium mb-3">Add New Product</h3>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <Label htmlFor="new-product-name">Product Name</Label>
+                          <Input
+                            id="new-product-name"
+                            value={newProductName}
+                            onChange={(e) => setNewProductName(e.target.value)}
+                            placeholder="e.g., Homemade Jam"
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="new-product-shelf-life">Shelf Life (days)</Label>
+                          <Input
+                            id="new-product-shelf-life"
+                            type="number"
+                            min="1"
+                            value={newProductShelfLife}
+                            onChange={(e) => setNewProductShelfLife(e.target.value)}
+                          />
+                        </div>
+                        
+                        <div className="flex justify-end gap-2 pt-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setIsAddingProduct(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button 
+                            size="sm"
+                            onClick={handleAddCustomProduct}
+                          >
+                            Add Product
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <ScrollArea className="flex-1">
+                    {Object.values(customProducts).length > 0 ? (
+                      <div className="space-y-4">
+                        {Object.values(customProducts)
+                          .sort((a, b) => a.label.localeCompare(b.label))
+                          .map((product) => (
+                            <div key={product.value} className="flex items-center gap-2 border p-3 rounded-md">
+                              <div className="p-2 bg-muted rounded-md">
+                                {typeof product.icon === 'object' && React.isValidElement(product.icon) 
+                                  ? renderIcon(product.icon)
+                                  : <div className="w-5 h-5 flex items-center justify-center">{product.label.charAt(0).toUpperCase()}</div>}
+                              </div>
+                              
+                              {editingName[product.value] !== undefined ? (
+                                <div className="flex-1 flex items-center gap-2">
+                                  <Input
+                                    value={editingName[product.value]}
+                                    onChange={(e) => setEditingName(prev => ({ 
+                                      ...prev, 
+                                      [product.value]: e.target.value 
+                                    }))}
+                                    className="flex-1"
+                                    autoFocus
+                                  />
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    onClick={() => saveProductName(product.value)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Check className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    onClick={cancelEditingName}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ) : (
+                                <div className="flex-1 flex items-center justify-between">
+                                  <span className="font-medium">{product.label}</span>
+                                  <span className="text-sm text-muted-foreground">
+                                    {product.shelfLife} days
+                                  </span>
+                                </div>
+                              )}
+                              
+                              {editingName[product.value] === undefined && (
+                                <div className="flex items-center gap-1">
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    onClick={() => startEditingName(product.value)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    onClick={() => confirmDelete(product.value)}
+                                    className="h-8 w-8 p-0 text-destructive"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-32 text-center">
+                        <p className="text-sm text-muted-foreground">
+                          You haven't created any custom products yet.
+                        </p>
+                        {!isAddingProduct && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="mt-2"
+                            onClick={() => setIsAddingProduct(true)}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Add Custom Product
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </ScrollArea>
+                </TabsContent>
+              </div>
+            </Tabs>
+          </div>
           
           <DialogClose asChild>
             <Button type="button">Done</Button>
