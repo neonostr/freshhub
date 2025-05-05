@@ -25,7 +25,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
       return React.cloneElement(allIcons[item.icon].icon);
     }
     // If the icon isn't found, show the item name in a styled div
-    return <div className="font-medium text-sm">{item.name.charAt(0)}</div>;
+    return <div className="flex items-center justify-center w-5 h-5">{item.name.charAt(0)}</div>;
   };
   
   const getFreshnessColor = (level: FreshnessLevel): string => {
@@ -52,7 +52,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
-            <div className="p-2 bg-gray-100 rounded-full">
+            <div className="p-2 bg-gray-100 rounded-full flex items-center justify-center w-9 h-9">
               {renderIcon()}
             </div>
             <h3 className="font-medium text-lg">{item.name}</h3>
