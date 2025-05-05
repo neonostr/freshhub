@@ -18,12 +18,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
   
   const freshnessLevel = calculateFreshnessLevel(item);
   
-  const getIconComponent = () => {
+  const renderIcon = () => {
     // Try to get the icon from our icon manager
     if (item.icon in allIcons) {
-      const IconComponent = allIcons[item.icon].icon;
-      // Simply return the icon component directly since it's already a React element
-      return IconComponent;
+      // The icon is already a React element, just return it
+      return allIcons[item.icon].icon;
     }
     // If the icon isn't found, show the item name in a styled div
     return (
@@ -56,7 +55,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-gray-100 rounded-full">
-              {getIconComponent()}
+              {renderIcon()}
             </div>
             <h3 className="font-medium text-lg">{item.name}</h3>
           </div>
@@ -100,3 +99,4 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
 };
 
 export default ItemCard;
+
