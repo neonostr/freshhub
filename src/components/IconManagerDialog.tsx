@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Settings, Edit, Trash2, Plus, Check, X } from 'lucide-react';
+import { Settings, Edit, Trash2, Plus, Check, X, Package, Box, Archive, Gift, ShoppingBag, ShoppingCart, Store, Tag } from 'lucide-react';
 import { useIconManager, ALL_ICONS } from '@/context/IconManagerContext';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,16 +33,31 @@ const IconManagerDialog: React.FC = () => {
   const [newProductShelfLife, setNewProductShelfLife] = useState('7');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState('');
+  const [selectedCustomIcon, setSelectedCustomIcon] = useState<string>('Package');
   
   // Get sorted icons list by label
   const sortedIcons = Object.values(ALL_ICONS).sort((a, b) => a.label.localeCompare(b.label));
   
+  // Available icons for custom products
+  const availableCustomIcons = [
+    { name: 'Package', component: <Package /> },
+    { name: 'Box', component: <Box /> },
+    { name: 'Archive', component: <Archive /> },
+    { name: 'Gift', component: <Gift /> },
+    { name: 'ShoppingBag', component: <ShoppingBag /> },
+    { name: 'ShoppingCart', component: <ShoppingCart /> },
+    { name: 'Store', component: <Store /> },
+    { name: 'Tag', component: <Tag /> },
+  ];
+  
   // Helper function to safely render icons
-  const renderIcon = (icon: React.ReactElement) => {
+  const renderIcon = (icon: React.ReactElement | React.ReactNode) => {
     if (React.isValidElement(icon)) {
       return React.cloneElement(icon, { className: "h-5 w-5" });
     }
-    return null;
+    
+    // If it's not a valid element but still a ReactNode (like a string), just return it
+    return icon;
   };
   
   const handleShelfLifeFocus = (iconValue: string) => {
@@ -141,11 +156,14 @@ const IconManagerDialog: React.FC = () => {
     
     const productId = generateUniqueId();
     
-    // Create a new custom product
+    // Find the selected icon component
+    const selectedIcon = availableCustomIcons.find(icon => icon.name === selectedCustomIcon);
+    
+    // Create a new custom product with the selected icon
     const newProduct: IconOption = {
       value: productId,
       label: newProductName.trim(),
-      icon: <div className="font-medium text-sm">{newProductName.trim().charAt(0).toUpperCase()}</div>,
+      icon: selectedIcon ? selectedIcon.component : <div className="font-medium text-sm">{newProductName.trim().charAt(0).toUpperCase()}</div>,
       shelfLife: numValue
     };
     
@@ -159,6 +177,7 @@ const IconManagerDialog: React.FC = () => {
     // Reset form
     setNewProductName('');
     setNewProductShelfLife('7');
+    setSelectedCustomIcon('Package'); // Reset to default icon
     setIsAddingProduct(false);
   };
   
@@ -314,6 +333,24 @@ const IconManagerDialog: React.FC = () => {
                             onChange={(e) => setNewProductName(e.target.value)}
                             placeholder="e.g., Homemade Jam"
                           />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="new-product-icon">Icon</Label>
+                          <div className="grid grid-cols-4 gap-2 mt-2">
+                            {availableCustomIcons.map((icon) => (
+                              <Button
+                                key={icon.name}
+                                type="button"
+                                variant={selectedCustomIcon === icon.name ? "default" : "outline"}
+                                size="sm"
+                                className="p-2 h-10"
+                                onClick={() => setSelectedCustomIcon(icon.name)}
+                              >
+                                {React.cloneElement(icon.component, { className: "h-5 w-5" })}
+                              </Button>
+                            ))}
+                          </div>
                         </div>
                         
                         <div>
