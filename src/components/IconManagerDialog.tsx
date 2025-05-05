@@ -39,6 +39,11 @@ const IconManagerDialog: React.FC = () => {
   // Get sorted icons list by label
   const sortedIcons = Object.values(ALL_ICONS).sort((a, b) => a.label.localeCompare(b.label));
   
+  // Helper function to safely render icons
+  const renderIcon = (icon: React.ReactElement) => {
+    return React.cloneElement(icon, { className: "h-5 w-5" });
+  };
+  
   const handleShelfLifeFocus = (iconValue: string) => {
     // Save current value as string when focusing
     setEditingValues(prev => ({
@@ -226,7 +231,7 @@ const IconManagerDialog: React.FC = () => {
                         }
                       }}
                     >
-                      {icon.icon}
+                      {renderIcon(icon.icon)}
                       <span className="text-xs mt-1">{icon.label}</span>
                     </Button>
                   ))}
@@ -248,7 +253,7 @@ const IconManagerDialog: React.FC = () => {
                       <div key={icon.value} className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
                           <div className="p-2 bg-muted rounded-md">
-                            {icon.icon}
+                            {renderIcon(icon.icon)}
                           </div>
                           <Label className={cn(isCustomProduct(icon.value) ? "font-semibold" : "")}>
                             {icon.label}
@@ -346,7 +351,9 @@ const IconManagerDialog: React.FC = () => {
                       .map((product) => (
                         <div key={product.value} className="flex items-center gap-2 border p-3 rounded-md">
                           <div className="p-2 bg-muted rounded-md">
-                            {product.icon}
+                            {typeof product.icon === 'object' && React.isValidElement(product.icon) 
+                              ? renderIcon(product.icon)
+                              : <div className="w-5 h-5 flex items-center justify-center">{product.label.charAt(0).toUpperCase()}</div>}
                           </div>
                           
                           {editingName[product.value] !== undefined ? (
