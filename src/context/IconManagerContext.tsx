@@ -8,6 +8,11 @@ interface IconManagerContextType {
   toggleIcon: (iconValue: string) => void;
   isIconSelected: (iconValue: string) => boolean;
   updateIconShelfLife: (iconValue: string, days: number) => void;
+  addCustomProduct: (product: IconOption) => void;
+  updateProductName: (iconValue: string, newName: string) => void;
+  deleteCustomProduct: (iconValue: string) => void;
+  isCustomProduct: (iconValue: string) => boolean;
+  customProducts: Record<string, IconOption>;
 }
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
@@ -23,6 +28,11 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
     return saved ? JSON.parse(saved) : {};
   });
   
+  const [customProducts, setCustomProducts] = useState<Record<string, IconOption>>(() => {
+    const saved = localStorage.getItem('freshTrackerCustomProducts');
+    return saved ? JSON.parse(saved) : {};
+  });
+  
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
   Object.keys(customShelfLife).forEach(iconKey => {
@@ -34,9 +44,12 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
     }
   });
   
+  // Combine built-in icons with custom products
+  const allIcons = { ...iconsWithCustomShelfLife, ...customProducts };
+  
   // Update available icons based on selected values - sorted alphabetically by label
   const availableIcons = selectedIconValues
-    .map(value => iconsWithCustomShelfLife[value])
+    .map(value => allIcons[value])
     .filter(Boolean)
     .sort((a, b) => a.label.localeCompare(b.label));
   
@@ -47,6 +60,10 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     localStorage.setItem('freshTrackerCustomShelfLife', JSON.stringify(customShelfLife));
   }, [customShelfLife]);
+  
+  useEffect(() => {
+    localStorage.setItem('freshTrackerCustomProducts', JSON.stringify(customProducts));
+  }, [customProducts]);
 
   const toggleIcon = (iconValue: string) => {
     setSelectedIconValues(prev => {
@@ -68,14 +85,61 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
       [iconValue]: days
     }));
   };
+  
+  const addCustomProduct = (product: IconOption) => {
+    setCustomProducts(prev => ({
+      ...prev,
+      [product.value]: product
+    }));
+    
+    // Auto-select the new product
+    if (!isIconSelected(product.value)) {
+      setSelectedIconValues(prev => [...prev, product.value]);
+    }
+  };
+  
+  const updateProductName = (iconValue: string, newName: string) => {
+    if (customProducts[iconValue]) {
+      setCustomProducts(prev => ({
+        ...prev,
+        [iconValue]: {
+          ...prev[iconValue],
+          label: newName
+        }
+      }));
+    }
+  };
+  
+  const deleteCustomProduct = (iconValue: string) => {
+    // Remove from selected icons first
+    if (isIconSelected(iconValue)) {
+      setSelectedIconValues(prev => prev.filter(v => v !== iconValue));
+    }
+    
+    // Then remove the custom product
+    setCustomProducts(prev => {
+      const newProducts = { ...prev };
+      delete newProducts[iconValue];
+      return newProducts;
+    });
+  };
+  
+  const isCustomProduct = (iconValue: string) => {
+    return !!customProducts[iconValue];
+  };
 
   return (
     <IconManagerContext.Provider value={{ 
       availableIcons, 
-      allIcons: iconsWithCustomShelfLife,
+      allIcons,
       toggleIcon, 
       isIconSelected,
-      updateIconShelfLife
+      updateIconShelfLife,
+      addCustomProduct,
+      updateProductName,
+      deleteCustomProduct,
+      isCustomProduct,
+      customProducts
     }}>
       {children}
     </IconManagerContext.Provider>
