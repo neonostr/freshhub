@@ -2,6 +2,7 @@
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
+import { Calendar, Clock, Package } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
@@ -15,6 +16,15 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
   const { deleteItem, resetItem } = useItems();
   
   const freshnessLevel = calculateFreshnessLevel(item);
+  
+  const getIconComponent = () => {
+    // Try to get the icon from our icon manager
+    if (item.icon in ALL_ICONS) {
+      return ALL_ICONS[item.icon].icon;
+    }
+    // Fallback to Package icon if not found
+    return <Package className="h-5 w-5" />;
+  };
   
   const getFreshnessColor = (level: FreshnessLevel): string => {
     switch (level) {
@@ -34,19 +44,14 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
     }
   };
 
-  // Get first letter for the product avatar
-  const getInitial = () => {
-    return item.name.charAt(0).toUpperCase();
-  };
-
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <div className={`h-2 ${getFreshnessColor(freshnessLevel)}`} />
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
-            <div className="flex items-center justify-center h-8 w-8 bg-gray-100 rounded-full">
-              <span className="font-medium">{getInitial()}</span>
+            <div className="p-2 bg-gray-100 rounded-full">
+              {getIconComponent()}
             </div>
             <h3 className="font-medium text-lg">{item.name}</h3>
           </div>
@@ -57,11 +62,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
         
         <div className="space-y-2 text-sm text-gray-500 mt-3">
           <div className="flex items-center">
-            <span className="w-4 mr-2 text-center">📅</span>
+            <Calendar className="h-4 w-4 mr-2" />
             <span>Opened: {formatOpenedDate(item.openedDate)}</span>
           </div>
           <div className="flex items-center">
-            <span className="w-4 mr-2 text-center">⏱️</span>
+            <Clock className="h-4 w-4 mr-2" />
             <span>Open {formatTimeOpen(item.openedDate)}</span>
           </div>
         </div>

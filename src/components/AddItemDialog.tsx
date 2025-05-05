@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Plus } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManagerContext';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -71,16 +72,11 @@ const AddItemDialog: React.FC = () => {
     }
   };
 
-  // Get first letter of product for button display
-  const getInitial = (label: string) => {
-    return label.charAt(0).toUpperCase();
-  };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="fixed bottom-6 right-6 rounded-full w-14 h-14" size="icon">
-          +
+          <Plus className="h-6 w-6" />
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -89,7 +85,7 @@ const AddItemDialog: React.FC = () => {
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          {/* Product selection at the top */}
+          {/* Icon selection at the top */}
           <div className="space-y-2">
             <Label>Choose a Product</Label>
             <ScrollArea className="h-[200px]">
@@ -102,9 +98,7 @@ const AddItemDialog: React.FC = () => {
                     className="flex flex-col items-center justify-center h-20 py-2"
                     onClick={() => handleIconSelect(icon.value)}
                   >
-                    <div className="flex items-center justify-center h-8 w-8 bg-gray-100 rounded-full mb-1">
-                      <span className="font-medium">{getInitial(icon.label)}</span>
-                    </div>
+                    {icon.icon}
                     <span className="text-xs mt-1">{icon.label}</span>
                   </Button>
                 ))}
