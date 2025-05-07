@@ -3,15 +3,9 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import CustomIconSelector from './CustomIconSelector';
+import CustomIconSelector, { IconOption as IconSelectorOption } from './CustomIconSelector';
 import { IconOption } from '@/data/productData';
-
-interface IconSelectorOption {
-  name: string;
-  component: React.ReactElement;
-}
 
 interface AddCustomProductFormProps {
   availableIcons: IconSelectorOption[];
@@ -26,7 +20,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
 }) => {
   const [productName, setProductName] = useState('');
   const [shelfLife, setShelfLife] = useState('7');
-  const [selectedIcon, setSelectedIcon] = useState(availableIcons[0]?.name || '');
+  const [selectedIcon, setSelectedIcon] = useState(availableIcons[0]?.icon || '');
 
   // Generate a unique ID for the new product
   const generateUniqueId = () => {
@@ -55,14 +49,28 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
     
     const productId = generateUniqueId();
     
-    // Find the selected icon component
-    const iconObj = availableIcons.find(icon => icon.name === selectedIcon);
+    // Create React element for the icon from the selected icon name
+    const iconName = selectedIcon;
+    const createIconComponent = (iconName: string) => {
+      // Get icon component from Lucide
+      const LucideIcons = require('lucide-react');
+      const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+        iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+      
+      const IconComponent = LucideIcons[pascalCaseName];
+      
+      if (IconComponent) {
+        return React.createElement(IconComponent, { className: "h-5 w-5" });
+      }
+      
+      return <div className="h-5 w-5 flex items-center justify-center">?</div>;
+    };
     
     // Create a new custom product with the selected icon
     const newProduct: IconOption = {
       value: productId,
       label: productName.trim(),
-      icon: iconObj ? iconObj.component : <div>?</div>,
+      icon: createIconComponent(iconName),
       shelfLife: numValue
     };
     

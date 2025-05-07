@@ -32,10 +32,27 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
     const saved = localStorage.getItem('freshTrackerCustomProducts');
     if (saved) {
       try {
-        // Parse the saved custom products, but exclude the React component 'icon' property
-        // which will be recreated from the iconName
+        // Parse the saved custom products
         const parsed = JSON.parse(saved);
-        return parsed;
+        
+        // Reconstruct the icon components from icon names
+        const reconstructedProducts: Record<string, IconOption> = {};
+        
+        for (const [key, product] of Object.entries(parsed)) {
+          const productData = product as Partial<IconOption> & { iconName?: string };
+          
+          if (productData.value && productData.label && productData.shelfLife) {
+            // Create a placeholder for the icon - we'll rebuild it when needed
+            reconstructedProducts[key] = {
+              value: productData.value,
+              label: productData.label,
+              shelfLife: productData.shelfLife,
+              icon: <div className="h-5 w-5" /> // Placeholder
+            };
+          }
+        }
+        
+        return reconstructedProducts;
       } catch (e) {
         console.error("Error parsing custom products:", e);
         return {};
@@ -76,11 +93,15 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
     // When saving to localStorage, serialize only the necessary properties
     // without the React component which causes the cyclic reference
     const serializableProducts = Object.entries(customProducts).reduce((acc, [key, product]) => {
-      // Remove the React component icon property before saving to localStorage
-      const { icon, ...serializableProduct } = product;
       return {
         ...acc,
-        [key]: serializableProduct
+        [key]: {
+          value: product.value,
+          label: product.label,
+          shelfLife: product.shelfLife,
+          // Store icon name or identifier instead of React element
+          iconName: typeof product.value === 'string' ? product.value : 'default'
+        }
       };
     }, {});
     

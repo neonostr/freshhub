@@ -2,8 +2,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import * as LucideIcons from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-interface IconOption {
+export interface IconOption {
   name: string;
   icon: string;
 }
@@ -12,12 +13,14 @@ interface CustomIconSelectorProps {
   icons: IconOption[];
   selectedIcon: string;
   onSelect: (iconName: string) => void;
+  className?: string;
 }
 
 const CustomIconSelector: React.FC<CustomIconSelectorProps> = ({
   icons,
   selectedIcon,
-  onSelect
+  onSelect,
+  className
 }) => {
   // Helper to render an icon from the Lucide library by name
   const renderIcon = (iconName: string) => {
@@ -31,7 +34,7 @@ const CustomIconSelector: React.FC<CustomIconSelectorProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-4 gap-2 mt-2 max-h-32 overflow-y-auto p-1">
+    <div className={cn("grid grid-cols-4 gap-2 mt-2 max-h-32 overflow-y-auto p-1", className)}>
       {icons.map((icon) => (
         <Button
           key={icon.name}

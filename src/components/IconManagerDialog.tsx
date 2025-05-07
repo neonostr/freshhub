@@ -11,7 +11,7 @@ import ProductsList from './IconSelector/ProductsList';
 import ShelfLifeList from './IconSelector/ShelfLifeList';
 import AddCustomProductForm from './IconSelector/AddCustomProductForm';
 import CustomProductsList from './IconSelector/CustomProductsList';
-import CustomIconSelector from './IconSelector/CustomIconSelector';
+import { IconOption as IconSelectorOption } from './IconSelector/CustomIconSelector';
 
 const IconManagerDialog: React.FC = () => {
   const { 
@@ -152,6 +152,29 @@ const IconManagerDialog: React.FC = () => {
       setProductToDelete('');
     }
   };
+
+  // Food/beverage related icon options
+  const foodIcons: IconSelectorOption[] = [
+    { name: 'Apple', icon: 'apple' },
+    { name: 'Banana', icon: 'banana' },
+    { name: 'Beer', icon: 'beer' },
+    { name: 'Cake', icon: 'cake' },
+    { name: 'Carrot', icon: 'carrot' },
+    { name: 'Cherry', icon: 'cherry' },
+    { name: 'Coffee', icon: 'coffee' },
+    { name: 'Cookie', icon: 'cookie' },
+    { name: 'Egg', icon: 'egg' },
+    { name: 'Fish', icon: 'fish' },
+    { name: 'Grape', icon: 'grape' },
+    { name: 'Ham', icon: 'ham' },
+    { name: 'Ice Cream', icon: 'ice-cream-cone' },
+    { name: 'Milk', icon: 'milk' },
+    { name: 'Pizza', icon: 'pizza' },
+    { name: 'Salad', icon: 'salad' },
+    { name: 'Sandwich', icon: 'sandwich' },
+    { name: 'Soup', icon: 'soup' },
+    { name: 'Wine', icon: 'wine' }
+  ];
   
   return (
     <>
@@ -218,27 +241,7 @@ const IconManagerDialog: React.FC = () => {
                   
                   {isAddingProduct && (
                     <AddCustomProductForm 
-                      availableIcons={[
-                        { name: 'Apple', icon: 'apple' },
-                        { name: 'Banana', icon: 'banana' },
-                        { name: 'Beer', icon: 'beer' },
-                        { name: 'Cake', icon: 'cake' },
-                        { name: 'Carrot', icon: 'carrot' },
-                        { name: 'Cherry', icon: 'cherry' },
-                        { name: 'Coffee', icon: 'coffee' },
-                        { name: 'Cookie', icon: 'cookie' },
-                        { name: 'Egg', icon: 'egg' },
-                        { name: 'Fish', icon: 'fish' },
-                        { name: 'Grape', icon: 'grape' },
-                        { name: 'Ham', icon: 'ham' },
-                        { name: 'Ice Cream', icon: 'ice-cream-cone' },
-                        { name: 'Milk', icon: 'milk' },
-                        { name: 'Pizza', icon: 'pizza' },
-                        { name: 'Salad', icon: 'salad' },
-                        { name: 'Sandwich', icon: 'sandwich' },
-                        { name: 'Soup', icon: 'soup' },
-                        { name: 'Wine', icon: 'wine' }
-                      ]}
+                      availableIcons={foodIcons}
                       onAdd={handleAddCustomProduct}
                       onCancel={() => setIsAddingProduct(false)}
                     />
