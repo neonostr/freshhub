@@ -11,11 +11,7 @@ import ProductsList from './IconSelector/ProductsList';
 import ShelfLifeList from './IconSelector/ShelfLifeList';
 import AddCustomProductForm from './IconSelector/AddCustomProductForm';
 import CustomProductsList from './IconSelector/CustomProductsList';
-
-interface FoodIconOption {
-  name: string;
-  icon: string;
-}
+import { FoodIconOption } from '@/types/iconTypes';
 
 const IconManagerDialog: React.FC = () => {
   const { 
@@ -133,6 +129,10 @@ const IconManagerDialog: React.FC = () => {
   const handleAddCustomProduct = (newProduct: any) => {
     addCustomProduct(newProduct);
     setIsAddingProduct(false);
+    toast({
+      title: "Product added",
+      description: `"${newProduct.label}" has been added to your products`,
+    });
   };
   
   // Confirm delete custom product
@@ -159,25 +159,108 @@ const IconManagerDialog: React.FC = () => {
 
   // Food/beverage related icon options
   const foodIcons: FoodIconOption[] = [
-    { name: 'Apple', icon: 'apple' },
-    { name: 'Banana', icon: 'banana' },
-    { name: 'Beer', icon: 'beer' },
-    { name: 'Cake', icon: 'cake' },
-    { name: 'Carrot', icon: 'carrot' },
-    { name: 'Cherry', icon: 'cherry' },
-    { name: 'Coffee', icon: 'coffee' },
-    { name: 'Cookie', icon: 'cookie' },
-    { name: 'Egg', icon: 'egg' },
-    { name: 'Fish', icon: 'fish' },
-    { name: 'Grape', icon: 'grape' },
-    { name: 'Ham', icon: 'ham' },
-    { name: 'Ice Cream', icon: 'ice-cream-bowl' },
-    { name: 'Milk', icon: 'milk' },
-    { name: 'Pizza', icon: 'pizza' },
-    { name: 'Salad', icon: 'salad' },
-    { name: 'Sandwich', icon: 'sandwich' },
-    { name: 'Soup', icon: 'soup' },
-    { name: 'Wine', icon: 'wine' }
+    { name: "Apple", icon: "apple" },
+    { name: "Banana", icon: "banana" },
+    { name: "Beer", icon: "beer" },
+    { name: "Cake", icon: "cake" },
+    { name: "Carrot", icon: "carrot" },
+    { name: "Cherry", icon: "cherry" },
+    { name: "Coffee", icon: "coffee" },
+    { name: "Cookie", icon: "cookie" },
+    { name: "Egg", icon: "egg" },
+    { name: "Fish", icon: "fish" },
+    { name: "Grape", icon: "grape" },
+    { name: "Ham", icon: "ham" },
+    { name: "Ice Cream", icon: "ice-cream-bowl" },
+    { name: "Milk", icon: "milk" },
+    { name: "Pizza", icon: "pizza" },
+    { name: "Salad", icon: "salad" },
+    { name: "Sandwich", icon: "sandwich" },
+    { name: "Soup", icon: "soup" },
+    { name: "Wine", icon: "wine" },
+    { name: "Bacon", icon: "bacon" },
+    { name: "Beef", icon: "beef" },
+    { name: "Bread", icon: "bread" },
+    { name: "Candy", icon: "candy" },
+    { name: "Candy Cane", icon: "candy-cane" },
+    { name: "Cheese", icon: "cheese" },
+    { name: "Chili", icon: "chili" },
+    { name: "Citrus", icon: "citrus" },
+    { name: "Cooking Pot", icon: "cooking-pot" },
+    { name: "Croissant", icon: "croissant" },
+    { name: "Cup Soda", icon: "cup-soda" },
+    { name: "Dessert", icon: "dessert" },
+    { name: "Donut", icon: "donut" },
+    { name: "Egg Fried", icon: "egg-fried" },
+    { name: "Flour", icon: "flour" },
+    { name: "Fruit", icon: "fruit" },
+    { name: "Ginger", icon: "ginger" },
+    { name: "Ice Cream Cone", icon: "ice-cream-cone" },
+    { name: "Kebab", icon: "kebab" },
+    { name: "Lemon", icon: "lemon" },
+    { name: "Lobster", icon: "lobster" },
+    { name: "Lollipop", icon: "lollipop" },
+    { name: "Martini", icon: "martini" },
+    { name: "Meat", icon: "meat" },
+    { name: "Nut", icon: "nut" },
+    { name: "Olive", icon: "olive" },
+    { name: "Orange", icon: "orange" },
+    { name: "Oyster", icon: "oyster" },
+    { name: "Pasta", icon: "pasta" },
+    { name: "Pear", icon: "pear" },
+    { name: "Pepper", icon: "pepper" },
+    { name: "Pineapple", icon: "pineapple" },
+    { name: "Popcorn", icon: "popcorn" },
+    { name: "Popsicle", icon: "popsicle" },
+    { name: "Potato", icon: "potato" },
+    { name: "Rice", icon: "rice" },
+    { name: "Sauce", icon: "sauce" },
+    { name: "Shrimp", icon: "shrimp" },
+    { name: "Spaghetti", icon: "spaghetti" },
+    { name: "Sprout", icon: "sprout" },
+    { name: "Steak", icon: "steak" },
+    { name: "Strawberry", icon: "strawberry" },
+    { name: "Sushi", icon: "sushi" },
+    { name: "Sweet Potato", icon: "sweet-potato" },
+    { name: "Tea", icon: "tea" },
+    { name: "Tomato", icon: "tomato" },
+    { name: "Turkey", icon: "turkey" },
+    { name: "Utensils", icon: "utensils" },
+    { name: "Utensils Crossed", icon: "utensils-crossed" },
+    { name: "Vegan", icon: "vegan" },
+    { name: "Waffle", icon: "waffle" },
+    { name: "Watermelon", icon: "watermelon" },
+    { name: "Wheat", icon: "wheat" },
+    { name: "Whiskey", icon: "whiskey" },
+    { name: "Yogurt", icon: "yogurt" },
+    { name: "Almond", icon: "almond" },
+    { name: "Avocado", icon: "avocado" },
+    { name: "Baguette", icon: "baguette" },
+    { name: "Bean", icon: "bean" },
+    { name: "Biscuit", icon: "biscuit" },
+    { name: "Blueberry", icon: "blueberry" },
+    { name: "Broccoli", icon: "broccoli" },
+    { name: "Butter", icon: "butter" },
+    { name: "Cabbage", icon: "cabbage" },
+    { name: "Champagne", icon: "champagne" },
+    { name: "Chocolate", icon: "chocolate" },
+    { name: "Cinnamon", icon: "cinnamon" },
+    { name: "Coconut", icon: "coconut" },
+    { name: "Corn", icon: "corn" },
+    { name: "Cucumber", icon: "cucumber" },
+    { name: "Drumstick", icon: "drumstick" },
+    { name: "Eggplant", icon: "eggplant" },
+    { name: "Garlic", icon: "garlic" },
+    { name: "Honey", icon: "honey" },
+    { name: "Hot Dog", icon: "hotdog" },
+    { name: "Ice", icon: "ice" },
+    { name: "Jam", icon: "jam" },
+    { name: "Leafy Green", icon: "leafy-green" },
+    { name: "Mango", icon: "mango" },
+    { name: "Mushroom", icon: "mushroom" },
+    { name: "Noodles", icon: "noodles" },
+    { name: "Onion", icon: "onion" },
+    { name: "Peach", icon: "peach" }
   ];
   
   return (
@@ -226,7 +309,7 @@ const IconManagerDialog: React.FC = () => {
                   />
                 </TabsContent>
                 
-                <TabsContent value="custom" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
+                <TabsContent value="custom" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden overflow-hidden">
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-sm text-muted-foreground">
                       Add your own custom products or edit existing ones.
@@ -243,27 +326,29 @@ const IconManagerDialog: React.FC = () => {
                     )}
                   </div>
                   
-                  {isAddingProduct && (
-                    <AddCustomProductForm 
-                      availableIcons={foodIcons}
-                      onAdd={handleAddCustomProduct}
-                      onCancel={() => setIsAddingProduct(false)}
-                    />
-                  )}
-                  
-                  <CustomProductsList 
-                    products={Object.values(customProducts)
-                      .sort((a, b) => a.label.localeCompare(b.label))}
-                    editingName={editingName}
-                    startEditingName={startEditingName}
-                    saveProductName={saveProductName}
-                    cancelEditingName={cancelEditingName}
-                    confirmDelete={confirmDelete}
-                    renderIcon={renderIcon}
-                    onAddNewClick={() => setIsAddingProduct(true)}
-                    isAdding={isAddingProduct}
-                    updateEditingName={updateEditingName}
-                  />
+                  <div className="flex-1 overflow-y-auto pb-4">
+                    {isAddingProduct ? (
+                      <AddCustomProductForm 
+                        availableIcons={foodIcons}
+                        onAdd={handleAddCustomProduct}
+                        onCancel={() => setIsAddingProduct(false)}
+                      />
+                    ) : (
+                      <CustomProductsList 
+                        products={Object.values(customProducts)
+                          .sort((a, b) => a.label.localeCompare(b.label))}
+                        editingName={editingName}
+                        startEditingName={startEditingName}
+                        saveProductName={saveProductName}
+                        cancelEditingName={cancelEditingName}
+                        confirmDelete={confirmDelete}
+                        renderIcon={renderIcon}
+                        onAddNewClick={() => setIsAddingProduct(true)}
+                        isAdding={isAddingProduct}
+                        updateEditingName={updateEditingName}
+                      />
+                    )}
+                  </div>
                 </TabsContent>
               </div>
             </Tabs>

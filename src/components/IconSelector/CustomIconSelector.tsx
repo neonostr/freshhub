@@ -3,14 +3,11 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import * as LucideIcons from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-export interface IconOption {
-  name: string;
-  icon: string;
-}
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { FoodIconOption } from '@/types/iconTypes';
 
 interface CustomIconSelectorProps {
-  icons: IconOption[];
+  icons: FoodIconOption[];
   selectedIcon: string;
   onSelect: (iconName: string) => void;
   className?: string;
@@ -34,20 +31,22 @@ const CustomIconSelector: React.FC<CustomIconSelectorProps> = ({
   };
 
   return (
-    <div className={cn("grid grid-cols-4 gap-2 mt-2 max-h-32 overflow-y-auto p-1", className)}>
-      {icons.map((icon) => (
-        <Button
-          key={icon.name}
-          type="button"
-          variant={selectedIcon === icon.icon ? "default" : "outline"}
-          size="sm"
-          className="p-2 h-10"
-          onClick={() => onSelect(icon.icon)}
-        >
-          {renderIcon(icon.icon)}
-        </Button>
-      ))}
-    </div>
+    <ScrollArea className="h-32 w-full">
+      <div className={cn("grid grid-cols-4 gap-2 p-1", className)}>
+        {icons.map((icon) => (
+          <Button
+            key={icon.name}
+            type="button"
+            variant={selectedIcon === icon.icon ? "default" : "outline"}
+            size="sm"
+            className="p-2 h-10"
+            onClick={() => onSelect(icon.icon)}
+          >
+            {renderIcon(icon.icon)}
+          </Button>
+        ))}
+      </div>
+    </ScrollArea>
   );
 };
 
