@@ -281,7 +281,7 @@ const IconManagerDialog: React.FC = () => {
                         onAdd={handleSaveProduct}
                         onCancel={() => setEditingProduct(null)}
                         initialValues={{
-                          name: editingProduct.productId,
+                          name: editingProduct.name,
                           iconName: editingProduct.icon,
                           shelfLife: editingProduct.shelfLife
                         }}
@@ -306,7 +306,7 @@ const IconManagerDialog: React.FC = () => {
                       />
                     )}
                   </div>
-                </div>
+                </TabsContent>
               </div>
             </Tabs>
           </div>
