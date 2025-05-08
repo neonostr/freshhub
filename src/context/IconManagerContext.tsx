@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { ALL_ICONS, DEFAULT_SELECTED_ICONS, IconOption } from '@/data/productData';
 import { saveItems, loadItems } from '@/utils/itemUtils';
@@ -6,15 +5,15 @@ import * as LucideIcons from 'lucide-react';
 
 interface IconManagerContextType {
   availableIcons: IconOption[];
-  allIcons: Record<string, IconOption>;
+  allIcons: Record<string, IconOption & { iconName?: string }>;
   toggleIcon: (iconValue: string) => void;
   isIconSelected: (iconValue: string) => boolean;
   updateIconShelfLife: (iconValue: string, days: number) => void;
-  addCustomProduct: (product: IconOption) => void;
+  addCustomProduct: (product: IconOption, iconName: string) => void;
   updateProductName: (iconValue: string, newName: string) => void;
   deleteCustomProduct: (iconValue: string) => void;
   isCustomProduct: (iconValue: string) => boolean;
-  customProducts: Record<string, IconOption>;
+  customProducts: Record<string, IconOption & { iconName?: string }>;
 }
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
@@ -30,7 +29,7 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
     return saved ? JSON.parse(saved) : {};
   });
   
-  const [customProducts, setCustomProducts] = useState<Record<string, IconOption>>(() => {
+  const [customProducts, setCustomProducts] = useState<Record<string, IconOption & { iconName?: string }>>(() => {
     const saved = localStorage.getItem('freshTrackerCustomProducts');
     if (saved) {
       try {
@@ -38,32 +37,28 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
         const parsed = JSON.parse(saved);
         
         // Reconstruct the icon components from icon names
-        const reconstructedProducts: Record<string, IconOption> = {};
+        const reconstructedProducts: Record<string, IconOption & { iconName?: string }> = {};
         
         for (const [key, product] of Object.entries(parsed)) {
           const productData = product as Partial<IconOption> & { iconName?: string };
           
           if (productData.value && productData.label && productData.shelfLife) {
-            // Create the icon component from the stored name
+            // Store the icon name for future reference
             const iconName = productData.iconName || 'apple';
+            
+            // Create the icon component from the stored name
             const pascalCaseName = iconName.charAt(0).toUpperCase() + 
               iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
             
             const IconComponent = (LucideIcons as any)[pascalCaseName];
-            let iconElement;
-            
-            if (IconComponent) {
-              iconElement = React.createElement(IconComponent);
-            } else {
-              iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
-            }
             
             // Create the fully reconstructed product
             reconstructedProducts[key] = {
               value: productData.value,
               label: productData.label,
               shelfLife: productData.shelfLife,
-              icon: iconElement
+              icon: IconComponent ? React.createElement(IconComponent) : <div className="h-5 w-5 flex items-center justify-center">?</div>,
+              iconName: iconName // Store the icon name for reference
             };
           }
         }
@@ -168,11 +163,14 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
   
-  const addCustomProduct = (product: IconOption) => {
-    // Make sure we're not introducing any cyclic references
+  const addCustomProduct = (product: IconOption, iconName: string) => {
+    // Include the iconName in the stored product
     setCustomProducts(prev => ({
       ...prev,
-      [product.value]: product
+      [product.value]: {
+        ...product,
+        iconName: iconName // Store the icon name for reference
+      }
     }));
     
     // Auto-select the new product

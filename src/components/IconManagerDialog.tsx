@@ -33,7 +33,6 @@ const IconManagerDialog: React.FC = () => {
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState('');
-  const [editingIcon, setEditingIcon] = useState('');
   const [currentTab, setCurrentTab] = useState('selection'); // Track the active tab
   
   // Get sorted icons list by label
@@ -52,6 +51,8 @@ const IconManagerDialog: React.FC = () => {
   };
   
   // Shelf life management functions
+  const [editingValues, setEditingValues] = useState<Record<string, string>>({});
+  
   const handleShelfLifeFocus = (iconValue: string) => {
     // Save current value as string when focusing
     setEditingValues(prev => ({
@@ -59,8 +60,6 @@ const IconManagerDialog: React.FC = () => {
       [iconValue]: allIcons[iconValue].shelfLife.toString()
     }));
   };
-  
-  const [editingValues, setEditingValues] = useState<Record<string, string>>({});
   
   const handleShelfLifeChange = (iconValue: string, value: string) => {
     setEditingValues(prev => ({
@@ -97,120 +96,31 @@ const IconManagerDialog: React.FC = () => {
       : allIcons[iconValue].shelfLife.toString();
   };
   
-  // Start editing a custom product (all fields)
-  const startEditingProduct = (product: IconOption) => {
-    // Find the icon name from the product
-    let iconName = '';
+  // Start editing a custom product
+  const startEditingProduct = (product: IconOption & { iconName?: string }) => {
+    // Get the icon name from the product
+    let iconName = product.iconName || '';
     
-    // Try to extract the icon name with proper null checking
-    const iconElement = product.icon;
-    if (React.isValidElement(iconElement) && 
-        iconElement.type) {
-      
-      // Safely check if displayName exists 
-      const iconType = iconElement.type as { displayName?: string };
+    // If no iconName is stored, try to extract it from the icon element
+    if (!iconName && React.isValidElement(product.icon)) {
+      const iconType = product.icon.type as { displayName?: string };
       if (iconType && iconType.displayName) {
-        // Convert from PascalCase to kebab-case
         iconName = iconType.displayName
           .replace(/([a-z])([A-Z])/g, '$1-$2')
           .toLowerCase();
       }
     }
     
-    // If we couldn't extract it, use a default
+    // If we still don't have a valid icon name, use a default
     if (!iconName) {
       iconName = 'apple'; // Default icon
     }
-    
-    setEditingIcon(iconName);
     
     setEditingProduct({
       productId: product.value,
       name: product.label,
       icon: iconName,
       shelfLife: product.shelfLife
-    });
-  };
-  
-  // Update a field in the editing product
-  const updateEditingField = (field: string, value: string | number) => {
-    if (editingProduct) {
-      setEditingProduct(prev => ({
-        ...prev!,
-        [field]: value
-      }));
-    }
-  };
-  
-  // Save edited product name
-  const saveProductChanges = () => {
-    if (!editingProduct) return;
-    
-    const { productId, name, shelfLife } = editingProduct;
-    const trimmedName = name.trim();
-    
-    if (!trimmedName) {
-      toast({
-        title: "Invalid name",
-        description: "Product name cannot be empty",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Update product name
-    updateProductName(productId, trimmedName);
-    
-    // Update product icon by creating a new instance with the selected icon
-    const iconName = editingIcon;
-    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
-      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
-    
-    const IconComponent = (LucideIcons as any)[pascalCaseName];
-    
-    let iconElement;
-    if (IconComponent) {
-      iconElement = React.createElement(IconComponent);
-    } else {
-      iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
-    }
-    
-    // Create an updated product
-    const updatedProduct: IconOption = {
-      value: productId,
-      label: trimmedName,
-      icon: iconElement,
-      shelfLife: shelfLife
-    };
-    
-    // Add the updated product (this will replace the old one)
-    addCustomProduct(updatedProduct);
-    
-    // Update shelf life
-    if (shelfLife > 0) {
-      updateIconShelfLife(productId, shelfLife);
-    }
-    
-    toast({
-      title: "Product updated",
-      description: `"${trimmedName}" has been updated`,
-    });
-    
-    setEditingProduct(null);
-  };
-  
-  // Cancel editing product name
-  const cancelEditingProduct = () => {
-    setEditingProduct(null);
-  };
-  
-  // Handle adding a new custom product
-  const handleAddCustomProduct = (newProduct: IconOption) => {
-    addCustomProduct(newProduct);
-    setIsAddingProduct(false);
-    toast({
-      title: "Product added",
-      description: `"${newProduct.label}" has been added to your products`,
     });
   };
   
@@ -234,6 +144,28 @@ const IconManagerDialog: React.FC = () => {
       setDeleteDialogOpen(false);
       setProductToDelete('');
     }
+  };
+  
+  // Handle saving edited product
+  const handleSaveProduct = (product: IconOption, iconName: string) => {
+    addCustomProduct(product, iconName);
+    setEditingProduct(null);
+    
+    toast({
+      title: "Product updated",
+      description: `"${product.label}" has been updated`,
+    });
+  };
+
+  // Handle adding a new custom product
+  const handleAddCustomProduct = (newProduct: IconOption, iconName: string) => {
+    addCustomProduct(newProduct, iconName);
+    setIsAddingProduct(false);
+    
+    toast({
+      title: "Product added",
+      description: `"${newProduct.label}" has been added to your products`,
+    });
   };
 
   // Extract icons from ALL_ICONS to use for custom products
@@ -343,31 +275,59 @@ const IconManagerDialog: React.FC = () => {
                         onAdd={handleAddCustomProduct}
                         onCancel={() => setIsAddingProduct(false)}
                       />
+                    ) : editingProduct ? (
+                      <AddCustomProductForm 
+                        availableIcons={foodIcons}
+                        onAdd={handleSaveProduct}
+                        onCancel={() => setEditingProduct(null)}
+                        initialValues={{
+                          name: editingProduct.productId,
+                          iconName: editingProduct.icon,
+                          shelfLife: editingProduct.shelfLife
+                        }}
+                        isEditing={true}
+                      />
                     ) : (
                       <CustomProductsList 
                         products={Object.values(customProducts)
                           .sort((a, b) => a.label.localeCompare(b.label))}
-                        editingProduct={editingProduct}
+                        editingProduct={null}
                         startEditingProduct={startEditingProduct}
-                        saveProductChanges={saveProductChanges}
-                        cancelEditingProduct={cancelEditingProduct}
+                        saveProductChanges={() => {}}
+                        cancelEditingProduct={() => {}}
                         confirmDelete={confirmDelete}
                         renderIcon={renderIcon}
                         onAddNewClick={() => setIsAddingProduct(true)}
                         isAdding={isAddingProduct}
-                        updateEditingField={updateEditingField}
+                        updateEditingField={() => {}}
                         availableIcons={foodIcons}
-                        editingIcon={editingIcon}
-                        setEditingIcon={setEditingIcon}
+                        editingIcon={''}
+                        setEditingIcon={() => {}}
                       />
                     )}
                   </div>
-                </TabsContent>
+                </div>
               </div>
             </Tabs>
           </div>
           
-          {/* Action buttons at the bottom - conditional based on tab and state */}
+          {/* Action buttons for different states */}
+          {currentTab === 'selection' && (
+            <DialogClose asChild>
+              <Button type="button" className="mt-4 w-full">
+                <Check className="mr-1 h-4 w-4" /> Done
+              </Button>
+            </DialogClose>
+          )}
+          
+          {currentTab === 'shelfLife' && (
+            <DialogClose asChild>
+              <Button type="button" className="mt-4 w-full">
+                <Check className="mr-1 h-4 w-4" /> Done
+              </Button>
+            </DialogClose>
+          )}
+          
           {currentTab === 'custom' && isAddingProduct && (
             <div className="flex gap-2 mt-4">
               <Button
@@ -407,8 +367,8 @@ const IconManagerDialog: React.FC = () => {
                     const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
                     
                     // Get selected icon from the active button
-                    const activeButton = document.querySelector('[variant="default"][type="button"]');
-                    const iconName = activeButton?.getAttribute('data-icon') || 'bottle';
+                    const activeButton = document.querySelector('[data-state="active"][data-radix-collection-item]');
+                    const iconName = activeButton?.getAttribute('data-icon') || 'apple';
                     
                     // Create React element for the icon
                     const pascalCaseName = iconName.charAt(0).toUpperCase() + 
@@ -431,7 +391,7 @@ const IconManagerDialog: React.FC = () => {
                       shelfLife: shelfLife
                     };
                     
-                    handleAddCustomProduct(newProduct);
+                    handleAddCustomProduct(newProduct, iconName);
                   }
                 }}
                 className="w-2/3"
@@ -441,12 +401,75 @@ const IconManagerDialog: React.FC = () => {
             </div>
           )}
           
-          {currentTab !== 'custom' && (
-            <DialogClose asChild>
-              <Button type="button" className="mt-4 w-full">
-                <Check className="mr-1 h-4 w-4" /> Done
+          {currentTab === 'custom' && editingProduct && (
+            <div className="flex gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setEditingProduct(null)}
+                className="w-1/3"
+              >
+                <X className="mr-1 h-4 w-4" /> Cancel
               </Button>
-            </DialogClose>
+              <Button
+                onClick={() => {
+                  const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
+                  const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
+                  
+                  if (nameInput && shelfLifeInput) {
+                    const name = nameInput.value;
+                    const shelfLife = parseInt(shelfLifeInput.value, 10);
+                    
+                    if (!name.trim()) {
+                      toast({
+                        title: "Name required",
+                        description: "Please provide a name for the product",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    
+                    if (isNaN(shelfLife) || shelfLife <= 0) {
+                      toast({
+                        title: "Invalid shelf life",
+                        description: "Please provide a valid shelf life (days)",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    
+                    // Get selected icon from the active button
+                    const activeButton = document.querySelector('[data-state="active"][data-radix-collection-item]');
+                    const iconName = activeButton?.getAttribute('data-icon') || editingProduct.icon;
+                    
+                    // Create React element for the icon
+                    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+                      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+                    
+                    const IconComponent = (LucideIcons as any)[pascalCaseName];
+                    
+                    let iconElement;
+                    if (IconComponent) {
+                      iconElement = React.createElement(IconComponent, { className: "h-5 w-5" });
+                    } else {
+                      iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
+                    }
+                    
+                    // Create an updated product
+                    const updatedProduct: IconOption = {
+                      value: editingProduct.productId,
+                      label: name.trim(),
+                      icon: iconElement,
+                      shelfLife: shelfLife
+                    };
+                    
+                    handleSaveProduct(updatedProduct, iconName);
+                  }
+                }}
+                className="w-2/3"
+              >
+                <Check className="mr-1 h-4 w-4" /> Save
+              </Button>
+            </div>
           )}
           
           {currentTab === 'custom' && !isAddingProduct && !editingProduct && (

@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManagerContext';
+import * as LucideIcons from 'lucide-react';
 
 interface ItemCardProps {
   item: Item;
@@ -21,11 +22,27 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
   const renderIcon = () => {
     // Try to get the icon from our icon manager
     if (item.icon in allIcons) {
-      // Clone the icon element to ensure proper rendering
-      return React.cloneElement(allIcons[item.icon].icon, { 
-        className: "w-5 h-5" 
-      });
+      const iconData = allIcons[item.icon];
+      
+      // Handle React elements directly (for built-in icons)
+      if (React.isValidElement(iconData.icon)) {
+        return React.cloneElement(iconData.icon, { 
+          className: "w-5 h-5" 
+        });
+      }
+      
+      // For custom products, we need to create the icon from the stored name
+      if (typeof iconData.iconName === 'string') {
+        const pascalCaseName = iconData.iconName.charAt(0).toUpperCase() + 
+          iconData.iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+        
+        const IconComponent = (LucideIcons as any)[pascalCaseName];
+        if (IconComponent) {
+          return <IconComponent className="w-5 h-5" />;
+        }
+      }
     }
+    
     // If the icon isn't found, show the item name in a styled div
     return <div className="flex items-center justify-center w-5 h-5">{item.name.charAt(0)}</div>;
   };

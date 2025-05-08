@@ -10,18 +10,26 @@ import * as LucideIcons from 'lucide-react';
 
 interface AddCustomProductFormProps {
   availableIcons: FoodIconOption[];
-  onAdd: (product: IconOption) => void;
+  onAdd: (product: IconOption, iconName: string) => void;
   onCancel: () => void;
+  initialValues?: {
+    name: string;
+    iconName: string;
+    shelfLife: number;
+  };
+  isEditing?: boolean;
 }
 
 const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
   availableIcons,
   onAdd,
-  onCancel
+  onCancel,
+  initialValues,
+  isEditing = false
 }) => {
-  const [productName, setProductName] = useState('');
-  const [shelfLife, setShelfLife] = useState('7');
-  const [selectedIcon, setSelectedIcon] = useState(availableIcons[0]?.icon || '');
+  const [productName, setProductName] = useState(initialValues?.name || '');
+  const [shelfLife, setShelfLife] = useState(initialValues?.shelfLife?.toString() || '7');
+  const [selectedIcon, setSelectedIcon] = useState(initialValues?.iconName || availableIcons[0]?.icon || '');
 
   // Generate a unique ID for the new product
   const generateUniqueId = () => {
@@ -48,7 +56,8 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
       return;
     }
     
-    const productId = generateUniqueId();
+    // Use existing ID if editing, or generate a new one
+    const productId = initialValues?.name ? initialValues.name : generateUniqueId();
     
     // Create React element for the icon from the selected icon name
     const iconName = selectedIcon;
@@ -66,18 +75,21 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
     
     // Create a new custom product with the selected icon
     const newProduct: IconOption = {
-      value: productId,
+      value: initialValues?.name ? initialValues.name : productId,
       label: productName.trim(),
       icon: iconElement,
       shelfLife: numValue
     };
     
-    onAdd(newProduct);
+    // Pass both the product and the icon name
+    onAdd(newProduct, iconName);
   };
 
   return (
     <div className="bg-muted/50 p-4 rounded-md flex flex-col h-full">
-      <h3 className="text-sm font-medium mb-3">Add New Product</h3>
+      <h3 className="text-sm font-medium mb-3">
+        {isEditing ? 'Edit Product' : 'Add New Product'}
+      </h3>
       
       <div className="space-y-3 flex-grow">
         <div>
@@ -96,7 +108,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
             icons={availableIcons}
             selectedIcon={selectedIcon}
             onSelect={setSelectedIcon}
-            className="h-40" // Updated to match 4 rows of icons (10px per row × 4 = 40px)
+            className="h-40" // Updated to match 4 rows of icons
           />
         </div>
         
