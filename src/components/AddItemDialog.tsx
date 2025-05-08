@@ -32,12 +32,17 @@ const AddItemDialog: React.FC = () => {
     const selectedProduct = allIcons[selectedIcon];
     const productName = selectedProduct?.label || '';
     
+    // Parse custom duration if provided
+    const parsedCustomDuration = customDuration ? parseInt(customDuration, 10) : undefined;
+    
+    // Add the item with the selected icon and optional custom duration
     addItem({
       name: productName,
       icon: selectedIcon,
-      customDuration: customDuration ? parseInt(customDuration, 10) : undefined,
+      customDuration: parsedCustomDuration,
     });
     
+    // Reset form state
     setSelectedIcon(availableIcons[0]?.value || '');
     setCustomDuration('');
     setOpen(false);
@@ -74,7 +79,7 @@ const AddItemDialog: React.FC = () => {
                     onClick={() => handleIconSelect(icon.value)}
                   >
                     {icon.icon}
-                    <span className="text-xs mt-1">{icon.label}</span>
+                    <span className="text-xs mt-1 overflow-hidden text-ellipsis max-w-full px-1">{icon.label}</span>
                   </Button>
                 ))}
               </div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -102,16 +101,15 @@ const IconManagerDialog: React.FC = () => {
     let iconName = '';
     
     // Try to extract the icon name
-    if (React.isValidElement(product.icon) && product.icon.type && 
+    if (React.isValidElement(product.icon) && 
+        product.icon.type && 
         typeof product.icon.type === 'object' && 
-        'displayName' in product.icon.type) {
-      const displayName = product.icon.type.displayName;
-      if (displayName) {
-        // Convert from PascalCase to kebab-case
-        iconName = displayName
-          .replace(/([a-z])([A-Z])/g, '$1-$2')
-          .toLowerCase();
-      }
+        'displayName' in product.icon.type && 
+        product.icon.type.displayName) {
+      // Convert from PascalCase to kebab-case
+      iconName = product.icon.type.displayName
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
+        .toLowerCase();
     }
     
     // If we couldn't extract it, use a default
@@ -225,7 +223,7 @@ const IconManagerDialog: React.FC = () => {
       
       toast({
         title: "Product deleted",
-        description: `"${productName}" has been removed from your products`,
+        description: `"${productName}" has been removed along with any tracked items using it.`
       });
       
       setDeleteDialogOpen(false);
@@ -463,7 +461,7 @@ const IconManagerDialog: React.FC = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Custom Product?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove this product from your collection. 
+              This will permanently remove this product from your collection.
               Any items currently tracked with this product will also be deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
