@@ -4,7 +4,7 @@ import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { SortAsc, Filter, ArrowDown, ArrowUp, X } from 'lucide-react';
+import { Filter, ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   Drawer,
@@ -87,29 +87,29 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating filter & sort button */}
+      {/* Bottom floating filter & sort button - style similar to add button */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button 
-            className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-10 shadow-lg rounded-full"
-            size="sm"
+            className="fixed bottom-6 right-24 transform z-10 shadow-lg rounded-full h-14 w-14 p-0"
+            size="icon"
+            variant="default"
           >
-            <Filter size={18} className="mr-1" />
-            <span>{sortedItems.length} items</span>
+            <Filter className="h-6 w-6" />
           </Button>
         </DrawerTrigger>
         
-        <DrawerContent>
-          <DrawerHeader>
+        <DrawerContent className="overflow-hidden outline-none">
+          <div className="absolute inset-0 bg-background" />
+          <DrawerHeader className="relative z-10">
             <DrawerTitle>Sort & Filter</DrawerTitle>
           </DrawerHeader>
           
-          <div className="px-4 pb-2">
+          <div className="px-4 pb-2 relative z-10">
             <div className="flex flex-col gap-6">
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <SortAsc size={18} className="text-gray-500" />
                     <span className="font-medium">Sort by</span>
                   </div>
                 </div>
@@ -149,7 +149,6 @@ const ItemsList: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Filter size={18} className="text-gray-500" />
                     <span className="font-medium">Filter by freshness</span>
                   </div>
                   <span className="text-sm text-gray-500">
@@ -169,7 +168,7 @@ const ItemsList: React.FC = () => {
             </div>
           </div>
           
-          <DrawerFooter>
+          <DrawerFooter className="relative z-10">
             <DrawerClose asChild>
               <Button variant="outline">
                 Close
