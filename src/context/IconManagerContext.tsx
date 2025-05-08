@@ -118,14 +118,15 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
       // When saving to localStorage, serialize only the necessary properties
       // without the React component which causes the cyclic reference
       const serializableProducts = Object.entries(customProducts).reduce((acc, [key, product]) => {
-        const iconName = React.isValidElement(product.icon) && 
-          product.icon.type && 
-          typeof product.icon.type === 'object' && 
-          product.icon.type !== null &&
-          'displayName' in product.icon.type && 
-          product.icon.type.displayName 
-            ? product.icon.type.displayName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
-            : 'apple';
+        // Safely handle icon type extraction
+        let iconName = 'apple'; // Default fallback
+        
+        if (React.isValidElement(product.icon)) {
+          const iconType = product.icon.type as { displayName?: string } | null;
+          if (iconType && typeof iconType === 'object' && 'displayName' in iconType && iconType.displayName) {
+            iconName = iconType.displayName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+          }
+        }
         
         // Store only the essential data without the React element
         return {

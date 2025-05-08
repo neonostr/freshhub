@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Settings } from 'lucide-react';
+import { Settings, Plus, Check, X } from 'lucide-react';
 import { useIconManager } from '@/context/IconManagerContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from '@/hooks/use-toast';
@@ -103,13 +102,11 @@ const IconManagerDialog: React.FC = () => {
     
     // Try to extract the icon name with proper null checking
     if (React.isValidElement(product.icon) && 
-        product.icon.type && 
-        typeof product.icon.type === 'object' && 
-        product.icon.type !== null) {
+        product.icon.type) {
       
       // Check if displayName exists in a type-safe way
       const iconType = product.icon.type as { displayName?: string };
-      if (iconType.displayName) {
+      if (iconType && iconType.displayName) {
         // Convert from PascalCase to kebab-case
         iconName = iconType.displayName
           .replace(/([a-z])([A-Z])/g, '$1-$2')
@@ -249,110 +246,40 @@ const IconManagerDialog: React.FC = () => {
     { name: "Bowl", icon: "bowl" },
     { name: "Cake", icon: "cake" },
     { name: "Candy", icon: "candy" },
-    { name: "Candy Cane", icon: "candy-cane" },
     { name: "Carrot", icon: "carrot" },
-    { name: "Chef Hat", icon: "chef-hat" },
     { name: "Cherry", icon: "cherry" },
-    { name: "Chilli Hot", icon: "chilli-hot" },
-    { name: "Chinese", icon: "chinese" },
     { name: "Citrus", icon: "citrus" },
-    { name: "Clock", icon: "clock" },
     { name: "Coffee", icon: "coffee" },
-    { name: "Coffee Bean", icon: "coffee-bean" },
     { name: "Cookie", icon: "cookie" },
-    { name: "Cooking Pot", icon: "cooking-pot" },
     { name: "Corn", icon: "corn" },
     { name: "Croissant", icon: "croissant" },
-    { name: "Cup Soda", icon: "cup-soda" },
-    { name: "Dessert", icon: "dessert" },
     { name: "Donut", icon: "donut" },
     { name: "Drumstick", icon: "drumstick" },
     { name: "Egg", icon: "egg" },
-    { name: "Egg Fried", icon: "egg-fried" },
     { name: "Fish", icon: "fish" },
-    { name: "Flask Round", icon: "flask-round" },
-    { name: "Flatware", icon: "flatware" },
-    { name: "Fridge", icon: "fridge" },
-    { name: "Fuel", icon: "fuel" },
     { name: "Garlic", icon: "garlic" },
-    { name: "Glass", icon: "glass" },
-    { name: "Glass Water", icon: "glass-water" },
     { name: "Grape", icon: "grape" },
-    { name: "Ham", icon: "ham" },
     { name: "Hamburger", icon: "hamburger" },
-    { name: "Heart", icon: "heart" },
-    { name: "Hot Dog", icon: "hot-dog" },
     { name: "Ice Cream", icon: "ice-cream" },
-    { name: "Ice Cream Bowl", icon: "ice-cream-bowl" },
-    { name: "Ice Cream Cone", icon: "ice-cream-cone" },
     { name: "Lemon", icon: "lemon" },
     { name: "Lettuce", icon: "lettuce" },
-    { name: "Lime", icon: "lime" },
-    { name: "Lollipop", icon: "lollipop" },
-    { name: "Martini", icon: "martini" },
-    { name: "Meatball", icon: "meatball" },
-    { name: "Microwave", icon: "microwave" },
     { name: "Milk", icon: "milk" },
-    { name: "Mug", icon: "mug" },
-    { name: "Mug Hot", icon: "mug-hot" },
     { name: "Mushroom", icon: "mushroom" },
     { name: "Noodles", icon: "noodles" },
-    { name: "Nut", icon: "nut" },
-    { name: "Olive", icon: "olive" },
     { name: "Onion", icon: "onion" },
     { name: "Orange", icon: "orange" },
-    { name: "Oven", icon: "oven" },
     { name: "Pancake", icon: "pancake" },
-    { name: "Peach", icon: "peach" },
-    { name: "Peanut", icon: "peanut" },
     { name: "Pear", icon: "pear" },
-    { name: "Pepper", icon: "pepper" },
-    { name: "Pie", icon: "pie" },
     { name: "Pizza", icon: "pizza" },
-    { name: "Popcorn", icon: "popcorn" },
-    { name: "Popsicle", icon: "popsicle" },
     { name: "Potato", icon: "potato" },
-    { name: "Pretzel", icon: "pretzel" },
-    { name: "Pumpkin", icon: "pumpkin" },
-    { name: "Rice", icon: "rice" },
     { name: "Salad", icon: "salad" },
-    { name: "Salt", icon: "salt" },
     { name: "Sandwich", icon: "sandwich" },
-    { name: "Sausage", icon: "sausage" },
-    { name: "Shaker", icon: "shaker" },
-    { name: "Shell", icon: "shell" },
     { name: "Shrimp", icon: "shrimp" },
-    { name: "Slice", icon: "slice" },
-    { name: "Snowflake", icon: "snowflake" },
     { name: "Soup", icon: "soup" },
-    { name: "Spaghetti", icon: "spaghetti" },
-    { name: "Spoon", icon: "spoon" },
-    { name: "Sprout", icon: "sprout" },
-    { name: "Steak", icon: "steak" },
     { name: "Strawberry", icon: "strawberry" },
-    { name: "Sugar", icon: "sugar" },
-    { name: "Sundae", icon: "sundae" },
     { name: "Sushi", icon: "sushi" },
-    { name: "Taco", icon: "taco" },
-    { name: "Tart", icon: "tart" },
-    { name: "Tea", icon: "tea" },
-    { name: "Teapot", icon: "teapot" },
     { name: "Tomato", icon: "tomato" },
-    { name: "Toothbrush", icon: "toothbrush" },
-    { name: "Toothpaste", icon: "toothpaste" },
-    { name: "Tortoise", icon: "tortoise" },
-    { name: "Treat", icon: "treat" },
-    { name: "Utensils", icon: "utensils" },
-    { name: "Utensils Crossed", icon: "utensils-crossed" },
-    { name: "Vegan", icon: "vegan" },
-    { name: "Waffle", icon: "waffle" },
-    { name: "Washing Machine", icon: "washing-machine" },
-    { name: "Water", icon: "water" },
     { name: "Watermelon", icon: "watermelon" },
-    { name: "Wheat", icon: "wheat" },
-    { name: "Wine", icon: "wine" },
-    { name: "Wine Bottle", icon: "wine-bottle" },
-    { name: "Wine Off", icon: "wine-off" }
   ];
   
   return (
@@ -421,7 +348,7 @@ const IconManagerDialog: React.FC = () => {
                     )}
                   </div>
                   
-                  <div className="flex-1 overflow-y-auto pb-4">
+                  <div className="flex-grow overflow-y-auto">
                     {isAddingProduct ? (
                       <AddCustomProductForm 
                         availableIcons={foodIcons}
@@ -447,14 +374,89 @@ const IconManagerDialog: React.FC = () => {
                       />
                     )}
                   </div>
+                  
+                  {isAddingProduct && (
+                    <DialogFooter className="mt-2 gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsAddingProduct(false)}
+                        className="mt-2"
+                      >
+                        <X className="mr-1 h-4 w-4" /> Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
+                          const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
+                          
+                          if (nameInput && shelfLifeInput) {
+                            const name = nameInput.value;
+                            const shelfLife = parseInt(shelfLifeInput.value, 10);
+                            
+                            if (!name.trim()) {
+                              toast({
+                                title: "Name required",
+                                description: "Please provide a name for the product",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            
+                            if (isNaN(shelfLife) || shelfLife <= 0) {
+                              toast({
+                                title: "Invalid shelf life",
+                                description: "Please provide a valid shelf life (days)",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            
+                            const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
+                            
+                            const iconName = document.querySelector('button[variant="default"][type="button"]')?.textContent || 'apple';
+                            
+                            // Create React element for the icon
+                            const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+                              iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+                            
+                            const IconComponent = (LucideIcons as any)[pascalCaseName];
+                            
+                            let iconElement;
+                            if (IconComponent) {
+                              iconElement = React.createElement(IconComponent, { className: "h-5 w-5" });
+                            } else {
+                              iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
+                            }
+                            
+                            // Create a new custom product
+                            const newProduct: IconOption = {
+                              value: productId,
+                              label: name.trim(),
+                              icon: iconElement,
+                              shelfLife: shelfLife
+                            };
+                            
+                            handleAddCustomProduct(newProduct);
+                          }
+                        }}
+                        className="mt-2"
+                      >
+                        <Plus className="mr-1 h-4 w-4" /> Add Product
+                      </Button>
+                    </DialogFooter>
+                  )}
                 </TabsContent>
               </div>
             </Tabs>
           </div>
           
-          <DialogClose asChild>
-            <Button type="button" className="mt-2">Done</Button>
-          </DialogClose>
+          {!isAddingProduct && (
+            <DialogClose asChild>
+              <Button type="button" className="mt-2">
+                <Check className="mr-1 h-4 w-4" /> Done
+              </Button>
+            </DialogClose>
+          )}
         </DialogContent>
       </Dialog>
       

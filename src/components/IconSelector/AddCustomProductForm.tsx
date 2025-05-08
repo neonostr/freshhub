@@ -112,22 +112,6 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
             onChange={(e) => setShelfLife(e.target.value)}
           />
         </div>
-        
-        <div className="flex justify-end gap-2 pt-4">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={onCancel}
-          >
-            Cancel
-          </Button>
-          <Button 
-            size="sm"
-            onClick={handleSubmit}
-          >
-            Add Product
-          </Button>
-        </div>
       </div>
     </div>
   );
