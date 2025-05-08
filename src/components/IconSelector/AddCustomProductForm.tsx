@@ -4,11 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
-import CustomIconSelector, { IconOption as IconSelectorOption } from './CustomIconSelector';
+import CustomIconSelector from './CustomIconSelector';
 import { IconOption } from '@/data/productData';
 
+interface FoodIconOption {
+  name: string;
+  icon: string;
+}
+
 interface AddCustomProductFormProps {
-  availableIcons: IconSelectorOption[];
+  availableIcons: FoodIconOption[];
   onAdd: (product: IconOption) => void;
   onCancel: () => void;
 }

@@ -11,7 +11,11 @@ import ProductsList from './IconSelector/ProductsList';
 import ShelfLifeList from './IconSelector/ShelfLifeList';
 import AddCustomProductForm from './IconSelector/AddCustomProductForm';
 import CustomProductsList from './IconSelector/CustomProductsList';
-import { IconOption as IconSelectorOption } from './IconSelector/CustomIconSelector';
+
+interface FoodIconOption {
+  name: string;
+  icon: string;
+}
 
 const IconManagerDialog: React.FC = () => {
   const { 
@@ -154,7 +158,7 @@ const IconManagerDialog: React.FC = () => {
   };
 
   // Food/beverage related icon options
-  const foodIcons: IconSelectorOption[] = [
+  const foodIcons: FoodIconOption[] = [
     { name: 'Apple', icon: 'apple' },
     { name: 'Banana', icon: 'banana' },
     { name: 'Beer', icon: 'beer' },
@@ -167,7 +171,7 @@ const IconManagerDialog: React.FC = () => {
     { name: 'Fish', icon: 'fish' },
     { name: 'Grape', icon: 'grape' },
     { name: 'Ham', icon: 'ham' },
-    { name: 'Ice Cream', icon: 'ice-cream-cone' },
+    { name: 'Ice Cream', icon: 'ice-cream-bowl' },
     { name: 'Milk', icon: 'milk' },
     { name: 'Pizza', icon: 'pizza' },
     { name: 'Salad', icon: 'salad' },
