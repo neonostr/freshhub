@@ -11,7 +11,7 @@ import ShelfLifeList from './IconSelector/ShelfLifeList';
 import AddCustomProductForm from './IconSelector/AddCustomProductForm';
 import CustomProductsList from './IconSelector/CustomProductsList';
 import { FoodIconOption, EditableProductProps } from '@/types/iconTypes';
-import { IconOption } from '@/data/productData';
+import { IconOption, ALL_ICONS } from '@/data/productData';
 import * as LucideIcons from 'lucide-react';
 
 const IconManagerDialog: React.FC = () => {
@@ -101,11 +101,12 @@ const IconManagerDialog: React.FC = () => {
     let iconName = '';
     
     // Try to extract the icon name with proper null checking
-    if (React.isValidElement(product.icon) && 
-        product.icon.type) {
+    const iconElement = product.icon;
+    if (React.isValidElement(iconElement) && 
+        iconElement.type) {
       
-      // Check if displayName exists in a type-safe way
-      const iconType = product.icon.type as { displayName?: string };
+      // Safely check if displayName exists 
+      const iconType = iconElement.type as { displayName?: string };
       if (iconType && iconType.displayName) {
         // Convert from PascalCase to kebab-case
         iconName = iconType.displayName
@@ -233,54 +234,34 @@ const IconManagerDialog: React.FC = () => {
     }
   };
 
-  // Comprehensive list of food & beverage related icons available in lucide-react
-  // These are all verified to work with the library
-  const foodIcons: FoodIconOption[] = [
-    { name: "Apple", icon: "apple" },
-    { name: "Avocado", icon: "avocado" },
-    { name: "Bacon", icon: "bacon" },
-    { name: "Banana", icon: "banana" },
-    { name: "Beef", icon: "beef" },
-    { name: "Beer", icon: "beer" },
-    { name: "Bottle", icon: "bottle" },
-    { name: "Bowl", icon: "bowl" },
-    { name: "Cake", icon: "cake" },
-    { name: "Candy", icon: "candy" },
-    { name: "Carrot", icon: "carrot" },
-    { name: "Cherry", icon: "cherry" },
-    { name: "Citrus", icon: "citrus" },
-    { name: "Coffee", icon: "coffee" },
-    { name: "Cookie", icon: "cookie" },
-    { name: "Corn", icon: "corn" },
-    { name: "Croissant", icon: "croissant" },
-    { name: "Donut", icon: "donut" },
-    { name: "Drumstick", icon: "drumstick" },
-    { name: "Egg", icon: "egg" },
-    { name: "Fish", icon: "fish" },
-    { name: "Garlic", icon: "garlic" },
-    { name: "Grape", icon: "grape" },
-    { name: "Hamburger", icon: "hamburger" },
-    { name: "Ice Cream", icon: "ice-cream" },
-    { name: "Lemon", icon: "lemon" },
-    { name: "Lettuce", icon: "lettuce" },
-    { name: "Milk", icon: "milk" },
-    { name: "Mushroom", icon: "mushroom" },
-    { name: "Noodles", icon: "noodles" },
-    { name: "Onion", icon: "onion" },
-    { name: "Orange", icon: "orange" },
-    { name: "Pancake", icon: "pancake" },
-    { name: "Pear", icon: "pear" },
-    { name: "Pizza", icon: "pizza" },
-    { name: "Potato", icon: "potato" },
-    { name: "Salad", icon: "salad" },
-    { name: "Sandwich", icon: "sandwich" },
-    { name: "Shrimp", icon: "shrimp" },
-    { name: "Soup", icon: "soup" },
-    { name: "Strawberry", icon: "strawberry" },
-    { name: "Sushi", icon: "sushi" },
-    { name: "Tomato", icon: "tomato" },
-    { name: "Watermelon", icon: "watermelon" },
-  ];
+  // Get the icons used in the main product data to ensure consistency
+  const foodIcons: FoodIconOption[] = Object.entries(ALL_ICONS).map(([key, iconData]) => {
+    // Extract icon name from component
+    let iconName = '';
+    if (React.isValidElement(iconData.icon)) {
+      const iconType = iconData.icon.type as { displayName?: string };
+      if (iconType && iconType.displayName) {
+        iconName = iconType.displayName
+          .replace(/([a-z])([A-Z])/g, '$1-$2')
+          .toLowerCase();
+      }
+    }
+    
+    // Use default if extraction failed
+    if (!iconName) {
+      // Try to derive from the key if possible
+      const match = key.match(/[a-zA-Z]+/);
+      iconName = match ? match[0].toLowerCase() : 'apple'; 
+    }
+    
+    return {
+      name: iconData.label,
+      icon: iconName
+    };
+  }).filter((icon, index, self) => 
+    // Remove duplicates based on icon name
+    index === self.findIndex((t) => t.icon === icon.icon)
+  ).sort((a, b) => a.name.localeCompare(b.name));
   
   return (
     <>
@@ -450,7 +431,8 @@ const IconManagerDialog: React.FC = () => {
             </Tabs>
           </div>
           
-          {!isAddingProduct && (
+          {/* Restore "Done" button for Products and Shelf Life tabs */}
+          {!isAddingProduct && !editingProduct && (
             <DialogClose asChild>
               <Button type="button" className="mt-2">
                 <Check className="mr-1 h-4 w-4" /> Done

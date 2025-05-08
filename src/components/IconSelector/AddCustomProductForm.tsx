@@ -8,6 +8,8 @@ import CustomIconSelector from './CustomIconSelector';
 import { IconOption } from '@/data/productData';
 import { FoodIconOption } from '@/types/iconTypes';
 import * as LucideIcons from 'lucide-react';
+import { DialogFooter } from '@/components/ui/dialog';
+import { Plus, X } from 'lucide-react';
 
 interface AddCustomProductFormProps {
   availableIcons: FoodIconOption[];
@@ -78,10 +80,10 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
   };
 
   return (
-    <div className="bg-muted/50 p-4 rounded-md mb-4">
+    <div className="bg-muted/50 p-4 rounded-md flex flex-col max-h-[400px]">
       <h3 className="text-sm font-medium mb-3">Add New Product</h3>
       
-      <div className="space-y-3">
+      <div className="space-y-3 flex-grow">
         <div>
           <Label htmlFor="new-product-name">Product Name</Label>
           <Input
@@ -98,7 +100,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
             icons={availableIcons}
             selectedIcon={selectedIcon}
             onSelect={setSelectedIcon}
-            className="h-48" // Increased height for better usability
+            className="h-40" // Fixed height for the icon selector
           />
         </div>
         
@@ -112,6 +114,22 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
             onChange={(e) => setShelfLife(e.target.value)}
           />
         </div>
+      </div>
+      
+      <div className="flex justify-end space-x-2 mt-4">
+        <Button
+          variant="outline"
+          onClick={onCancel}
+          className="w-1/3"
+        >
+          <X className="mr-1 h-4 w-4" /> Cancel
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          className="w-2/3"
+        >
+          <Plus className="mr-1 h-4 w-4" /> Add Product
+        </Button>
       </div>
     </div>
   );
