@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -26,10 +25,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
       
       // Handle React elements directly (for built-in icons)
       if (React.isValidElement(iconData.icon)) {
-        // Fix: Use a proper type check to ensure className can be applied
-        return React.cloneElement(iconData.icon, { 
-          size: 20 // Using size instead of className which works with Lucide icons
-        });
+        // Use createElement to avoid type errors
+        const IconType = iconData.icon.type;
+        return <IconType size={20} />;
       }
       
       // For custom products, we need to create the icon from the stored name

@@ -1,134 +1,96 @@
-import { Item, FreshnessLevel } from "@/types/item";
-import { format, formatDistanceToNow, differenceInDays } from "date-fns";
-import { ALL_ICONS } from "@/data/productData";
+import { Item, FreshnessLevel } from '@/types/item';
+import { ALL_ICONS } from '@/data/productData';
 
-export const getShelfLife = (item: Item): number => {
-  // If item has custom duration, use that
-  if (item.customDuration) {
-    return item.customDuration;
-  }
-  
-  // Try to get shelf life from local storage custom products
-  const customProductsStr = localStorage.getItem('freshTrackerCustomProducts');
-  if (customProductsStr) {
-    try {
-      const customProducts = JSON.parse(customProductsStr);
-      if (customProducts[item.icon]) {
-        return customProducts[item.icon].shelfLife;
-      }
-    } catch (e) {
-      console.error('Error parsing custom products:', e);
-    }
-  }
-  
-  // Get custom shelf life if available
-  const customShelfLifeStr = localStorage.getItem('freshTrackerCustomShelfLife');
-  if (customShelfLifeStr) {
-    try {
-      const customShelfLife = JSON.parse(customShelfLifeStr);
-      if (customShelfLife[item.icon]) {
-        return customShelfLife[item.icon];
-      }
-    } catch (e) {
-      console.error('Error parsing custom shelf life:', e);
-    }
-  }
-  
-  // Otherwise use the default shelf life for the icon
-  // Fall back to 7 days if icon not found
-  return ALL_ICONS[item.icon]?.shelfLife ?? 7;
-};
-
+// Function to calculate freshness level based on opened date
 export const calculateFreshnessLevel = (item: Item): FreshnessLevel => {
-  const daysSinceOpened = differenceInDays(new Date(), new Date(item.openedDate));
-  const shelfLife = getShelfLife(item);
+  const openedDate = new Date(item.openedDate);
+  const currentDate = new Date();
+  const timeDiff = currentDate.getTime() - openedDate.getTime();
+  const daysOpen = Math.ceil(timeDiff / (1000 * 3600 * 24));
   
-  const percentUsed = (daysSinceOpened / shelfLife) * 100;
+  // Get shelf life from icon data or use default
+  const shelfLife = getShelfLifeData(item.icon) ?? 30; // Default to 30 days
   
-  if (percentUsed < 25) return 'fresh';
-  if (percentUsed < 75) return 'good';
-  if (percentUsed < 100) return 'warning';
-  return 'expired';
-};
-
-export const getFreshnessColor = (level: FreshnessLevel): string => {
-  switch (level) {
-    case 'fresh': return 'fresh-green';
-    case 'good': return 'fresh-yellow';
-    case 'warning': return 'fresh-orange';
-    case 'expired': return 'fresh-red';
+  const warningThreshold = shelfLife * 0.75; // 75% of shelf life
+  const expiredThreshold = shelfLife; // 100% of shelf life
+  
+  if (daysOpen > expiredThreshold) {
+    return 'expired';
+  } else if (daysOpen > warningThreshold) {
+    return 'warning';
+  } else if (daysOpen > shelfLife / 2) {
+    return 'good';
+  } else {
+    return 'fresh';
   }
 };
 
-export const formatOpenedDate = (date: string): string => {
-  return format(new Date(date), 'MMM d, yyyy');
+// Function to format the opened date
+export const formatOpenedDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 };
 
-export const formatTimeOpen = (date: string): string => {
-  return formatDistanceToNow(new Date(date), { addSuffix: true });
+// Function to calculate and format time since opened
+export const formatTimeOpen = (dateString: string): string => {
+  const openedDate = new Date(dateString);
+  const currentDate = new Date();
+  const timeDiff = currentDate.getTime() - openedDate.getTime();
+  const daysOpen = Math.floor(timeDiff / (1000 * 3600 * 24));
+  
+  if (daysOpen < 1) {
+    const hoursOpen = Math.floor(timeDiff / (1000 * 3600));
+    return hoursOpen < 1 ? 'less than an hour' : `${hoursOpen} hour(s)`;
+  } else if (daysOpen === 1) {
+    return '1 day';
+  } else {
+    return `${daysOpen} days`;
+  }
 };
 
-export const generateId = (): string => {
-  return Math.random().toString(36).substring(2, 15);
-};
-
-export const saveItems = (items: Item[]): void => {
-  localStorage.setItem('freshTrackerItems', JSON.stringify(items));
-};
-
+// Function to load items from local storage
 export const loadItems = (): Item[] => {
-  const storedItems = localStorage.getItem('freshTrackerItems');
-  return storedItems ? JSON.parse(storedItems) : [];
+  try {
+    const storedItems = localStorage.getItem('freshItems');
+    return storedItems ? JSON.parse(storedItems) : [];
+  } catch (error) {
+    console.error("Failed to load items from local storage:", error);
+    return [];
+  }
 };
 
-// Update getCategoryForIcon to use our centralized mapping
-export const getCategoryForIcon = (iconName: string): string => {
-  // Check if it's a custom product
-  if (iconName.startsWith('custom_')) {
-    return 'custom';
+// Function to save items to local storage
+export const saveItems = (items: Item[]): void => {
+  try {
+    localStorage.setItem('freshItems', JSON.stringify(items));
+  } catch (error) {
+    console.error("Failed to save items to local storage:", error);
   }
+};
+
+// Function to get shelf life data from ALL_ICONS
+export const getShelfLifeData = (iconId: string): number | undefined => {
+  const iconData = ALL_ICONS[iconId];
+  return iconData ? iconData.shelfLife : undefined;
+};
+
+// Calculate days until the item expires based on its shelf life
+export const calculateDaysUntilExpiry = (item: Item): number => {
+  const openedDate = new Date(item.openedDate);
+  const currentDate = new Date();
   
-  // Simple category mapping based on product types
-  if (iconName.includes('milk') || iconName.includes('cream') || 
-      iconName.includes('cheese') || iconName === 'eggs') {
-    return 'dairy';
-  }
+  // Calculate days since the item was opened
+  const daysSinceOpened = Math.floor((currentDate.getTime() - openedDate.getTime()) / (1000 * 60 * 60 * 24));
   
-  if (iconName.includes('coffee')) {
-    return 'coffee';
-  }
+  // If we don't have shelf life data for this item, use a default value
+  const defaultShelfLife = 30; // default shelf life in days if none specified
   
-  if (iconName.includes('apple') || iconName.includes('banana') || 
-      iconName.includes('carrot') || iconName.includes('cherry') || 
-      iconName.includes('salad') || iconName.includes('fruit') || 
-      iconName.includes('vegetable')) {
-    return 'produce';
-  }
+  // Get the shelf life from the item's icon data if available
+  const shelfLifeData = getShelfLifeData(item.icon);
   
-  if (iconName.includes('cookie') || iconName.includes('cake') || 
-      iconName.includes('bread') || iconName.includes('bagel')) {
-    return 'bakery';
-  }
+  // Calculate days until expiry
+  const shelfLife = shelfLifeData ?? defaultShelfLife;
+  const daysUntilExpiry = shelfLife - daysSinceOpened;
   
-  if (iconName.includes('pizza') || iconName.includes('sandwich')) {
-    return 'ready-meals';
-  }
-  
-  if (iconName.includes('beef') || iconName.includes('chicken') || 
-      iconName.includes('meat') || iconName.includes('turkey') || 
-      iconName.includes('pork')) {
-    return 'meat';
-  }
-  
-  if (iconName.includes('beer') || iconName.includes('wine') || 
-      iconName.includes('juice')) {
-    return 'drinks';
-  }
-  
-  if (iconName.includes('fish') || iconName.includes('shrimp')) {
-    return 'seafood';
-  }
-  
-  // Default category
-  return 'other';
+  return daysUntilExpiry > 0 ? daysUntilExpiry : 0;
 };

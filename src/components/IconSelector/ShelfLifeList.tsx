@@ -3,7 +3,6 @@ import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 import { IconOption } from '@/data/productData';
 
 interface ShelfLifeListProps {
@@ -41,7 +40,7 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
                 <div className="p-2 bg-muted rounded-md">
                   {renderIcon(icon.icon)}
                 </div>
-                <Label className={cn(isCustomProduct(icon.value) ? "font-semibold" : "")}>
+                <Label>
                   {icon.label}
                 </Label>
               </div>
@@ -49,8 +48,9 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
               <div className="flex-1 flex items-center gap-2">
                 <Input
                   type="number"
-                  min="1"
                   inputMode="numeric"
+                  pattern="[0-9]*"
+                  min="1"
                   value={getDisplayValue(icon.value)}
                   onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
                   onFocus={() => handleShelfLifeFocus(icon.value)}
