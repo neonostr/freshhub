@@ -98,6 +98,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
             icons={availableIcons}
             selectedIcon={selectedIcon}
             onSelect={setSelectedIcon}
+            className="h-48" // Increased height for better usability
           />
         </div>
         

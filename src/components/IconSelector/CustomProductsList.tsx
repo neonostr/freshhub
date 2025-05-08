@@ -5,31 +5,38 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Edit, Trash2, Check, X } from 'lucide-react';
 import { IconOption } from '@/data/productData';
+import { EditableProductProps } from '@/types/iconTypes';
 
 interface CustomProductsListProps {
   products: IconOption[];
-  editingName: Record<string, string>;
-  startEditingName: (value: string) => void;
-  saveProductName: (value: string) => void;
-  cancelEditingName: () => void;
+  editingProduct: EditableProductProps | null;
+  startEditingProduct: (product: IconOption) => void;
+  saveProductChanges: () => void;
+  cancelEditingProduct: () => void;
   confirmDelete: (value: string) => void;
   renderIcon: (icon: React.ReactNode) => React.ReactNode;
   onAddNewClick: () => void;
   isAdding: boolean;
-  updateEditingName: (value: string, name: string) => void;
+  updateEditingField: (field: string, value: string | number) => void;
+  availableIcons: { name: string, icon: string }[];
+  editingIcon: string;
+  setEditingIcon: (iconName: string) => void;
 }
 
 const CustomProductsList: React.FC<CustomProductsListProps> = ({
   products,
-  editingName,
-  startEditingName,
-  saveProductName,
-  cancelEditingName,
+  editingProduct,
+  startEditingProduct,
+  saveProductChanges,
+  cancelEditingProduct,
   confirmDelete,
   renderIcon,
   onAddNewClick,
   isAdding,
-  updateEditingName
+  updateEditingField,
+  availableIcons,
+  editingIcon,
+  setEditingIcon
 }) => {
   if (products.length === 0) {
     return (
@@ -61,30 +68,64 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
               {renderIcon(product.icon)}
             </div>
             
-            {editingName[product.value] !== undefined ? (
-              <div className="flex-1 flex items-center gap-2">
-                <Input
-                  value={editingName[product.value]}
-                  onChange={(e) => updateEditingName(product.value, e.target.value)}
-                  className="flex-1"
-                  autoFocus
-                />
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => saveProductName(product.value)}
-                  className="h-8 w-8 p-0"
-                >
-                  <Check className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={cancelEditingName}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+            {editingProduct && editingProduct.productId === product.value ? (
+              <div className="flex-1 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">Name:</label>
+                  <Input
+                    value={editingProduct.name}
+                    onChange={(e) => updateEditingField('name', e.target.value)}
+                    className="flex-1"
+                  />
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">Icon:</label>
+                  <ScrollArea className="h-24 w-full border rounded-md">
+                    <div className="grid grid-cols-5 gap-1 p-1">
+                      {availableIcons.map((icon) => (
+                        <Button
+                          key={icon.icon}
+                          type="button"
+                          size="sm"
+                          variant={editingIcon === icon.icon ? "default" : "outline"}
+                          className="h-8 w-8 p-0"
+                          onClick={() => setEditingIcon(icon.icon)}
+                        >
+                          {renderIcon(icon.icon)}
+                        </Button>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">Shelf Life:</label>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={editingProduct.shelfLife}
+                    onChange={(e) => updateEditingField('shelfLife', parseInt(e.target.value) || 1)}
+                    className="w-20"
+                  />
+                  <span className="text-sm">days</span>
+                </div>
+                
+                <div className="flex justify-end gap-2 mt-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={cancelEditingProduct}
+                  >
+                    <X className="h-4 w-4 mr-1" /> Cancel
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    onClick={saveProductChanges}
+                  >
+                    <Check className="h-4 w-4 mr-1" /> Save
+                  </Button>
+                </div>
               </div>
             ) : (
               <div className="flex-1 flex items-center justify-between">
@@ -95,12 +136,12 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
               </div>
             )}
             
-            {editingName[product.value] === undefined && (
+            {(!editingProduct || editingProduct.productId !== product.value) && (
               <div className="flex items-center gap-1">
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={() => startEditingName(product.value)}
+                  onClick={() => startEditingProduct(product)}
                   className="h-8 w-8 p-0"
                 >
                   <Edit className="h-4 w-4" />

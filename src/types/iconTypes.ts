@@ -10,3 +10,10 @@ export interface IconSelectorProps {
   onSelect: (iconName: string) => void;
   className?: string;
 }
+
+export interface EditableProductProps {
+  productId: string;
+  name: string;
+  icon: string;
+  shelfLife: number;
+}

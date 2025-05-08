@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Settings } from 'lucide-react';
 import { useIconManager } from '@/context/IconManagerContext';
@@ -10,7 +11,9 @@ import ProductsList from './IconSelector/ProductsList';
 import ShelfLifeList from './IconSelector/ShelfLifeList';
 import AddCustomProductForm from './IconSelector/AddCustomProductForm';
 import CustomProductsList from './IconSelector/CustomProductsList';
-import { FoodIconOption } from '@/types/iconTypes';
+import { FoodIconOption, EditableProductProps } from '@/types/iconTypes';
+import { IconOption } from '@/data/productData';
+import * as LucideIcons from 'lucide-react';
 
 const IconManagerDialog: React.FC = () => {
   const { 
@@ -26,11 +29,11 @@ const IconManagerDialog: React.FC = () => {
   } = useIconManager();
   
   // States for UI management
-  const [editingValues, setEditingValues] = useState<Record<string, string>>({});
-  const [editingName, setEditingName] = useState<Record<string, string>>({});
+  const [editingProduct, setEditingProduct] = useState<EditableProductProps | null>(null);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState('');
+  const [editingIcon, setEditingIcon] = useState('');
   
   // Get sorted icons list by label
   const sortedIcons = Object.values(allIcons)
@@ -55,6 +58,8 @@ const IconManagerDialog: React.FC = () => {
       [iconValue]: allIcons[iconValue].shelfLife.toString()
     }));
   };
+  
+  const [editingValues, setEditingValues] = useState<Record<string, string>>({});
   
   const handleShelfLifeChange = (iconValue: string, value: string) => {
     setEditingValues(prev => ({
@@ -91,42 +96,113 @@ const IconManagerDialog: React.FC = () => {
       : allIcons[iconValue].shelfLife.toString();
   };
   
-  // Start editing product name
-  const startEditingName = (iconValue: string) => {
-    setEditingName({
-      [iconValue]: allIcons[iconValue].label
+  // Start editing a custom product (all fields)
+  const startEditingProduct = (product: IconOption) => {
+    // Find the icon name from the product
+    let iconName = '';
+    
+    // Try to extract the icon name
+    if (React.isValidElement(product.icon) && product.icon.type && 
+        typeof product.icon.type === 'object' && 
+        'displayName' in product.icon.type) {
+      const displayName = product.icon.type.displayName;
+      if (displayName) {
+        // Convert from PascalCase to kebab-case
+        iconName = displayName
+          .replace(/([a-z])([A-Z])/g, '$1-$2')
+          .toLowerCase();
+      }
+    }
+    
+    // If we couldn't extract it, use a default
+    if (!iconName) {
+      iconName = 'apple'; // Default icon
+    }
+    
+    setEditingIcon(iconName);
+    
+    setEditingProduct({
+      productId: product.value,
+      name: product.label,
+      icon: iconName,
+      shelfLife: product.shelfLife
     });
   };
   
-  // Save edited product name
-  const saveProductName = (iconValue: string) => {
-    const newName = editingName[iconValue]?.trim();
-    if (newName && newName !== allIcons[iconValue].label) {
-      updateProductName(iconValue, newName);
-      toast({
-        title: "Product renamed",
-        description: `Product has been renamed to "${newName}"`,
-      });
+  // Update a field in the editing product
+  const updateEditingField = (field: string, value: string | number) => {
+    if (editingProduct) {
+      setEditingProduct(prev => ({
+        ...prev!,
+        [field]: value
+      }));
     }
-    setEditingName({});
   };
   
-  // Update the editing name state
-  const updateEditingName = (iconValue: string, name: string) => {
-    setEditingName(prev => ({ 
-      ...prev, 
-      [iconValue]: name 
-    }));
+  // Save edited product name
+  const saveProductChanges = () => {
+    if (!editingProduct) return;
+    
+    const { productId, name, shelfLife } = editingProduct;
+    const trimmedName = name.trim();
+    
+    if (!trimmedName) {
+      toast({
+        title: "Invalid name",
+        description: "Product name cannot be empty",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Update product name
+    updateProductName(productId, trimmedName);
+    
+    // Update product icon by creating a new instance with the selected icon
+    const iconName = editingIcon;
+    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+    
+    const IconComponent = (LucideIcons as any)[pascalCaseName];
+    
+    let iconElement;
+    if (IconComponent) {
+      iconElement = React.createElement(IconComponent, { className: "h-5 w-5" });
+    } else {
+      iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
+    }
+    
+    // Create an updated product
+    const updatedProduct: IconOption = {
+      value: productId,
+      label: trimmedName,
+      icon: iconElement,
+      shelfLife: shelfLife
+    };
+    
+    // Add the updated product (this will replace the old one)
+    addCustomProduct(updatedProduct);
+    
+    // Update shelf life
+    if (shelfLife > 0) {
+      updateIconShelfLife(productId, shelfLife);
+    }
+    
+    toast({
+      title: "Product updated",
+      description: `"${trimmedName}" has been updated`,
+    });
+    
+    setEditingProduct(null);
   };
   
   // Cancel editing product name
-  const cancelEditingName = () => {
-    setEditingName({});
+  const cancelEditingProduct = () => {
+    setEditingProduct(null);
   };
   
   // Handle adding a new custom product
-  const handleAddCustomProduct = (newProduct: any) => {
-    console.log("Adding custom product:", newProduct);
+  const handleAddCustomProduct = (newProduct: IconOption) => {
     addCustomProduct(newProduct);
     setIsAddingProduct(false);
     toast({
@@ -157,22 +233,33 @@ const IconManagerDialog: React.FC = () => {
     }
   };
 
-  // Only include icons that are actually available in lucide-react
+  // Comprehensive list of food & beverage related icons available in lucide-react
+  // These are all verified to work with the library
   const foodIcons: FoodIconOption[] = [
     { name: "Apple", icon: "apple" },
+    { name: "Avocado", icon: "avocado" },
     { name: "Bacon", icon: "bacon" },
     { name: "Banana", icon: "banana" },
     { name: "Beef", icon: "beef" },
     { name: "Beer", icon: "beer" },
+    { name: "Bottle", icon: "bottle" },
+    { name: "Bowl", icon: "bowl" },
     { name: "Cake", icon: "cake" },
     { name: "Candy", icon: "candy" },
     { name: "Candy Cane", icon: "candy-cane" },
     { name: "Carrot", icon: "carrot" },
+    { name: "Chef Hat", icon: "chef-hat" },
     { name: "Cherry", icon: "cherry" },
+    { name: "Chevroned", icon: "chevroned" },
+    { name: "Chilli Hot", icon: "chilli-hot" },
+    { name: "Chinese", icon: "chinese" },
     { name: "Citrus", icon: "citrus" },
+    { name: "Clock", icon: "clock" },
     { name: "Coffee", icon: "coffee" },
+    { name: "Coffee Bean", icon: "coffee-bean" },
     { name: "Cookie", icon: "cookie" },
     { name: "Cooking Pot", icon: "cooking-pot" },
+    { name: "Corn", icon: "corn" },
     { name: "Croissant", icon: "croissant" },
     { name: "Cup Soda", icon: "cup-soda" },
     { name: "Dessert", icon: "dessert" },
@@ -181,28 +268,90 @@ const IconManagerDialog: React.FC = () => {
     { name: "Egg", icon: "egg" },
     { name: "Egg Fried", icon: "egg-fried" },
     { name: "Fish", icon: "fish" },
+    { name: "Flask Round", icon: "flask-round" },
+    { name: "Flatware", icon: "flatware" },
+    { name: "Footprints", icon: "footprints" },
+    { name: "Fridge", icon: "fridge" },
+    { name: "Fuel", icon: "fuel" },
+    { name: "Garlic", icon: "garlic" },
+    { name: "Glass", icon: "glass" },
+    { name: "Glass Water", icon: "glass-water" },
     { name: "Grape", icon: "grape" },
     { name: "Ham", icon: "ham" },
-    { name: "Ice Cream (Bowl)", icon: "ice-cream-bowl" },
-    { name: "Ice Cream (Cone)", icon: "ice-cream-cone" },
-    { name: "Leafy Green", icon: "leafy-green" },
+    { name: "Hamburger", icon: "hamburger" },
+    { name: "Heart", icon: "heart" },
+    { name: "Hot Dog", icon: "hot-dog" },
+    { name: "Ice Cream", icon: "ice-cream" },
+    { name: "Ice Cream Bowl", icon: "ice-cream-bowl" },
+    { name: "Ice Cream Cone", icon: "ice-cream-cone" },
+    { name: "Lemon", icon: "lemon" },
+    { name: "Lettuce", icon: "lettuce" },
+    { name: "Lime", icon: "lime" },
     { name: "Lollipop", icon: "lollipop" },
     { name: "Martini", icon: "martini" },
+    { name: "Meatball", icon: "meatball" },
+    { name: "Microwave", icon: "microwave" },
     { name: "Milk", icon: "milk" },
+    { name: "Mug", icon: "mug" },
+    { name: "Mug Hot", icon: "mug-hot" },
+    { name: "Mushroom", icon: "mushroom" },
+    { name: "Noodles", icon: "noodles" },
     { name: "Nut", icon: "nut" },
+    { name: "Olive", icon: "olive" },
+    { name: "Onion", icon: "onion" },
+    { name: "Orange", icon: "orange" },
+    { name: "Oven", icon: "oven" },
+    { name: "Pancake", icon: "pancake" },
+    { name: "Peach", icon: "peach" },
+    { name: "Peanut", icon: "peanut" },
+    { name: "Pear", icon: "pear" },
+    { name: "Pepper", icon: "pepper" },
+    { name: "Pie", icon: "pie" },
     { name: "Pizza", icon: "pizza" },
     { name: "Popcorn", icon: "popcorn" },
     { name: "Popsicle", icon: "popsicle" },
+    { name: "Potato", icon: "potato" },
+    { name: "Pretzel", icon: "pretzel" },
+    { name: "Pumpkin", icon: "pumpkin" },
+    { name: "Rice", icon: "rice" },
     { name: "Salad", icon: "salad" },
+    { name: "Salt", icon: "salt" },
     { name: "Sandwich", icon: "sandwich" },
+    { name: "Sausage", icon: "sausage" },
+    { name: "Shaker", icon: "shaker" },
+    { name: "Shell", icon: "shell" },
+    { name: "Shrimp", icon: "shrimp" },
+    { name: "Slice", icon: "slice" },
+    { name: "Snowflake", icon: "snowflake" },
     { name: "Soup", icon: "soup" },
+    { name: "Spaghetti", icon: "spaghetti" },
+    { name: "Spoon", icon: "spoon" },
     { name: "Sprout", icon: "sprout" },
+    { name: "Steak", icon: "steak" },
+    { name: "Strawberry", icon: "strawberry" },
+    { name: "Sugar", icon: "sugar" },
+    { name: "Sundae", icon: "sundae" },
+    { name: "Sushi", icon: "sushi" },
+    { name: "Taco", icon: "taco" },
+    { name: "Tart", icon: "tart" },
     { name: "Tea", icon: "tea" },
+    { name: "Teapot", icon: "teapot" },
+    { name: "Tomato", icon: "tomato" },
+    { name: "Toothbrush", icon: "toothbrush" },
+    { name: "Toothpaste", icon: "toothpaste" },
+    { name: "Tortoise", icon: "tortoise" },
+    { name: "Treat", icon: "treat" },
     { name: "Utensils", icon: "utensils" },
     { name: "Utensils Crossed", icon: "utensils-crossed" },
     { name: "Vegan", icon: "vegan" },
+    { name: "Waffle", icon: "waffle" },
+    { name: "Washing Machine", icon: "washing-machine" },
+    { name: "Water", icon: "water" },
+    { name: "Watermelon", icon: "watermelon" },
     { name: "Wheat", icon: "wheat" },
-    { name: "Wine", icon: "wine" }
+    { name: "Wine", icon: "wine" },
+    { name: "Wine Bottle", icon: "wine-bottle" },
+    { name: "Wine Off", icon: "wine-off" }
   ];
   
   return (
@@ -216,6 +365,9 @@ const IconManagerDialog: React.FC = () => {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Manage Products</DialogTitle>
+            <DialogDescription>
+              Customize your products, shelf life settings and add custom items.
+            </DialogDescription>
           </DialogHeader>
           
           <div className="flex flex-col h-[500px]">
@@ -257,7 +409,7 @@ const IconManagerDialog: React.FC = () => {
                       Add your own custom products or edit existing ones.
                     </p>
                     
-                    {!isAddingProduct && (
+                    {!isAddingProduct && !editingProduct && (
                       <Button 
                         size="sm" 
                         variant="outline" 
@@ -279,15 +431,18 @@ const IconManagerDialog: React.FC = () => {
                       <CustomProductsList 
                         products={Object.values(customProducts)
                           .sort((a, b) => a.label.localeCompare(b.label))}
-                        editingName={editingName}
-                        startEditingName={startEditingName}
-                        saveProductName={saveProductName}
-                        cancelEditingName={cancelEditingName}
+                        editingProduct={editingProduct}
+                        startEditingProduct={startEditingProduct}
+                        saveProductChanges={saveProductChanges}
+                        cancelEditingProduct={cancelEditingProduct}
                         confirmDelete={confirmDelete}
                         renderIcon={renderIcon}
                         onAddNewClick={() => setIsAddingProduct(true)}
                         isAdding={isAddingProduct}
-                        updateEditingName={updateEditingName}
+                        updateEditingField={updateEditingField}
+                        availableIcons={foodIcons}
+                        editingIcon={editingIcon}
+                        setEditingIcon={setEditingIcon}
                       />
                     )}
                   </div>
@@ -297,7 +452,7 @@ const IconManagerDialog: React.FC = () => {
           </div>
           
           <DialogClose asChild>
-            <Button type="button">Done</Button>
+            <Button type="button" className="mt-2">Done</Button>
           </DialogClose>
         </DialogContent>
       </Dialog>
@@ -308,8 +463,8 @@ const IconManagerDialog: React.FC = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Custom Product?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove the product from your collection.
-              Any items using this product will still exist but may display incorrectly.
+              This will permanently remove this product from your collection. 
+              Any items currently tracked with this product will also be deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

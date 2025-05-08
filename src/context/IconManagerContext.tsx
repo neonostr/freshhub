@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { ALL_ICONS, DEFAULT_SELECTED_ICONS, IconOption } from '@/data/productData';
+import { saveItems, loadItems } from '@/utils/itemUtils';
 
 interface IconManagerContextType {
   availableIcons: IconOption[];
@@ -158,6 +159,15 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
     // Remove from selected icons first
     if (isIconSelected(iconValue)) {
       setSelectedIconValues(prev => prev.filter(v => v !== iconValue));
+    }
+    
+    // Remove all items that use this custom product
+    const items = loadItems();
+    const filteredItems = items.filter(item => item.icon !== iconValue);
+    
+    // If we removed any items, save the updated list
+    if (filteredItems.length !== items.length) {
+      saveItems(filteredItems);
     }
     
     // Then remove the custom product
