@@ -43,7 +43,7 @@ const IconManagerDialog: React.FC = () => {
   // Helper function to safely render icons
   const renderIcon = (icon: React.ReactNode): React.ReactNode => {
     if (React.isValidElement(icon)) {
-      return React.cloneElement(icon, { className: "h-5 w-5" });
+      return React.cloneElement(icon as React.ReactElement, { size: 20 });
     }
     
     // If it's not a valid element, return a fallback
@@ -105,13 +105,16 @@ const IconManagerDialog: React.FC = () => {
     if (React.isValidElement(product.icon) && 
         product.icon.type && 
         typeof product.icon.type === 'object' && 
-        product.icon.type !== null &&
-        'displayName' in product.icon.type && 
-        product.icon.type.displayName) {
-      // Convert from PascalCase to kebab-case
-      iconName = product.icon.type.displayName
-        .replace(/([a-z])([A-Z])/g, '$1-$2')
-        .toLowerCase();
+        product.icon.type !== null) {
+      
+      // Check if displayName exists in a type-safe way
+      const iconType = product.icon.type as { displayName?: string };
+      if (iconType.displayName) {
+        // Convert from PascalCase to kebab-case
+        iconName = iconType.displayName
+          .replace(/([a-z])([A-Z])/g, '$1-$2')
+          .toLowerCase();
+      }
     }
     
     // If we couldn't extract it, use a default

@@ -20,7 +20,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
     const IconComponent = (LucideIcons as any)[pascalCaseName];
     
     if (IconComponent) {
-      return <IconComponent className="h-5 w-5" />;
+      return <IconComponent size={20} />;
     }
     
     return <div className="h-5 w-5 flex items-center justify-center">?</div>;
@@ -31,7 +31,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
       <div className="grid grid-cols-4 gap-2 p-1">
         {icons.map((icon) => (
           <Button
-            key={icon.name}
+            key={icon.icon}
             type="button"
             variant={selectedIcon === icon.icon ? "default" : "outline"}
             size="sm"

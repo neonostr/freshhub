@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { ALL_ICONS, DEFAULT_SELECTED_ICONS, IconOption } from '@/data/productData';
 import { saveItems, loadItems } from '@/utils/itemUtils';
+import * as LucideIcons from 'lucide-react';
 
 interface IconManagerContextType {
   availableIcons: IconOption[];
@@ -43,12 +44,26 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
           const productData = product as Partial<IconOption> & { iconName?: string };
           
           if (productData.value && productData.label && productData.shelfLife) {
-            // Create a placeholder for the icon - we'll rebuild it when needed
+            // Create the icon component from the stored name
+            const iconName = productData.iconName || 'apple';
+            const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+              iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+            
+            const IconComponent = (LucideIcons as any)[pascalCaseName];
+            let iconElement;
+            
+            if (IconComponent) {
+              iconElement = React.createElement(IconComponent);
+            } else {
+              iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
+            }
+            
+            // Create the fully reconstructed product
             reconstructedProducts[key] = {
               value: productData.value,
               label: productData.label,
               shelfLife: productData.shelfLife,
-              icon: <div className="h-5 w-5" /> // Placeholder
+              icon: iconElement
             };
           }
         }
@@ -83,31 +98,52 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
     .sort((a, b) => a.label.localeCompare(b.label));
   
   useEffect(() => {
-    localStorage.setItem('freshTrackerSelectedIcons', JSON.stringify(selectedIconValues));
+    try {
+      localStorage.setItem('freshTrackerSelectedIcons', JSON.stringify(selectedIconValues));
+    } catch (err) {
+      console.error("Error saving selectedIconValues to localStorage:", err);
+    }
   }, [selectedIconValues]);
   
   useEffect(() => {
-    localStorage.setItem('freshTrackerCustomShelfLife', JSON.stringify(customShelfLife));
+    try {
+      localStorage.setItem('freshTrackerCustomShelfLife', JSON.stringify(customShelfLife));
+    } catch (err) {
+      console.error("Error saving customShelfLife to localStorage:", err);
+    }
   }, [customShelfLife]);
   
   useEffect(() => {
-    // When saving to localStorage, serialize only the necessary properties
-    // without the React component which causes the cyclic reference
-    const serializableProducts = Object.entries(customProducts).reduce((acc, [key, product]) => {
-      // Store only the essential data without the React element
-      return {
-        ...acc,
-        [key]: {
-          value: product.value,
-          label: product.label,
-          shelfLife: product.shelfLife,
-          // Store icon name or identifier instead of React element
-          iconName: typeof product.value === 'string' ? product.value.replace('custom_', '') : 'default'
-        }
-      };
-    }, {});
-    
-    localStorage.setItem('freshTrackerCustomProducts', JSON.stringify(serializableProducts));
+    try {
+      // When saving to localStorage, serialize only the necessary properties
+      // without the React component which causes the cyclic reference
+      const serializableProducts = Object.entries(customProducts).reduce((acc, [key, product]) => {
+        const iconName = React.isValidElement(product.icon) && 
+          product.icon.type && 
+          typeof product.icon.type === 'object' && 
+          product.icon.type !== null &&
+          'displayName' in product.icon.type && 
+          product.icon.type.displayName 
+            ? product.icon.type.displayName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+            : 'apple';
+        
+        // Store only the essential data without the React element
+        return {
+          ...acc,
+          [key]: {
+            value: product.value,
+            label: product.label,
+            shelfLife: product.shelfLife,
+            // Store icon name or identifier
+            iconName: iconName
+          }
+        };
+      }, {});
+      
+      localStorage.setItem('freshTrackerCustomProducts', JSON.stringify(serializableProducts));
+    } catch (err) {
+      console.error("Error saving customProducts to localStorage:", err);
+    }
   }, [customProducts]);
 
   const toggleIcon = (iconValue: string) => {
@@ -132,6 +168,7 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const addCustomProduct = (product: IconOption) => {
+    // Make sure we're not introducing any cyclic references
     setCustomProducts(prev => ({
       ...prev,
       [product.value]: product
