@@ -26,8 +26,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
       
       // Handle React elements directly (for built-in icons)
       if (React.isValidElement(iconData.icon)) {
+        // Fix: Use a proper type check to ensure className can be applied
         return React.cloneElement(iconData.icon, { 
-          className: "w-5 h-5" 
+          size: 20 // Using size instead of className which works with Lucide icons
         });
       }
       
@@ -38,7 +39,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
         
         const IconComponent = (LucideIcons as any)[pascalCaseName];
         if (IconComponent) {
-          return <IconComponent className="w-5 h-5" />;
+          return <IconComponent size={20} />;
         }
       }
     }

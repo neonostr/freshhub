@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import CustomProductsList from './IconSelector/CustomProductsList';
 import { FoodIconOption, EditableProductProps } from '@/types/iconTypes';
 import { IconOption, ALL_ICONS } from '@/data/productData';
 import * as LucideIcons from 'lucide-react';
+import { useItems } from '@/context/ItemsContext';
 
 const IconManagerDialog: React.FC = () => {
   const { 
@@ -27,6 +27,8 @@ const IconManagerDialog: React.FC = () => {
     isCustomProduct,
     customProducts
   } = useIconManager();
+  
+  const { updateItemsWithProductChanges } = useItems();
   
   // States for UI management
   const [editingProduct, setEditingProduct] = useState<EditableProductProps | null>(null);
@@ -148,6 +150,13 @@ const IconManagerDialog: React.FC = () => {
   
   // Handle saving edited product
   const handleSaveProduct = (product: IconOption, iconName: string) => {
+    // If we're editing an existing product, update any items that use it
+    if (editingProduct) {
+      // Update tracked items with the new product name
+      updateItemsWithProductChanges(editingProduct.productId, product.label);
+    }
+    
+    // Update the product in the icon manager
     addCustomProduct(product, iconName);
     setEditingProduct(null);
     

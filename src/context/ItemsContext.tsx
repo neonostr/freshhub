@@ -9,6 +9,7 @@ interface ItemsContextType {
   addItem: (item: Omit<Item, 'id' | 'openedDate'>) => void;
   deleteItem: (id: string) => void;
   resetItem: (id: string) => void;
+  updateItemsWithProductChanges: (productId: string, newName: string) => void;
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
@@ -69,9 +70,33 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   };
+  
+  // New function to update items when a custom product changes
+  const updateItemsWithProductChanges = (productId: string, newName: string) => {
+    const itemsToUpdate = items.filter(item => item.icon === productId);
+    
+    if (itemsToUpdate.length > 0) {
+      setItems(prev => prev.map(item => 
+        item.icon === productId 
+          ? { ...item, name: newName } // Update name to match the product's new name
+          : item
+      ));
+      
+      toast({
+        title: "Items updated",
+        description: `${itemsToUpdate.length} tracked item(s) have been updated with the new product name.`
+      });
+    }
+  };
 
   return (
-    <ItemsContext.Provider value={{ items, addItem, deleteItem, resetItem }}>
+    <ItemsContext.Provider value={{ 
+      items, 
+      addItem, 
+      deleteItem, 
+      resetItem, 
+      updateItemsWithProductChanges 
+    }}>
       {children}
     </ItemsContext.Provider>
   );
