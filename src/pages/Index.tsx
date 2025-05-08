@@ -63,7 +63,7 @@ const Index = () => {
   return (
     <IconManagerProvider>
       <ItemsProvider>
-        <div className="container max-w-5xl mx-auto p-4">
+        <div className="container max-w-5xl mx-auto p-4 pb-20">
           <header className="py-6 text-center">
             <h1 className="text-3xl font-bold">Fresh Tracker</h1>
             <p className="text-gray-500 mt-2">

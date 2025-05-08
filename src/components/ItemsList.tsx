@@ -4,8 +4,17 @@ import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { SortAsc, Filter, ArrowDown, ArrowUp } from 'lucide-react';
+import { SortAsc, Filter, ArrowDown, ArrowUp, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { 
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter
+} from '@/components/ui/drawer';
 import { Item } from '@/types/item';
 
 type SortOption = 'freshness' | 'alphabetical';
@@ -17,6 +26,7 @@ const ItemsList: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365); // Start with a large value
   const [filterDays, setFilterDays] = useState<number>(365); // Default to show all
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Determine the maximum days across all items for the filter slider
   useEffect(() => {
@@ -70,56 +80,104 @@ const ItemsList: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 bg-gray-50 p-4 rounded-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Filter size={18} className="text-gray-500" />
-            <span className="text-sm font-medium">Filter by freshness</span>
-          </div>
-          <span className="text-xs text-gray-500">
-            {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
-          </span>
-        </div>
-        <Slider 
-          value={[filterDays]}
-          min={1}
-          max={maxFreshnessDays}
-          step={1}
-          onValueChange={([value]) => setFilterDays(value)}
-          className="w-full"
-        />
-      </div>
-      
-      <div className="flex items-center justify-between">
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={toggleSortOption}
-          className="text-xs flex items-center gap-1"
-        >
-          <SortAsc size={14} />
-          Sort by: {sortOption === 'freshness' ? 'Freshness' : 'A-Z'}
-        </Button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleSortDirection}
-          className="text-xs"
-        >
-          {sortDirection === 'asc' 
-            ? <ArrowUp size={14} /> 
-            : <ArrowDown size={14} />
-          }
-        </Button>
-      </div>
-      
+    <div className="space-y-6 relative pb-16">
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {sortedItems.map(item => (
           <ItemCard key={item.id} item={item} />
         ))}
       </div>
+
+      {/* Bottom floating filter & sort button */}
+      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <DrawerTrigger asChild>
+          <Button 
+            className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-10 shadow-lg rounded-full"
+            size="sm"
+          >
+            <Filter size={18} className="mr-1" />
+            <span>{sortedItems.length} items</span>
+          </Button>
+        </DrawerTrigger>
+        
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Sort & Filter</DrawerTitle>
+          </DrawerHeader>
+          
+          <div className="px-4 pb-2">
+            <div className="flex flex-col gap-6">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <SortAsc size={18} className="text-gray-500" />
+                    <span className="font-medium">Sort by</span>
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button 
+                    variant={sortOption === 'freshness' ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSortOption('freshness')}
+                    className="flex-1"
+                  >
+                    Freshness
+                  </Button>
+                  
+                  <Button 
+                    variant={sortOption === 'alphabetical' ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSortOption('alphabetical')}
+                    className="flex-1"
+                  >
+                    A-Z
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleSortDirection}
+                  >
+                    {sortDirection === 'asc' 
+                      ? <ArrowUp size={16} /> 
+                      : <ArrowDown size={16} />
+                    }
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Filter size={18} className="text-gray-500" />
+                    <span className="font-medium">Filter by freshness</span>
+                  </div>
+                  <span className="text-sm text-gray-500">
+                    {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
+                  </span>
+                </div>
+                
+                <Slider 
+                  value={[filterDays]}
+                  min={1}
+                  max={maxFreshnessDays}
+                  step={1}
+                  onValueChange={([value]) => setFilterDays(value)}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
+          
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="outline">
+                Close
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
