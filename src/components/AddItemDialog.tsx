@@ -13,10 +13,8 @@ const AddItemDialog: React.FC = () => {
   const { addItem } = useItems();
   const { availableIcons, allIcons } = useIconManager();
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('');
   const [customDuration, setCustomDuration] = useState<string>('');
-  const [isNameFieldFocused, setIsNameFieldFocused] = useState(false);
 
   // Set initial selected icon when dialog opens
   useEffect(() => {
@@ -25,28 +23,21 @@ const AddItemDialog: React.FC = () => {
     }
   }, [open, availableIcons, selectedIcon]);
 
-  // Update name when icon is selected
-  useEffect(() => {
-    if (!isNameFieldFocused && selectedIcon) {
-      const selectedIconObj = allIcons[selectedIcon];
-      if (selectedIconObj) {
-        setName(selectedIconObj.label || '');
-      }
-    }
-  }, [selectedIcon, isNameFieldFocused, allIcons]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim() || !selectedIcon) return;
+    if (!selectedIcon) return;
+    
+    // Get the product name from the selected icon
+    const selectedProduct = allIcons[selectedIcon];
+    const productName = selectedProduct?.label || '';
     
     addItem({
-      name: name.trim(),
+      name: productName,
       icon: selectedIcon,
       customDuration: customDuration ? parseInt(customDuration, 10) : undefined,
     });
     
-    setName('');
     setSelectedIcon(availableIcons[0]?.value || '');
     setCustomDuration('');
     setOpen(false);
@@ -54,22 +45,6 @@ const AddItemDialog: React.FC = () => {
 
   const handleIconSelect = (iconValue: string) => {
     setSelectedIcon(iconValue);
-    setIsNameFieldFocused(false);
-  };
-
-  const handleNameFocus = () => {
-    setIsNameFieldFocused(true);
-    setName('');
-  };
-
-  const handleNameBlur = () => {
-    setIsNameFieldFocused(false);
-    if (name.trim() === '' && selectedIcon) {
-      const selectedIconObj = allIcons[selectedIcon];
-      if (selectedIconObj) {
-        setName(selectedIconObj.label || '');
-      }
-    }
   };
 
   return (
@@ -104,20 +79,6 @@ const AddItemDialog: React.FC = () => {
                 ))}
               </div>
             </ScrollArea>
-          </div>
-          
-          {/* Product name field */}
-          <div className="space-y-2">
-            <Label htmlFor="name">Product Name</Label>
-            <Input 
-              id="name" 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
-              onFocus={handleNameFocus}
-              onBlur={handleNameBlur}
-              placeholder="e.g., Milk, Coffee, Sauce"
-              required 
-            />
           </div>
           
           {/* Custom shelf life */}
