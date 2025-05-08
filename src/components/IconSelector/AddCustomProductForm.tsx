@@ -96,7 +96,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
             icons={availableIcons}
             selectedIcon={selectedIcon}
             onSelect={setSelectedIcon}
-            className="h-32 overflow-auto" // Make only this section scrollable
+            className="h-40" // Updated to match 4 rows of icons (10px per row × 4 = 40px)
           />
         </div>
         
