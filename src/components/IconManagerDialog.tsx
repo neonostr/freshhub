@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -100,10 +101,11 @@ const IconManagerDialog: React.FC = () => {
     // Find the icon name from the product
     let iconName = '';
     
-    // Try to extract the icon name
+    // Try to extract the icon name with proper null checking
     if (React.isValidElement(product.icon) && 
         product.icon.type && 
         typeof product.icon.type === 'object' && 
+        product.icon.type !== null &&
         'displayName' in product.icon.type && 
         product.icon.type.displayName) {
       // Convert from PascalCase to kebab-case
@@ -165,7 +167,7 @@ const IconManagerDialog: React.FC = () => {
     
     let iconElement;
     if (IconComponent) {
-      iconElement = React.createElement(IconComponent, { className: "h-5 w-5" });
+      iconElement = React.createElement(IconComponent);
     } else {
       iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
     }
@@ -248,7 +250,6 @@ const IconManagerDialog: React.FC = () => {
     { name: "Carrot", icon: "carrot" },
     { name: "Chef Hat", icon: "chef-hat" },
     { name: "Cherry", icon: "cherry" },
-    { name: "Chevroned", icon: "chevroned" },
     { name: "Chilli Hot", icon: "chilli-hot" },
     { name: "Chinese", icon: "chinese" },
     { name: "Citrus", icon: "citrus" },
@@ -268,7 +269,6 @@ const IconManagerDialog: React.FC = () => {
     { name: "Fish", icon: "fish" },
     { name: "Flask Round", icon: "flask-round" },
     { name: "Flatware", icon: "flatware" },
-    { name: "Footprints", icon: "footprints" },
     { name: "Fridge", icon: "fridge" },
     { name: "Fuel", icon: "fuel" },
     { name: "Garlic", icon: "garlic" },
