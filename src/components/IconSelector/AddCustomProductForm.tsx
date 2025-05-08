@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
@@ -8,8 +7,6 @@ import CustomIconSelector from './CustomIconSelector';
 import { IconOption } from '@/data/productData';
 import { FoodIconOption } from '@/types/iconTypes';
 import * as LucideIcons from 'lucide-react';
-import { DialogFooter } from '@/components/ui/dialog';
-import { Plus, X } from 'lucide-react';
 
 interface AddCustomProductFormProps {
   availableIcons: FoodIconOption[];
@@ -75,12 +72,11 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
       shelfLife: numValue
     };
     
-    console.log("Adding new product:", newProduct);
     onAdd(newProduct);
   };
 
   return (
-    <div className="bg-muted/50 p-4 rounded-md flex flex-col max-h-[400px]">
+    <div className="bg-muted/50 p-4 rounded-md flex flex-col h-full">
       <h3 className="text-sm font-medium mb-3">Add New Product</h3>
       
       <div className="space-y-3 flex-grow">
@@ -100,7 +96,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
             icons={availableIcons}
             selectedIcon={selectedIcon}
             onSelect={setSelectedIcon}
-            className="h-40" // Fixed height for the icon selector
+            className="h-32 overflow-auto" // Make only this section scrollable
           />
         </div>
         
@@ -116,21 +112,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
         </div>
       </div>
       
-      <div className="flex justify-end space-x-2 mt-4">
-        <Button
-          variant="outline"
-          onClick={onCancel}
-          className="w-1/3"
-        >
-          <X className="mr-1 h-4 w-4" /> Cancel
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          className="w-2/3"
-        >
-          <Plus className="mr-1 h-4 w-4" /> Add Product
-        </Button>
-      </div>
+      {/* No buttons here - they will be provided by the parent component */}
     </div>
   );
 };

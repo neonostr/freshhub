@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -33,6 +34,7 @@ const IconManagerDialog: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState('');
   const [editingIcon, setEditingIcon] = useState('');
+  const [currentTab, setCurrentTab] = useState('selection'); // Track the active tab
   
   // Get sorted icons list by label
   const sortedIcons = Object.values(allIcons)
@@ -234,7 +236,7 @@ const IconManagerDialog: React.FC = () => {
     }
   };
 
-  // Get the icons used in the main product data to ensure consistency
+  // Extract icons from ALL_ICONS to use for custom products
   const foodIcons: FoodIconOption[] = Object.entries(ALL_ICONS).map(([key, iconData]) => {
     // Extract icon name from component
     let iconName = '';
@@ -280,7 +282,12 @@ const IconManagerDialog: React.FC = () => {
           </DialogHeader>
           
           <div className="flex flex-col h-[500px]">
-            <Tabs defaultValue="selection" className="w-full h-full flex flex-col">
+            <Tabs 
+              defaultValue="selection" 
+              className="w-full h-full flex flex-col"
+              value={currentTab}
+              onValueChange={setCurrentTab}
+            >
               <TabsList className="grid grid-cols-3">
                 <TabsTrigger value="selection">Products</TabsTrigger>
                 <TabsTrigger value="shelfLife">Shelf Life</TabsTrigger>
@@ -355,86 +362,96 @@ const IconManagerDialog: React.FC = () => {
                       />
                     )}
                   </div>
-                  
-                  {isAddingProduct && (
-                    <DialogFooter className="mt-2 gap-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => setIsAddingProduct(false)}
-                        className="mt-2"
-                      >
-                        <X className="mr-1 h-4 w-4" /> Cancel
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
-                          const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
-                          
-                          if (nameInput && shelfLifeInput) {
-                            const name = nameInput.value;
-                            const shelfLife = parseInt(shelfLifeInput.value, 10);
-                            
-                            if (!name.trim()) {
-                              toast({
-                                title: "Name required",
-                                description: "Please provide a name for the product",
-                                variant: "destructive",
-                              });
-                              return;
-                            }
-                            
-                            if (isNaN(shelfLife) || shelfLife <= 0) {
-                              toast({
-                                title: "Invalid shelf life",
-                                description: "Please provide a valid shelf life (days)",
-                                variant: "destructive",
-                              });
-                              return;
-                            }
-                            
-                            const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
-                            
-                            const iconName = document.querySelector('button[variant="default"][type="button"]')?.textContent || 'apple';
-                            
-                            // Create React element for the icon
-                            const pascalCaseName = iconName.charAt(0).toUpperCase() + 
-                              iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
-                            
-                            const IconComponent = (LucideIcons as any)[pascalCaseName];
-                            
-                            let iconElement;
-                            if (IconComponent) {
-                              iconElement = React.createElement(IconComponent, { className: "h-5 w-5" });
-                            } else {
-                              iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
-                            }
-                            
-                            // Create a new custom product
-                            const newProduct: IconOption = {
-                              value: productId,
-                              label: name.trim(),
-                              icon: iconElement,
-                              shelfLife: shelfLife
-                            };
-                            
-                            handleAddCustomProduct(newProduct);
-                          }
-                        }}
-                        className="mt-2"
-                      >
-                        <Plus className="mr-1 h-4 w-4" /> Add Product
-                      </Button>
-                    </DialogFooter>
-                  )}
                 </TabsContent>
               </div>
             </Tabs>
           </div>
           
-          {/* Restore "Done" button for Products and Shelf Life tabs */}
-          {!isAddingProduct && !editingProduct && (
+          {/* Action buttons at the bottom - conditional based on tab and state */}
+          {currentTab === 'custom' && isAddingProduct && (
+            <div className="flex gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsAddingProduct(false)}
+                className="w-1/3"
+              >
+                <X className="mr-1 h-4 w-4" /> Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
+                  const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
+                  
+                  if (nameInput && shelfLifeInput) {
+                    const name = nameInput.value;
+                    const shelfLife = parseInt(shelfLifeInput.value, 10);
+                    
+                    if (!name.trim()) {
+                      toast({
+                        title: "Name required",
+                        description: "Please provide a name for the product",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    
+                    if (isNaN(shelfLife) || shelfLife <= 0) {
+                      toast({
+                        title: "Invalid shelf life",
+                        description: "Please provide a valid shelf life (days)",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    
+                    const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
+                    
+                    // Get selected icon from the active button
+                    const activeButton = document.querySelector('[variant="default"][type="button"]');
+                    const iconName = activeButton?.getAttribute('data-icon') || 'bottle';
+                    
+                    // Create React element for the icon
+                    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+                      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+                    
+                    const IconComponent = (LucideIcons as any)[pascalCaseName];
+                    
+                    let iconElement;
+                    if (IconComponent) {
+                      iconElement = React.createElement(IconComponent, { className: "h-5 w-5" });
+                    } else {
+                      iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
+                    }
+                    
+                    // Create a new custom product
+                    const newProduct: IconOption = {
+                      value: productId,
+                      label: name.trim(),
+                      icon: iconElement,
+                      shelfLife: shelfLife
+                    };
+                    
+                    handleAddCustomProduct(newProduct);
+                  }
+                }}
+                className="w-2/3"
+              >
+                <Plus className="mr-1 h-4 w-4" /> Add Product
+              </Button>
+            </div>
+          )}
+          
+          {currentTab !== 'custom' && (
             <DialogClose asChild>
-              <Button type="button" className="mt-2">
+              <Button type="button" className="mt-4 w-full">
+                <Check className="mr-1 h-4 w-4" /> Done
+              </Button>
+            </DialogClose>
+          )}
+          
+          {currentTab === 'custom' && !isAddingProduct && !editingProduct && (
+            <DialogClose asChild>
+              <Button type="button" className="mt-4 w-full">
                 <Check className="mr-1 h-4 w-4" /> Done
               </Button>
             </DialogClose>
