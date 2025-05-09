@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
-import { useIconManager } from '@/context/IconManagerContext';
+import { useIconManager } from '@/context/IconManager'; // Updated import path
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const AddItemDialog: React.FC = () => {
