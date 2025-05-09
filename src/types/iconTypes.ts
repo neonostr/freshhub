@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 export interface FoodIconOption {
   name: string;
   icon: string;
@@ -22,7 +24,7 @@ export interface EditableProductProps {
 export interface IconOptionExtended {
   value: string;
   label: string;
-  icon: React.ReactNode;
+  icon: React.ReactElement;
   shelfLife: number;
   iconName?: string;
 }

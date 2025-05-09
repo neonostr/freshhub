@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -160,7 +159,7 @@ const IconManagerDialog: React.FC = () => {
     // Pass both the complete product (with iconName) and the iconName separately
     addCustomProduct({
       ...product,
-      iconName: iconName // Now this is valid with our extended type
+      iconName: iconName
     } as IconOptionExtended, iconName);
     
     setEditingProduct(null);
@@ -176,7 +175,7 @@ const IconManagerDialog: React.FC = () => {
     // Ensure that the iconName is correctly stored with the product
     addCustomProduct({
       ...newProduct,
-      iconName: iconName // Now this is valid with our extended type
+      iconName: iconName
     } as IconOptionExtended, iconName);
     
     setIsAddingProduct(false);
@@ -248,7 +247,7 @@ const IconManagerDialog: React.FC = () => {
               <div className="flex-1 overflow-hidden mt-4">
                 <TabsContent value="selection" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
                   <ProductsList 
-                    icons={sortedIcons}
+                    icons={sortedIcons as IconOption[]}
                     isIconSelected={isIconSelected}
                     toggleIcon={toggleIcon}
                     renderIcon={renderIcon}
@@ -259,7 +258,7 @@ const IconManagerDialog: React.FC = () => {
                   <ShelfLifeList 
                     icons={Object.values(allIcons)
                       .filter(icon => isIconSelected(icon.value))
-                      .sort((a, b) => a.label.localeCompare(b.label))}
+                      .sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]}
                     isCustomProduct={isCustomProduct}
                     editingValues={editingValues}
                     handleShelfLifeFocus={handleShelfLifeFocus}
@@ -309,7 +308,7 @@ const IconManagerDialog: React.FC = () => {
                     ) : (
                       <CustomProductsList 
                         products={Object.values(customProducts)
-                          .sort((a, b) => a.label.localeCompare(b.label))}
+                          .sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]}
                         editingProduct={null}
                         startEditingProduct={startEditingProduct}
                         saveProductChanges={() => {}}
