@@ -56,8 +56,18 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
       return;
     }
     
+    // Make sure we have a valid icon name
+    if (!selectedIcon) {
+      toast({
+        title: "Icon required",
+        description: "Please select an icon for the product",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Use existing ID if editing, or generate a new one
-    const productId = initialValues?.name ? initialValues.name : generateUniqueId();
+    const productId = isEditing ? initialValues!.name : generateUniqueId();
     
     // Create React element for the icon from the selected icon name
     const iconName = selectedIcon;
@@ -75,7 +85,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
     
     // Create a new custom product with the selected icon
     const newProduct: IconOption = {
-      value: initialValues?.name ? initialValues.name : productId,
+      value: productId,
       label: productName.trim(),
       icon: iconElement,
       shelfLife: numValue
