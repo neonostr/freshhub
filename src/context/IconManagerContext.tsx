@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { ALL_ICONS, DEFAULT_SELECTED_ICONS, IconOption } from '@/data/productData';
 import { saveItems, loadItems } from '@/utils/itemUtils';
@@ -113,16 +114,6 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
       // When saving to localStorage, serialize only the necessary properties
       // without the React component which causes the cyclic reference
       const serializableProducts = Object.entries(customProducts).reduce((acc, [key, product]) => {
-        // Safely handle icon type extraction
-        let iconName = 'apple'; // Default fallback
-        
-        if (React.isValidElement(product.icon)) {
-          const iconType = product.icon.type as { displayName?: string } | null;
-          if (iconType && typeof iconType === 'object' && 'displayName' in iconType && iconType.displayName) {
-            iconName = iconType.displayName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-          }
-        }
-        
         // Store only the essential data without the React element
         return {
           ...acc,
@@ -130,8 +121,8 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
             value: product.value,
             label: product.label,
             shelfLife: product.shelfLife,
-            // Store icon name or identifier
-            iconName: iconName
+            // Store icon name explicitly (this is the key change)
+            iconName: product.iconName || 'apple'
           }
         };
       }, {});

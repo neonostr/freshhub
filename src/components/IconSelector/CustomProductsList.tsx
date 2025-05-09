@@ -89,7 +89,7 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
                           type="button"
                           size="sm"
                           variant={editingIcon === icon.icon ? "default" : "outline"}
-                          className="h-8 w-8 p-0"
+                          className="h-10 w-10 p-2" // Increased size for easier touch
                           onClick={() => setEditingIcon(icon.icon)}
                         >
                           {renderIcon(icon.icon)}
@@ -142,17 +142,17 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
                   variant="ghost" 
                   size="sm" 
                   onClick={() => startEditingProduct(product)}
-                  className="h-8 w-8 p-0"
+                  className="h-10 w-10 p-0" // Increased size for easier touch
                 >
-                  <Edit className="h-4 w-4" />
+                  <Edit className="h-5 w-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => confirmDelete(product.value)}
-                  className="h-8 w-8 p-0 text-destructive"
+                  className="h-10 w-10 p-0 text-destructive" // Increased size for easier touch
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-5 w-5" />
                 </Button>
               </div>
             )}

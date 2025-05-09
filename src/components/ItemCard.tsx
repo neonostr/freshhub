@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -23,22 +24,27 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
     if (item.icon in allIcons) {
       const iconData = allIcons[item.icon];
       
+      // For custom products, we need to create the icon from the stored name
+      if (iconData.iconName) {
+        // Get icon name from the iconData object
+        const iconName = iconData.iconName;
+        
+        // Convert to PascalCase for Lucide component lookup
+        const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+          iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+        
+        // Get the component from Lucide
+        const IconComponent = (LucideIcons as any)[pascalCaseName];
+        if (IconComponent) {
+          return <IconComponent size={20} />;
+        }
+      }
+      
       // Handle React elements directly (for built-in icons)
       if (React.isValidElement(iconData.icon)) {
         // Use createElement to avoid type errors
         const IconType = iconData.icon.type;
         return <IconType size={20} />;
-      }
-      
-      // For custom products, we need to create the icon from the stored name
-      if (typeof iconData.iconName === 'string') {
-        const pascalCaseName = iconData.iconName.charAt(0).toUpperCase() + 
-          iconData.iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
-        
-        const IconComponent = (LucideIcons as any)[pascalCaseName];
-        if (IconComponent) {
-          return <IconComponent size={20} />;
-        }
       }
     }
     

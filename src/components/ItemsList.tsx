@@ -99,8 +99,7 @@ const ItemsList: React.FC = () => {
           </Button>
         </DrawerTrigger>
         
-        <DrawerContent className="overflow-hidden outline-none">
-          <div className="absolute inset-0 bg-background" />
+        <DrawerContent className="z-50">
           <DrawerHeader className="relative z-10">
             <DrawerTitle>Sort & Filter</DrawerTitle>
           </DrawerHeader>
