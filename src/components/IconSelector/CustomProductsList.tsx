@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Plus, Edit, Trash2, Check, X } from 'lucide-react';
 import { IconOption } from '@/data/productData';
 import { EditableProductProps } from '@/types/iconTypes';
+import CustomIconSelector from './CustomIconSelector';
 
 interface CustomProductsListProps {
   products: IconOption[];
@@ -79,24 +80,14 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
                   />
                 </div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium">Icon:</label>
-                  <ScrollArea className="h-24 w-full border rounded-md">
-                    <div className="grid grid-cols-5 gap-1 p-1">
-                      {availableIcons.map((icon) => (
-                        <Button
-                          key={icon.icon}
-                          type="button"
-                          size="sm"
-                          variant={editingIcon === icon.icon ? "default" : "outline"}
-                          className="h-10 w-10 p-2" // Increased size for easier touch
-                          onClick={() => setEditingIcon(icon.icon)}
-                        >
-                          {renderIcon(icon.icon)}
-                        </Button>
-                      ))}
-                    </div>
-                  </ScrollArea>
+                  <CustomIconSelector
+                    icons={availableIcons}
+                    selectedIcon={editingIcon}
+                    onSelect={setEditingIcon}
+                    className="h-24 border rounded-md"
+                  />
                 </div>
                 
                 <div className="flex items-center gap-2">

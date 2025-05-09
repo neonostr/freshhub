@@ -42,7 +42,6 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
       
       // Handle React elements directly (for built-in icons)
       if (React.isValidElement(iconData.icon)) {
-        // Use createElement to avoid type errors
         const IconType = iconData.icon.type;
         return <IconType size={20} />;
       }

@@ -89,6 +89,7 @@ export const IconManagerProvider = ({ children }: { children: ReactNode }) => {
   
   // Update available icons based on selected values - sorted alphabetically by label
   const availableIcons = selectedIconValues
+    .filter(value => allIcons[value]) // Filter out any values that don't exist in allIcons
     .map(value => allIcons[value])
     .filter(Boolean)
     .sort((a, b) => a.label.localeCompare(b.label));
