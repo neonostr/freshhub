@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ItemsProvider } from '@/context/ItemsContext';
-import { IconManagerProvider } from '@/context/IconManagerContext';
+import { IconManagerProvider } from '@/context/IconManager';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
 import IconManagerDialog from '@/components/IconManagerDialog';

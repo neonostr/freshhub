@@ -6,7 +6,7 @@ import { Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
-import { useIconManager } from '@/context/IconManagerContext';
+import { useIconManager } from '@/context/IconManager';
 import * as LucideIcons from 'lucide-react';
 
 interface ItemCardProps {
