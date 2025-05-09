@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -151,14 +150,18 @@ const IconManagerDialog: React.FC = () => {
   
   // Handle saving edited product
   const handleSaveProduct = (product: IconOption, iconName: string) => {
-    // If we're editing an existing product, update any items that use it
+    // Ensure we're passing the iconName correctly
     if (editingProduct) {
       // Update tracked items with the new product name
       updateItemsWithProductChanges(editingProduct.productId, product.label);
     }
     
-    // Update the product in the icon manager
-    addCustomProduct(product, iconName);
+    // Pass both the complete product (with iconName) and the iconName separately
+    addCustomProduct({
+      ...product,
+      iconName: iconName // Explicitly include iconName in the product
+    }, iconName);
+    
     setEditingProduct(null);
     
     toast({
@@ -169,7 +172,12 @@ const IconManagerDialog: React.FC = () => {
 
   // Handle adding a new custom product
   const handleAddCustomProduct = (newProduct: IconOption, iconName: string) => {
-    addCustomProduct(newProduct, iconName);
+    // Ensure that the iconName is correctly stored with the product
+    addCustomProduct({
+      ...newProduct,
+      iconName: iconName // Explicitly ensure iconName is saved
+    }, iconName);
+    
     setIsAddingProduct(false);
     
     toast({

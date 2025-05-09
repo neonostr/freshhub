@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -36,14 +35,13 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
         // Get the component from Lucide
         const IconComponent = (LucideIcons as any)[pascalCaseName];
         if (IconComponent) {
-          return <IconComponent size={20} />;
+          return React.createElement(IconComponent, { size: 20 });
         }
       }
       
-      // Handle React elements directly (for built-in icons)
+      // If it's not a custom product or we couldn't find the icon by name
       if (React.isValidElement(iconData.icon)) {
-        const IconType = iconData.icon.type;
-        return <IconType size={20} />;
+        return React.cloneElement(iconData.icon as React.ReactElement, { size: 20 });
       }
     }
     
