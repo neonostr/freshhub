@@ -14,7 +14,10 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     return React.createElement(IconComponent, { className });
   }
   
-  return <div className={`flex items-center justify-center ${className}`}>?</div>;
+  // Using React.createElement instead of JSX to avoid syntax issues
+  return React.createElement('div', {
+    className: `flex items-center justify-center ${className}`
+  }, '?');
 };
 
 // Create serializable product data for storage
