@@ -17,3 +17,12 @@ export interface EditableProductProps {
   icon: string;
   shelfLife: number;
 }
+
+// Update the IconOption interface (imported from productData.ts) to include iconName
+export interface IconOptionExtended {
+  value: string;
+  label: string;
+  icon: React.ReactNode;
+  shelfLife: number;
+  iconName?: string;
+}

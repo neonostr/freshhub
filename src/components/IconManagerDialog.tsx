@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import ProductsList from './IconSelector/ProductsList';
 import ShelfLifeList from './IconSelector/ShelfLifeList';
 import AddCustomProductForm from './IconSelector/AddCustomProductForm';
 import CustomProductsList from './IconSelector/CustomProductsList';
-import { FoodIconOption, EditableProductProps } from '@/types/iconTypes';
+import { FoodIconOption, EditableProductProps, IconOptionExtended } from '@/types/iconTypes';
 import { IconOption, ALL_ICONS } from '@/data/productData';
 import * as LucideIcons from 'lucide-react';
 import { useItems } from '@/context/ItemsContext';
@@ -159,8 +160,8 @@ const IconManagerDialog: React.FC = () => {
     // Pass both the complete product (with iconName) and the iconName separately
     addCustomProduct({
       ...product,
-      iconName: iconName // Explicitly include iconName in the product
-    }, iconName);
+      iconName: iconName // Now this is valid with our extended type
+    } as IconOptionExtended, iconName);
     
     setEditingProduct(null);
     
@@ -175,8 +176,8 @@ const IconManagerDialog: React.FC = () => {
     // Ensure that the iconName is correctly stored with the product
     addCustomProduct({
       ...newProduct,
-      iconName: iconName // Explicitly ensure iconName is saved
-    }, iconName);
+      iconName: iconName // Now this is valid with our extended type
+    } as IconOptionExtended, iconName);
     
     setIsAddingProduct(false);
     
