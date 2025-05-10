@@ -4,7 +4,7 @@ import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { Filter, ArrowDown, ArrowUp } from 'lucide-react';
+import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
@@ -21,6 +21,7 @@ const ItemsList: React.FC = () => {
   const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365); // Start with a large value
   const [filterDays, setFilterDays] = useState<number>(365); // Default to show all
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isCompactMode, setIsCompactMode] = useState(false);
 
   // Determine the maximum days across all items for the filter slider
   useEffect(() => {
@@ -54,9 +55,19 @@ const ItemsList: React.FC = () => {
     setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
   };
 
-  // Toggle sort option
-  const toggleSortOption = () => {
-    setSortOption(prev => prev === 'freshness' ? 'alphabetical' : 'freshness');
+  // Toggle compact mode
+  const toggleCompactMode = () => {
+    setIsCompactMode(prev => !prev);
+    
+    // If enabled, hide the header
+    const header = document.getElementById('app-header');
+    if (header) {
+      if (!isCompactMode) {
+        header.style.display = 'none';
+      } else {
+        header.style.display = 'block';
+      }
+    }
   };
 
   if (items.length === 0) {
@@ -70,11 +81,11 @@ const ItemsList: React.FC = () => {
   }
 
   return <div className="space-y-6 relative pb-16">
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-        {sortedItems.map(item => <ItemCard key={item.id} item={item} />)}
+      <div className={`grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${isCompactMode ? 'compact-grid' : ''}`}>
+        {sortedItems.map(item => <ItemCard key={item.id} item={item} isCompact={isCompactMode} />)}
       </div>
 
-      {/* Bottom floating filter & sort button - style similar to add button */}
+      {/* Bottom floating buttons */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button className="fixed bottom-6 right-24 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" size="icon" variant="default">
@@ -117,6 +128,17 @@ const ItemsList: React.FC = () => {
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* Compact mode toggle button */}
+      <Button 
+        className="fixed bottom-6 right-42 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" 
+        size="icon" 
+        variant={isCompactMode ? "secondary" : "default"}
+        style={{ right: "144px" }}
+        onClick={toggleCompactMode}
+      >
+        {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
+      </Button>
     </div>;
 };
 

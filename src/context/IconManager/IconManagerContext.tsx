@@ -6,7 +6,6 @@ import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended } from '@/types/iconTypes';
-import { useToast } from '@/hooks/use-toast';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -19,7 +18,6 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     customProducts,
     setCustomProducts
   } = useIconStorage();
-  const { toast } = useToast();
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
@@ -60,28 +58,14 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
   useEffect(() => {
     // Get all tracked items
     const items = loadItems();
-    let hasChanges = false;
     
     // Update items using the affected product IDs so they'll recalculate freshness levels
-    // We don't need to modify the items directly since the shelf life is stored externally
     // Just saving items will force a re-render of components that depend on them
     if (items.length > 0) {
       // Save the items to trigger a refresh of components
       saveItems([...items]);
-      
-      // If any items were affected, show a toast notification
-      const affectedIcons = Object.keys(customShelfLife).filter(iconId => 
-        items.some(item => item.icon === iconId)
-      );
-      
-      if (affectedIcons.length > 0) {
-        toast({
-          title: "Shelf life updated",
-          description: `Freshness calculations for ${affectedIcons.length} product type(s) have been updated.`
-        });
-      }
     }
-  }, [customShelfLife, toast]);
+  }, [customShelfLife]);
   
   const updateIconShelfLife = (iconValue: string, days: number) => {
     setCustomShelfLife(prev => ({
@@ -128,15 +112,9 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     const items = loadItems();
     const filteredItems = items.filter(item => item.icon !== iconValue);
     
-    // If we removed any items, save the updated list and show a notification
+    // If we removed any items, save the updated list
     if (filteredItems.length !== items.length) {
-      const removedCount = items.length - filteredItems.length;
       saveItems(filteredItems);
-      
-      toast({
-        title: "Items removed",
-        description: `${removedCount} tracked item(s) using this product were also removed.`
-      });
     }
     
     // Then remove the custom product

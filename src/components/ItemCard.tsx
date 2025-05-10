@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -11,9 +12,10 @@ import { IconOptionExtended } from '@/types/iconTypes';
 
 interface ItemCardProps {
   item: Item;
+  isCompact?: boolean;
 }
 
-const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ item, isCompact = false }) => {
   const { deleteItem, resetItem } = useItems();
   const { allIcons } = useIconManager();
   
@@ -26,9 +28,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
       
       // For custom products, we need to create the icon from the stored name
       // Check if iconData is of type IconOptionExtended (which has iconName)
-      if ('iconName' in iconData && iconData.iconName) {
+      if ('iconName' in iconData && (iconData as IconOptionExtended).iconName) {
         // Get icon name from the iconData object
-        const iconName = iconData.iconName;
+        const iconName = (iconData as IconOptionExtended).iconName;
         
         // Convert to PascalCase for Lucide component lookup
         const pascalCaseName = iconName.charAt(0).toUpperCase() + 
@@ -85,35 +87,39 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
           </span>
         </div>
         
-        <div className="space-y-2 text-sm text-gray-500 mt-3">
-          <div className="flex items-center">
-            <Calendar className="h-4 w-4 mr-2" />
-            <span>Opened: {formatOpenedDate(item.openedDate)}</span>
+        {!isCompact && (
+          <div className="space-y-2 text-sm text-gray-500 mt-3">
+            <div className="flex items-center">
+              <Calendar className="h-4 w-4 mr-2" />
+              <span>Opened: {formatOpenedDate(item.openedDate)}</span>
+            </div>
+            <div className="flex items-center">
+              <Clock className="h-4 w-4 mr-2" />
+              <span>Open {formatTimeOpen(item.openedDate)}</span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <Clock className="h-4 w-4 mr-2" />
-            <span>Open {formatTimeOpen(item.openedDate)}</span>
-          </div>
-        </div>
+        )}
         
-        <div className="flex justify-between mt-4 gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex-1"
-            onClick={() => resetItem(item.id)}
-          >
-            Reset
-          </Button>
-          <Button 
-            variant="destructive" 
-            size="sm"
-            className="flex-1"
-            onClick={() => deleteItem(item.id)}
-          >
-            Remove
-          </Button>
-        </div>
+        {!isCompact && (
+          <div className="flex justify-between mt-4 gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex-1"
+              onClick={() => resetItem(item.id)}
+            >
+              Reset
+            </Button>
+            <Button 
+              variant="destructive" 
+              size="sm"
+              className="flex-1"
+              onClick={() => deleteItem(item.id)}
+            >
+              Remove
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

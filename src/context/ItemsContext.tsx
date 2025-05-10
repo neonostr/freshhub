@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
-import { useToast } from "@/hooks/use-toast";
 
 interface ItemsContextType {
   items: Item[];
@@ -16,7 +15,6 @@ const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
 
 export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<Item[]>([]);
-  const { toast } = useToast();
 
   useEffect(() => {
     const loadedItems = loadItems();
@@ -37,41 +35,21 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     };
     
     setItems(prev => [...prev, newItem]);
-    toast({
-      title: "Item added",
-      description: `${item.name} has been added to your tracker.`
-    });
   };
 
   const deleteItem = (id: string) => {
-    const itemToDelete = items.find(item => item.id === id);
-    
-    if (itemToDelete) {
-      setItems(prev => prev.filter(item => item.id !== id));
-      toast({
-        title: "Item removed",
-        description: `${itemToDelete.name} has been removed from your tracker.`
-      });
-    }
+    setItems(prev => prev.filter(item => item.id !== id));
   };
 
   const resetItem = (id: string) => {
-    const itemToReset = items.find(item => item.id === id);
-    
-    if (itemToReset) {
-      setItems(prev => prev.map(item => 
-        item.id === id 
-          ? { ...item, openedDate: new Date().toISOString() } 
-          : item
-      ));
-      toast({
-        title: "Item reset",
-        description: `${itemToReset.name} has been marked as freshly opened.`
-      });
-    }
+    setItems(prev => prev.map(item => 
+      item.id === id 
+        ? { ...item, openedDate: new Date().toISOString() } 
+        : item
+    ));
   };
   
-  // New function to update items when a custom product changes
+  // Function to update items when a custom product changes
   const updateItemsWithProductChanges = (productId: string, newName: string) => {
     const itemsToUpdate = items.filter(item => item.icon === productId);
     
@@ -81,11 +59,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
           ? { ...item, name: newName } // Update name to match the product's new name
           : item
       ));
-      
-      toast({
-        title: "Items updated",
-        description: `${itemsToUpdate.length} tracked item(s) have been updated with the new product name.`
-      });
     }
   };
 
