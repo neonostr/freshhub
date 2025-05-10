@@ -7,8 +7,10 @@ import { Filter, ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerHeader, DrawerTitle, DrawerFooter } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
+
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
+
 const ItemsList: React.FC = () => {
   const {
     items
@@ -123,8 +125,8 @@ const ItemsList: React.FC = () => {
             </div>
           </div>
           
-          <DrawerFooter className="relative z-0 rounded-xl">
-            {/* Close button removed */}
+          <DrawerFooter>
+            {/* Empty DrawerFooter - removed the div with relative z-0 rounded-xl class */}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
