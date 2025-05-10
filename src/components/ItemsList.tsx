@@ -5,22 +5,14 @@ import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemU
 import { Slider } from '@/components/ui/slider';
 import { Filter, ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { 
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-  DrawerClose,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerFooter
-} from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerHeader, DrawerTitle, DrawerFooter } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
-
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
-
 const ItemsList: React.FC = () => {
-  const { items } = useItems();
+  const {
+    items
+  } = useItems();
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365); // Start with a large value
@@ -50,9 +42,7 @@ const ItemsList: React.FC = () => {
       return sortDirection === 'asc' ? aFreshness - bFreshness : bFreshness - aFreshness;
     } else {
       // Alphabetical sorting
-      return sortDirection === 'asc' 
-        ? a.name.localeCompare(b.name)
-        : b.name.localeCompare(a.name);
+      return sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
     }
   });
 
@@ -65,35 +55,24 @@ const ItemsList: React.FC = () => {
   const toggleSortOption = () => {
     setSortOption(prev => prev === 'freshness' ? 'alphabetical' : 'freshness');
   };
-
   if (items.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8 text-center">
+    return <div className="flex flex-col items-center justify-center p-8 text-center">
         <div className="text-4xl mb-2">🥛</div>
         <h3 className="text-xl font-medium mb-2">No items yet</h3>
         <p className="text-gray-500">
           Add your first item by clicking the + button below
         </p>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="space-y-6 relative pb-16">
+  return <div className="space-y-6 relative pb-16">
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-        {sortedItems.map(item => (
-          <ItemCard key={item.id} item={item} />
-        ))}
+        {sortedItems.map(item => <ItemCard key={item.id} item={item} />)}
       </div>
 
       {/* Bottom floating filter & sort button - style similar to add button */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
-          <Button 
-            className="fixed bottom-6 right-24 transform z-10 shadow-lg rounded-full h-14 w-14 p-0"
-            size="icon"
-            variant="default"
-          >
+          <Button className="fixed bottom-6 right-24 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" size="icon" variant="default">
             <Filter className="h-6 w-6" />
           </Button>
         </DrawerTrigger>
@@ -116,14 +95,7 @@ const ItemsList: React.FC = () => {
                   </span>
                 </div>
                 
-                <Slider 
-                  value={[filterDays]}
-                  min={1}
-                  max={maxFreshnessDays}
-                  step={1}
-                  onValueChange={([value]) => setFilterDays(value)}
-                  className="w-full"
-                />
+                <Slider value={[filterDays]} min={1} max={maxFreshnessDays} step={1} onValueChange={([value]) => setFilterDays(value)} className="w-full" />
               </div>
               
               {/* Sort by options now below the filter */}
@@ -135,46 +107,27 @@ const ItemsList: React.FC = () => {
                 </div>
                 
                 <div className="flex gap-2">
-                  <Button 
-                    variant={sortOption === 'freshness' ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSortOption('freshness')}
-                    className="flex-1"
-                  >
+                  <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
                     Freshness
                   </Button>
                   
-                  <Button 
-                    variant={sortOption === 'alphabetical' ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSortOption('alphabetical')}
-                    className="flex-1"
-                  >
+                  <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
                     A-Z
                   </Button>
                   
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={toggleSortDirection}
-                  >
-                    {sortDirection === 'asc' 
-                      ? <ArrowUp size={16} /> 
-                      : <ArrowDown size={16} />
-                    }
+                  <Button variant="outline" size="sm" onClick={toggleSortDirection}>
+                    {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
                   </Button>
                 </div>
               </div>
             </div>
           </div>
           
-          <DrawerFooter className="relative z-10">
+          <DrawerFooter className="relative z-0 rounded-xl">
             {/* Close button removed */}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </div>
-  );
+    </div>;
 };
-
 export default ItemsList;
