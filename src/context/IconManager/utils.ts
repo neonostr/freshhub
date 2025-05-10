@@ -23,7 +23,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
 
 // Create serializable product data for storage
 export const createSerializableProducts = (
-  products: Record<string, IconOption & { iconName?: string }>
+  products: Record<string, IconOptionExtended>
 ) => {
   return Object.entries(products).reduce((acc, [key, product]) => {
     // Store only the essential data without the React element
@@ -43,17 +43,17 @@ export const createSerializableProducts = (
 // Reconstruct custom products from storage
 export const reconstructProductsFromStorage = (
   savedData: string
-): Record<string, IconOption & { iconName?: string }> => {
+): Record<string, IconOptionExtended> => {
   try {
     // Parse the saved custom products
     const parsed = JSON.parse(savedData);
-    const reconstructedProducts: Record<string, IconOption & { iconName?: string }> = {};
+    const reconstructedProducts: Record<string, IconOptionExtended> = {};
     
     for (const [key, product] of Object.entries(parsed)) {
-      const productData = product as Partial<IconOption> & { iconName?: string };
+      const productData = product as Partial<IconOptionExtended>;
       
       if (productData.value && productData.label && productData.shelfLife) {
-        // Use the stored icon name or default to 'apple'
+        // Use the stored icon name or default to 'apple' only if iconName is undefined
         const iconName = productData.iconName || 'apple';
         
         // Create the icon component from the stored name

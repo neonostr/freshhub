@@ -106,6 +106,28 @@ const ItemsList: React.FC = () => {
           
           <div className="px-4 pb-2 relative z-10">
             <div className="flex flex-col gap-6">
+              {/* Freshness filter moved above sort by */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Filter by freshness</span>
+                  </div>
+                  <span className="text-sm text-gray-500">
+                    {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
+                  </span>
+                </div>
+                
+                <Slider 
+                  value={[filterDays]}
+                  min={1}
+                  max={maxFreshnessDays}
+                  step={1}
+                  onValueChange={([value]) => setFilterDays(value)}
+                  className="w-full"
+                />
+              </div>
+              
+              {/* Sort by options now below the filter */}
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -143,26 +165,6 @@ const ItemsList: React.FC = () => {
                     }
                   </Button>
                 </div>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">Filter by freshness</span>
-                  </div>
-                  <span className="text-sm text-gray-500">
-                    {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
-                  </span>
-                </div>
-                
-                <Slider 
-                  value={[filterDays]}
-                  min={1}
-                  max={maxFreshnessDays}
-                  step={1}
-                  onValueChange={([value]) => setFilterDays(value)}
-                  className="w-full"
-                />
               </div>
             </div>
           </div>
