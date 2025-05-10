@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -128,7 +127,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
         {!isCompact && (
           <div className="flex justify-between mt-4 gap-2 card-actions">
             <Button 
-              variant="destructive" 
+              variant="outline" 
               size="sm"
               className="flex-1"
               onClick={(e) => { preventPropagation(e); deleteItem(item.id); }}
