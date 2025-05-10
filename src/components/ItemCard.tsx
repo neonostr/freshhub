@@ -1,8 +1,8 @@
 
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, RotateCcw } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
@@ -27,8 +27,55 @@ const ItemCard: React.FC<ItemCardProps> = ({
   const { deleteItem, resetItem } = useItems();
   const { allIcons } = useIconManager();
   const isMobile = useIsMobile();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [startX, setStartX] = useState(0);
+  
+  const SWIPE_THRESHOLD = 100; // px needed to trigger delete
   
   const freshnessLevel = calculateFreshnessLevel(item);
+  
+  // Handle touch events for swipe-to-delete
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartX(e.touches[0].clientX);
+    setIsSwiping(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isSwiping) return;
+    
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - startX;
+    
+    // Limit swipe range and add resistance as it gets further
+    const resistance = 0.5;
+    const limitedDiff = Math.sign(diff) * Math.min(Math.abs(diff), 200);
+    const resistedDiff = limitedDiff * resistance;
+    
+    setSwipeOffset(resistedDiff);
+  };
+
+  const handleTouchEnd = () => {
+    if (Math.abs(swipeOffset) > SWIPE_THRESHOLD) {
+      // Animation before delete
+      const direction = swipeOffset > 0 ? 1 : -1;
+      setSwipeOffset(direction * 1000);
+      setTimeout(() => {
+        deleteItem(item.id);
+      }, 300);
+    } else {
+      // Reset position if threshold not met
+      setSwipeOffset(0);
+    }
+    setIsSwiping(false);
+  };
+
+  // Handle reset tap for mobile
+  const handleResetTap = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    resetItem(item.id);
+  };
   
   const renderIcon = () => {
     // Try to get the icon from our icon manager
@@ -93,13 +140,39 @@ const ItemCard: React.FC<ItemCardProps> = ({
     e.stopPropagation();
   };
 
+  // Calculate swipe indicator opacity and position
+  const swipeIndicatorStyle = {
+    opacity: Math.abs(swipeOffset) / 100,
+    transform: `translateX(${swipeOffset < 0 ? '10px' : '-10px'})`,
+  };
+
+  // Reset card position when not relevant
+  useEffect(() => {
+    if (!isSwiping && Math.abs(swipeOffset) <= SWIPE_THRESHOLD) {
+      setSwipeOffset(0);
+    }
+  }, [isSwiping, swipeOffset]);
+
+  // Determine card transform style based on swipe
+  const cardStyle = {
+    transform: `translateX(${swipeOffset}px)`,
+    transition: isSwiping ? 'none' : 'transform 0.3s ease',
+  };
+
   return (
     <Card 
+      ref={cardRef}
       className={`overflow-hidden transition-all hover:shadow-md ${isExpandable ? 'cursor-pointer' : ''}`}
       onClick={handleCardClick}
+      style={cardStyle}
+      {...(isMobile ? {
+        onTouchStart: handleTouchStart,
+        onTouchMove: handleTouchMove,
+        onTouchEnd: handleTouchEnd
+      } : {})}
     >
       <div className={`h-2 ${getFreshnessColor(freshnessLevel)}`} />
-      <CardContent className={`p-4 transition-all duration-300 ease-in-out ${isExpandable ? 'expandable-card' : ''}`}>
+      <CardContent className={`p-4 transition-all duration-300 ease-in-out ${isExpandable ? 'expandable-card' : ''} ${isMobile ? 'relative' : ''}`}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-gray-100 rounded-full flex items-center justify-center w-9 h-9">
@@ -107,9 +180,21 @@ const ItemCard: React.FC<ItemCardProps> = ({
             </div>
             <h3 className="font-medium text-lg">{item.name}</h3>
           </div>
-          <span className={`text-xs px-2 py-1 rounded-full ${getFreshnessColor(freshnessLevel)}`}>
-            {getFreshnessText(freshnessLevel)}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={`text-xs px-2 py-1 rounded-full ${getFreshnessColor(freshnessLevel)}`}>
+              {getFreshnessText(freshnessLevel)}
+            </span>
+            
+            {/* Reset icon for mobile */}
+            {isMobile && (
+              <button 
+                onClick={handleResetTap}
+                className="text-fresh-green p-1 rounded-full hover:bg-gray-100"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </div>
         
         {!isCompact && (
@@ -125,7 +210,8 @@ const ItemCard: React.FC<ItemCardProps> = ({
           </div>
         )}
         
-        {!isCompact && (
+        {/* Show buttons only on desktop */}
+        {!isCompact && !isMobile && (
           <div className="flex justify-between mt-4 gap-2 card-actions">
             <Button 
               variant="outline" 
@@ -144,6 +230,24 @@ const ItemCard: React.FC<ItemCardProps> = ({
               Reset
             </Button>
           </div>
+        )}
+        
+        {/* Swipe delete indicators - shown during swipe */}
+        {isMobile && (
+          <>
+            <div 
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-destructive"
+              style={{...swipeIndicatorStyle, opacity: swipeOffset > 0 ? Math.abs(swipeOffset) / 100 : 0}}
+            >
+              Delete
+            </div>
+            <div 
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-destructive"
+              style={{...swipeIndicatorStyle, opacity: swipeOffset < 0 ? Math.abs(swipeOffset) / 100 : 0}}
+            >
+              Delete
+            </div>
+          </>
         )}
       </CardContent>
     </Card>
