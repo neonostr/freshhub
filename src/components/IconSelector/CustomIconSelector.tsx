@@ -18,8 +18,8 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
     const pascalCaseName = iconName.charAt(0).toUpperCase() + 
       iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
     
-    // Use proper type annotation for the dynamic icon component
-    const IconComponent = (LucideIcons as Record<string, LucideIcon>)[pascalCaseName];
+    // Cast to unknown first, then to the specific type we need
+    const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<any>>)[pascalCaseName];
     
     if (IconComponent) {
       return React.createElement(IconComponent, { size: 20 });

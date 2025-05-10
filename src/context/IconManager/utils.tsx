@@ -3,7 +3,6 @@ import React from 'react';
 import * as LucideIcons from 'lucide-react';
 import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
-import { LucideIcon } from 'lucide-react';
 
 // Reconstruct an icon component from an icon name
 export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
@@ -19,8 +18,8 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   const pascalCaseName = iconName.charAt(0).toUpperCase() + 
     iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
   
-  // Type assertion to define the expected structure of LucideIcons
-  const IconComponent = (LucideIcons as Record<string, LucideIcon>)[pascalCaseName];
+  // Cast to unknown first, then to the specific type we need
+  const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<any>>)[pascalCaseName];
   
   if (IconComponent) {
     return React.createElement(IconComponent, { className });
@@ -34,7 +33,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     );
     
     if (directIcon && directIcon[1]) {
-      const DirectIconComponent = directIcon[1] as LucideIcon;
+      const DirectIconComponent = directIcon[1] as React.ComponentType<any>;
       return React.createElement(DirectIconComponent, { className });
     }
   }
@@ -93,7 +92,7 @@ export const reconstructProductsFromStorage = (
           value: productData.value,
           label: productData.label,
           shelfLife: productData.shelfLife,
-          icon: iconElement,
+          icon: iconElement as React.ReactElement,
           iconName: iconName // Store the icon name explicitly
         };
       }

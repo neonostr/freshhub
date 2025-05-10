@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { DEFAULT_SELECTED_ICONS } from '@/data/productData';
 import { createSerializableProducts, reconstructProductsFromStorage } from './utils';
 import { IconOption } from '@/data/productData';
+import { IconOptionExtended } from '@/types/iconTypes';
 
 export const useIconStorage = () => {
   // Selected icons
@@ -18,7 +19,7 @@ export const useIconStorage = () => {
   });
   
   // Custom products
-  const [customProducts, setCustomProducts] = useState<Record<string, IconOption & { iconName?: string }>>(() => {
+  const [customProducts, setCustomProducts] = useState<Record<string, IconOptionExtended>>(() => {
     const saved = localStorage.getItem('freshTrackerCustomProducts');
     if (saved) {
       return reconstructProductsFromStorage(saved);

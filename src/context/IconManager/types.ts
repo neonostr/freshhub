@@ -5,7 +5,7 @@ import { ReactNode } from 'react';
 
 export interface IconManagerContextType {
   availableIcons: IconOption[];
-  allIcons: Record<string, IconOptionExtended>;
+  allIcons: Record<string, IconOption | IconOptionExtended>;
   toggleIcon: (iconValue: string) => void;
   isIconSelected: (iconValue: string) => boolean;
   updateIconShelfLife: (iconValue: string, days: number) => void;

@@ -20,11 +20,11 @@ export interface EditableProductProps {
   shelfLife: number;
 }
 
-// Update the IconOption interface (imported from productData.ts) to include iconName
+// Make IconOptionExtended compatible with IconOption
 export interface IconOptionExtended {
   value: string;
   label: string;
-  icon: React.ReactNode; // Changed from ReactElement to ReactNode for more flexibility
+  icon: React.ReactElement; // Keep as ReactElement for consistency with IconOption
   shelfLife: number;
   iconName?: string;
 }
