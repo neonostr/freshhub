@@ -13,8 +13,10 @@ import { FoodIconOption, EditableProductProps, IconOptionExtended } from '@/type
 import { IconOption, ALL_ICONS } from '@/data/productData';
 import * as LucideIcons from 'lucide-react';
 import { useItems } from '@/context/ItemsContext';
+import { useToast } from '@/hooks/use-toast';
 
 const IconManagerDialog: React.FC = () => {
+  const { toast } = useToast();
   const { 
     toggleIcon, 
     isIconSelected, 
