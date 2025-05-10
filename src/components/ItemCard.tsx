@@ -128,20 +128,20 @@ const ItemCard: React.FC<ItemCardProps> = ({
         {!isCompact && (
           <div className="flex justify-between mt-4 gap-2 card-actions">
             <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex-1"
-              onClick={(e) => { preventPropagation(e); resetItem(item.id); }}
-            >
-              Reset
-            </Button>
-            <Button 
               variant="destructive" 
               size="sm"
               className="flex-1"
               onClick={(e) => { preventPropagation(e); deleteItem(item.id); }}
             >
               Remove
+            </Button>
+            <Button 
+              variant="default" 
+              size="sm" 
+              className="flex-1"
+              onClick={(e) => { preventPropagation(e); resetItem(item.id); }}
+            >
+              Reset
             </Button>
           </div>
         )}
