@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -74,7 +73,7 @@ const ItemsList: React.FC = () => {
     }
   };
 
-  // Toggle expanded/collapsed state for an item in compact mode
+  // Toggle expanded/collapsed state for an item
   const toggleItemExpanded = (itemId: string) => {
     setExpandedItemIds(prev => 
       prev.includes(itemId) 
@@ -103,8 +102,8 @@ const ItemsList: React.FC = () => {
       return "grid gap-2 grid-cols-1"; // Single column on mobile in compact mode
     }
 
-    // Enhanced grid for larger screens in compact mode
-    return "compact-grid";
+    // For desktop in compact mode, use grid-cols-3
+    return "desktop-compact-grid";
   };
 
   return <div className="space-y-6 relative pb-16">
@@ -114,8 +113,8 @@ const ItemsList: React.FC = () => {
             key={item.id} 
             item={item} 
             isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
-            onClick={() => isCompactMode && isMobile && toggleItemExpanded(item.id)}
-            isExpandable={isCompactMode && isMobile}
+            onClick={() => toggleItemExpanded(item.id)}
+            isExpandable={isCompactMode}
           />
         ))}
       </div>

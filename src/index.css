@@ -110,6 +110,11 @@
   @apply grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2;
 }
 
+/* Desktop compact mode styles - 3 items per row */
+.desktop-compact-grid {
+  @apply grid gap-2 grid-cols-3;
+}
+
 /* Ensure mobile devices show proper grid - even in compact mode */
 @media (max-width: 640px) {
   .compact-grid {

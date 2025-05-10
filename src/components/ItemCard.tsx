@@ -9,6 +9,7 @@ import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
 import * as LucideIcons from 'lucide-react';
 import { IconOptionExtended } from '@/types/iconTypes';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ItemCardProps {
   item: Item;
@@ -25,6 +26,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
 }) => {
   const { deleteItem, resetItem } = useItems();
   const { allIcons } = useIconManager();
+  const isMobile = useIsMobile();
   
   const freshnessLevel = calculateFreshnessLevel(item);
   
