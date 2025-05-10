@@ -8,10 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
 import { useIsMobile } from '@/hooks/use-mobile';
-
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
-
 const ItemsList: React.FC = () => {
   const {
     items
@@ -61,7 +59,7 @@ const ItemsList: React.FC = () => {
   const toggleCompactMode = () => {
     setIsCompactMode(prev => !prev);
     setExpandedItemIds([]); // Reset expanded items when toggling mode
-    
+
     // If enabled, hide the header
     const header = document.getElementById('app-header');
     if (header) {
@@ -75,13 +73,8 @@ const ItemsList: React.FC = () => {
 
   // Toggle expanded/collapsed state for an item
   const toggleItemExpanded = (itemId: string) => {
-    setExpandedItemIds(prev => 
-      prev.includes(itemId) 
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
-    );
+    setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
   };
-
   if (items.length === 0) {
     return <div className="flex flex-col items-center justify-center p-8 text-center">
         <div className="text-4xl mb-2">🥛</div>
@@ -97,7 +90,6 @@ const ItemsList: React.FC = () => {
     if (!isCompactMode) {
       return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3"; // Normal grid
     }
-
     if (isMobile) {
       return "grid gap-2 grid-cols-1"; // Single column on mobile in compact mode
     }
@@ -105,34 +97,23 @@ const ItemsList: React.FC = () => {
     // For desktop in compact mode, use grid-cols-3
     return "desktop-compact-grid";
   };
-
   return <div className="space-y-6 relative pb-16">
       <div className={getGridClass()}>
-        {sortedItems.map(item => (
-          <ItemCard 
-            key={item.id} 
-            item={item} 
-            isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
-            onClick={() => toggleItemExpanded(item.id)}
-            isExpandable={isCompactMode}
-          />
-        ))}
+        {sortedItems.map(item => <ItemCard key={item.id} item={item} isCompact={isCompactMode && !expandedItemIds.includes(item.id)} onClick={() => toggleItemExpanded(item.id)} isExpandable={isCompactMode} />)}
       </div>
 
       {/* Bottom floating buttons */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
-          <Button 
-            className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0" 
-            size="icon" 
-            variant="default"
-            style={{ right: "6rem" }} // Position the filter button
-          >
+          <Button className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0" size="icon" variant="default" style={{
+          right: "6rem"
+        }} // Position the filter button
+        >
             <Filter className="h-6 w-6" />
           </Button>
         </DrawerTrigger>
         
-        <DrawerContent side="bottom" className="z-50 py-[25px] px-[21px]">
+        <DrawerContent side="bottom" className="z-50 px-[21px] py-[34px]">
           <div className="px-4">
             <div className="flex flex-col gap-5">
               <div className="flex items-center justify-between">
@@ -169,16 +150,12 @@ const ItemsList: React.FC = () => {
       </Drawer>
 
       {/* Compact mode toggle button */}
-      <Button 
-        className="fixed bottom-6 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" 
-        size="icon" 
-        variant={isCompactMode ? "secondary" : "default"}
-        style={{ right: "10.5rem" }} // Position to the left of filter button
-        onClick={toggleCompactMode}
-      >
+      <Button className="fixed bottom-6 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" size="icon" variant={isCompactMode ? "secondary" : "default"} style={{
+      right: "10.5rem"
+    }} // Position to the left of filter button
+    onClick={toggleCompactMode}>
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
     </div>;
 };
-
 export default ItemsList;
