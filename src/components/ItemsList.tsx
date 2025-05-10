@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -77,15 +78,11 @@ const ItemsList: React.FC = () => {
           </Button>
         </DrawerTrigger>
         
-        <DrawerContent side="bottom" className="z-50">
-          <DrawerHeader className="relative z-10">
-            <DrawerTitle>Sort & Filter</DrawerTitle>
-          </DrawerHeader>
-          
-          <div className="px-4 pb-2 relative z-10">
-            <div className="flex flex-col gap-6">
+        <DrawerContent side="bottom" className="z-50 py-4">
+          <div className="px-4 relative z-10">
+            <div className="flex flex-col gap-4">
               {/* Freshness filter moved above sort by */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">Filter by freshness</span>
@@ -99,8 +96,8 @@ const ItemsList: React.FC = () => {
               </div>
               
               {/* Sort by options now below the filter */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
+              <div className="mb-1">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">Sort by</span>
                   </div>
@@ -122,10 +119,6 @@ const ItemsList: React.FC = () => {
               </div>
             </div>
           </div>
-          
-          <DrawerFooter className="relative z-0 rounded-xl">
-            {/* Close button removed */}
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </div>;
