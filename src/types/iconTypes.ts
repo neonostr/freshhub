@@ -24,7 +24,7 @@ export interface EditableProductProps {
 export interface IconOptionExtended {
   value: string;
   label: string;
-  icon: React.ReactElement;
+  icon: React.ReactNode; // Changed from ReactElement to ReactNode for more flexibility
   shelfLife: number;
   iconName?: string;
 }

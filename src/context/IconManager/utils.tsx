@@ -3,6 +3,7 @@ import React from 'react';
 import * as LucideIcons from 'lucide-react';
 import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
+import { LucideIcon } from 'lucide-react';
 
 // Reconstruct an icon component from an icon name
 export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
@@ -18,10 +19,10 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   const pascalCaseName = iconName.charAt(0).toUpperCase() + 
     iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
   
-  const IconComponent = (LucideIcons as any)[pascalCaseName];
+  // Type assertion to define the expected structure of LucideIcons
+  const IconComponent = (LucideIcons as Record<string, LucideIcon>)[pascalCaseName];
   
   if (IconComponent) {
-    // Use JSX to create the element
     return React.createElement(IconComponent, { className });
   } else {
     console.warn(`Icon "${iconName}" (${pascalCaseName}) not found in Lucide icons, trying alternate parsing`);
@@ -32,8 +33,8 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
       key.toLowerCase() === pascalCaseName.toLowerCase()
     );
     
-    if (directIcon) {
-      const DirectIconComponent = directIcon[1];
+    if (directIcon && directIcon[1]) {
+      const DirectIconComponent = directIcon[1] as LucideIcon;
       return React.createElement(DirectIconComponent, { className });
     }
   }
@@ -64,7 +65,7 @@ export const createSerializableProducts = (
         iconName: iconName
       }
     };
-  }, {});
+  }, {} as Record<string, Omit<IconOptionExtended, 'icon'> & { iconName: string }>);
 };
 
 // Reconstruct custom products from storage
@@ -85,14 +86,14 @@ export const reconstructProductsFromStorage = (
         console.log(`Reconstructing product ${productData.label} with icon: ${iconName}`);
         
         // Create the icon component from the stored name
-        const IconComponent = createIconFromName(iconName);
+        const iconElement = createIconFromName(iconName);
         
         // Create the fully reconstructed product
         reconstructedProducts[key] = {
           value: productData.value,
           label: productData.label,
           shelfLife: productData.shelfLife,
-          icon: IconComponent,
+          icon: iconElement,
           iconName: iconName // Store the icon name explicitly
         };
       }

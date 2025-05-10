@@ -5,6 +5,7 @@ import * as LucideIcons from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FoodIconOption, IconSelectorProps } from '@/types/iconTypes';
+import { LucideIcon } from 'lucide-react';
 
 const CustomIconSelector: React.FC<IconSelectorProps> = ({
   icons,
@@ -17,8 +18,8 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
     const pascalCaseName = iconName.charAt(0).toUpperCase() + 
       iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
     
-    // Use type assertion with 'as any' to access the dynamic icon component
-    const IconComponent = (LucideIcons as any)[pascalCaseName];
+    // Use proper type annotation for the dynamic icon component
+    const IconComponent = (LucideIcons as Record<string, LucideIcon>)[pascalCaseName];
     
     if (IconComponent) {
       return React.createElement(IconComponent, { size: 20 });
