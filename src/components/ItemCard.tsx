@@ -93,11 +93,11 @@ const ItemCard: React.FC<ItemCardProps> = ({
 
   return (
     <Card 
-      className={`overflow-hidden transition-all hover:shadow-md ${isExpandable ? 'cursor-pointer expandable-card' : ''} ${isCompact ? 'compact' : ''}`}
+      className={`overflow-hidden transition-all hover:shadow-md ${isExpandable ? 'cursor-pointer' : ''}`}
       onClick={handleCardClick}
     >
       <div className={`h-2 ${getFreshnessColor(freshnessLevel)}`} />
-      <CardContent className={`p-4 transition-all duration-300 ease-in-out`}>
+      <CardContent className={`p-4 transition-all duration-300 ease-in-out ${isExpandable ? 'expandable-card' : ''}`}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-gray-100 rounded-full flex items-center justify-center w-9 h-9">
@@ -110,35 +110,39 @@ const ItemCard: React.FC<ItemCardProps> = ({
           </span>
         </div>
         
-        <div className="space-y-2 text-sm text-gray-500 mt-3 card-details">
-          <div className="flex items-center">
-            <Calendar className="h-4 w-4 mr-2" />
-            <span>Opened: {formatOpenedDate(item.openedDate)}</span>
+        {!isCompact && (
+          <div className="space-y-2 text-sm text-gray-500 mt-3 card-details">
+            <div className="flex items-center">
+              <Calendar className="h-4 w-4 mr-2" />
+              <span>Opened: {formatOpenedDate(item.openedDate)}</span>
+            </div>
+            <div className="flex items-center">
+              <Clock className="h-4 w-4 mr-2" />
+              <span>Open {formatTimeOpen(item.openedDate)}</span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <Clock className="h-4 w-4 mr-2" />
-            <span>Open {formatTimeOpen(item.openedDate)}</span>
-          </div>
-        </div>
+        )}
         
-        <div className="flex justify-between mt-4 gap-2 card-actions">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex-1"
-            onClick={(e) => { preventPropagation(e); resetItem(item.id); }}
-          >
-            Reset
-          </Button>
-          <Button 
-            variant="destructive" 
-            size="sm"
-            className="flex-1"
-            onClick={(e) => { preventPropagation(e); deleteItem(item.id); }}
-          >
-            Remove
-          </Button>
-        </div>
+        {!isCompact && (
+          <div className="flex justify-between mt-4 gap-2 card-actions">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex-1"
+              onClick={(e) => { preventPropagation(e); resetItem(item.id); }}
+            >
+              Reset
+            </Button>
+            <Button 
+              variant="destructive" 
+              size="sm"
+              className="flex-1"
+              onClick={(e) => { preventPropagation(e); deleteItem(item.id); }}
+            >
+              Remove
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
