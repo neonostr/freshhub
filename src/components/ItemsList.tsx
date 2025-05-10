@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -78,7 +77,7 @@ const ItemsList: React.FC = () => {
           </Button>
         </DrawerTrigger>
         
-        <DrawerContent side="bottom" className="z-50 py-4">
+        <DrawerContent side="bottom" className="z-50 py-[24px]">
           <div className="px-4 relative z-10">
             <div className="flex flex-col gap-4">
               {/* Freshness filter moved above sort by */}
