@@ -99,11 +99,7 @@ const ItemsList: React.FC = () => {
       return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3"; // Normal grid
     }
 
-    if (isMobile) {
-      return "grid gap-2 grid-cols-1"; // Single column on mobile in compact mode
-    }
-
-    // Enhanced grid for larger screens in compact mode
+    // Use the compact-grid class defined in index.css for compact mode
     return "compact-grid";
   };
 
@@ -114,8 +110,8 @@ const ItemsList: React.FC = () => {
             key={item.id} 
             item={item} 
             isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
-            onClick={() => isCompactMode && isMobile && toggleItemExpanded(item.id)}
-            isExpandable={isCompactMode && isMobile}
+            onClick={() => isCompactMode && toggleItemExpanded(item.id)}
+            isExpandable={isCompactMode}
           />
         ))}
       </div>
