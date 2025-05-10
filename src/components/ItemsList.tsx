@@ -23,6 +23,7 @@ const ItemsList: React.FC = () => {
   const [filterDays, setFilterDays] = useState<number>(365); // Default to show all
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
+  const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
   const isMobile = useIsMobile();
 
   // Determine the maximum days across all items for the filter slider
@@ -60,6 +61,7 @@ const ItemsList: React.FC = () => {
   // Toggle compact mode
   const toggleCompactMode = () => {
     setIsCompactMode(prev => !prev);
+    setExpandedItemIds([]); // Reset expanded items when toggling mode
     
     // If enabled, hide the header
     const header = document.getElementById('app-header');
@@ -72,6 +74,15 @@ const ItemsList: React.FC = () => {
     }
   };
 
+  // Toggle expanded/collapsed state for an item in compact mode
+  const toggleItemExpanded = (itemId: string) => {
+    setExpandedItemIds(prev => 
+      prev.includes(itemId) 
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
+    );
+  };
+
   if (items.length === 0) {
     return <div className="flex flex-col items-center justify-center p-8 text-center">
         <div className="text-4xl mb-2">🥛</div>
@@ -82,23 +93,38 @@ const ItemsList: React.FC = () => {
       </div>;
   }
 
-  // Determine proper grid class based on compact mode and mobile status
-  const gridClass = isCompactMode
-    ? isMobile 
-      ? "grid gap-2 grid-cols-1" // Single column on mobile in compact mode
-      : "compact-grid" // Use compact grid for desktop
-    : "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3"; // Normal grid otherwise
+  // Determine proper grid class based on compact mode, device type, and screen size
+  const getGridClass = () => {
+    if (!isCompactMode) {
+      return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3"; // Normal grid
+    }
+
+    if (isMobile) {
+      return "grid gap-2 grid-cols-1"; // Single column on mobile in compact mode
+    }
+
+    // Enhanced grid for larger screens in compact mode
+    return "compact-grid";
+  };
 
   return <div className="space-y-6 relative pb-16">
-      <div className={gridClass}>
-        {sortedItems.map(item => <ItemCard key={item.id} item={item} isCompact={isCompactMode} />)}
+      <div className={getGridClass()}>
+        {sortedItems.map(item => (
+          <ItemCard 
+            key={item.id} 
+            item={item} 
+            isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
+            onClick={() => isCompactMode && isMobile && toggleItemExpanded(item.id)}
+            isExpandable={isCompactMode && isMobile}
+          />
+        ))}
       </div>
 
       {/* Bottom floating buttons */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button 
-            className="fixed bottom-6 right-6 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" 
+            className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0" 
             size="icon" 
             variant="default"
             style={{ right: "6rem" }} // Position the filter button

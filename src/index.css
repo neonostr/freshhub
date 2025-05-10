@@ -107,12 +107,41 @@
 
 /* Compact mode styles */
 .compact-grid {
-  @apply grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2;
+  @apply grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2;
 }
 
 /* Ensure mobile devices show proper grid - even in compact mode */
 @media (max-width: 640px) {
   .compact-grid {
     @apply grid-cols-1 gap-2;
+  }
+}
+
+/* Animation for card expansion */
+.expandable-card .card-details,
+.expandable-card .card-actions {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.expandable-card:not(.compact) .card-details,
+.expandable-card:not(.compact) .card-actions {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 0.75rem;
+}
+
+/* Fix for overlay to cover iOS notch/status bar */
+@supports (padding-top: env(safe-area-inset-top)) {
+  [class*="DialogOverlay"],
+  [class*="SheetOverlay"],
+  [class*="AlertDialogOverlay"],
+  [class*="DrawerOverlay"] {
+    position: fixed !important;
+    top: -100px !important;
+    height: calc(100% + 100px + env(safe-area-inset-top)) !important;
+    width: 100% !important;
   }
 }
