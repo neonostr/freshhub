@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -170,11 +169,7 @@ const ItemsList: React.FC = () => {
           </div>
           
           <DrawerFooter className="relative z-10">
-            <DrawerClose asChild>
-              <Button variant="outline">
-                Close
-              </Button>
-            </DrawerClose>
+            {/* Close button removed */}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
