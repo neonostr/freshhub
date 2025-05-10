@@ -6,6 +6,12 @@ import { IconOptionExtended } from '@/types/iconTypes';
 
 // Reconstruct an icon component from an icon name
 export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
+  // Ensure we have a valid icon name
+  if (!iconName) {
+    console.error("No icon name provided to createIconFromName");
+    iconName = 'apple'; // Default fallback
+  }
+  
   const pascalCaseName = iconName.charAt(0).toUpperCase() + 
     iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
   
@@ -15,6 +21,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     return React.createElement(IconComponent, { className });
   }
   
+  console.warn(`Icon "${iconName}" (${pascalCaseName}) not found in Lucide icons`);
   // Using React.createElement instead of JSX to avoid syntax issues
   return React.createElement('div', {
     className: `flex items-center justify-center ${className}`
@@ -26,6 +33,10 @@ export const createSerializableProducts = (
   products: Record<string, IconOptionExtended>
 ) => {
   return Object.entries(products).reduce((acc, [key, product]) => {
+    // Ensure iconName is stored properly
+    const iconName = product.iconName || 'apple';
+    console.log(`Serializing product ${product.label} with icon: ${iconName}`);
+    
     // Store only the essential data without the React element
     return {
       ...acc,
@@ -34,7 +45,7 @@ export const createSerializableProducts = (
         label: product.label,
         shelfLife: product.shelfLife,
         // Store icon name explicitly - make sure it's not lost
-        iconName: product.iconName || 'apple'
+        iconName: iconName
       }
     };
   }, {});
@@ -55,6 +66,7 @@ export const reconstructProductsFromStorage = (
       if (productData.value && productData.label && productData.shelfLife) {
         // Use the stored icon name or default to 'apple' only if iconName is undefined
         const iconName = productData.iconName || 'apple';
+        console.log(`Reconstructing product ${productData.label} with icon: ${iconName}`);
         
         // Create the icon component from the stored name
         const IconComponent = createIconFromName(iconName);

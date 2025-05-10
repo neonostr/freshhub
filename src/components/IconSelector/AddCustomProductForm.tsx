@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
@@ -29,7 +29,18 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
 }) => {
   const [productName, setProductName] = useState(initialValues?.name || '');
   const [shelfLife, setShelfLife] = useState(initialValues?.shelfLife?.toString() || '7');
-  const [selectedIcon, setSelectedIcon] = useState(initialValues?.iconName || availableIcons[0]?.icon || '');
+  const [selectedIcon, setSelectedIcon] = useState('');
+
+  // Set initial selected icon value
+  useEffect(() => {
+    // If editing, use the initialValues iconName or default to first available icon
+    // If adding new, default to first available icon
+    const initialIcon = initialValues?.iconName || availableIcons[0]?.icon;
+    setSelectedIcon(initialIcon);
+    
+    // For debugging
+    console.log('Initial icon set to:', initialIcon);
+  }, [initialValues, availableIcons]);
 
   // Generate a unique ID for the new product
   const generateUniqueId = () => {
@@ -65,6 +76,8 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
       });
       return;
     }
+    
+    console.log('Selected icon for submission:', selectedIcon);
     
     // Use existing ID if editing, or generate a new one
     const productId = isEditing ? initialValues!.name : generateUniqueId();
@@ -117,7 +130,10 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
           <CustomIconSelector
             icons={availableIcons}
             selectedIcon={selectedIcon}
-            onSelect={setSelectedIcon}
+            onSelect={(icon) => {
+              console.log('Icon selected:', icon);
+              setSelectedIcon(icon);
+            }}
             className="h-40" // Updated to match 4 rows of icons
           />
         </div>

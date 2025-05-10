@@ -118,6 +118,8 @@ const IconManagerDialog: React.FC = () => {
       iconName = 'apple'; // Default icon
     }
     
+    console.log(`Editing product with icon: ${iconName}`);
+    
     setEditingProduct({
       productId: product.value,
       name: product.label,
@@ -150,6 +152,8 @@ const IconManagerDialog: React.FC = () => {
   
   // Handle saving edited product
   const handleSaveProduct = (product: IconOption, iconName: string) => {
+    console.log(`Saving product with icon name: ${iconName}`);
+    
     // Ensure we're passing the iconName correctly
     if (editingProduct) {
       // Update tracked items with the new product name
@@ -172,6 +176,8 @@ const IconManagerDialog: React.FC = () => {
 
   // Handle adding a new custom product
   const handleAddCustomProduct = (newProduct: IconOption, iconName: string) => {
+    console.log(`Adding new product with icon name: ${iconName}`);
+    
     // Ensure that the iconName is correctly stored with the product
     addCustomProduct({
       ...newProduct,
@@ -215,6 +221,51 @@ const IconManagerDialog: React.FC = () => {
     index === self.findIndex((t) => t.icon === icon.icon)
   ).sort((a, b) => a.name.localeCompare(b.name));
   
+  // Function to properly collect icon selection from the form
+  const collectFormData = () => {
+    const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
+    const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
+    
+    if (nameInput && shelfLifeInput) {
+      const name = nameInput.value;
+      const shelfLife = parseInt(shelfLifeInput.value, 10);
+      
+      if (!name.trim()) {
+        toast({
+          title: "Name required",
+          description: "Please provide a name for the product",
+          variant: "destructive",
+        });
+        return null;
+      }
+      
+      if (isNaN(shelfLife) || shelfLife <= 0) {
+        toast({
+          title: "Invalid shelf life",
+          description: "Please provide a valid shelf life (days)",
+          variant: "destructive",
+        });
+        return null;
+      }
+      
+      // Get selected icon from CustomIconSelector component
+      // This relies on the component properly tracking its state
+      // and adding data-icon attribute to selected buttons
+      const activeButton = document.querySelector('[data-state="active"][data-icon]');
+      const iconName = activeButton?.getAttribute('data-icon') || 'apple';
+      
+      console.log(`Selected icon from DOM: ${iconName}`);
+      
+      return {
+        name,
+        shelfLife,
+        iconName
+      };
+    }
+    
+    return null;
+  };
+
   return (
     <>
       <Dialog>
@@ -384,9 +435,13 @@ const IconManagerDialog: React.FC = () => {
                     
                     const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
                     
-                    // Get selected icon from the active button
-                    const activeButton = document.querySelector('[data-state="active"][data-radix-collection-item]');
+                    // Get selected icon from CustomIconSelector component
+                    // This relies on the component properly tracking its state
+                    // and adding data-icon attribute to selected buttons
+                    const activeButton = document.querySelector('[data-state="active"][data-icon]');
                     const iconName = activeButton?.getAttribute('data-icon') || 'apple';
+                    
+                    console.log(`Selected icon from DOM: ${iconName}`);
                     
                     // Create React element for the icon
                     const pascalCaseName = iconName.charAt(0).toUpperCase() + 
@@ -456,8 +511,10 @@ const IconManagerDialog: React.FC = () => {
                     }
                     
                     // Get selected icon from the active button
-                    const activeButton = document.querySelector('[data-state="active"][data-radix-collection-item]');
+                    const activeButton = document.querySelector('[data-state="active"][data-icon]');
                     const iconName = activeButton?.getAttribute('data-icon') || editingProduct.icon;
+                    
+                    console.log(`Editing with icon name: ${iconName}`);
                     
                     // Create React element for the icon
                     const pascalCaseName = iconName.charAt(0).toUpperCase() + 
