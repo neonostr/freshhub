@@ -136,9 +136,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
               Remove
             </Button>
             <Button 
-              variant="default" 
+              variant="outline" 
               size="sm" 
-              className="flex-1 bg-fresh-green hover:bg-fresh-green/90"
+              className="flex-1 text-fresh-green border-fresh-green hover:bg-fresh-green/10"
               onClick={(e) => { preventPropagation(e); resetItem(item.id); }}
             >
               Reset

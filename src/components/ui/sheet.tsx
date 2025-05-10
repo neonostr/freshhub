@@ -1,3 +1,4 @@
+
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
@@ -25,8 +26,9 @@ const SheetOverlay = React.forwardRef<
     style={{ 
       position: 'fixed', 
       top: '-100px', 
-      height: 'calc(100% + 100px)',
-      width: '100%'
+      height: 'calc(100% + 100px + env(safe-area-inset-top))', 
+      width: '100%',
+      margin: 0
     }}
     {...props}
     ref={ref}
