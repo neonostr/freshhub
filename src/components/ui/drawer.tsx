@@ -21,14 +21,14 @@ const DrawerPortal = DrawerPrimitive.Portal
 
 const DrawerClose = DrawerPrimitive.Close
 
-// Updated overlay to match dialog overlay style with dark background
+// Updated overlay to match sheet overlay style with semi-transparent background
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
   <DrawerPrimitive.Overlay
     ref={ref}
-    className={cn("fixed inset-0 z-50 bg-black/80 backdrop-blur-sm", className)}
+    className={cn("fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px]", className)}
     {...props}
   />
 ))

@@ -5,6 +5,7 @@ import { IconOption } from '@/data/productData';
 import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
+import { IconOptionExtended } from '@/types/iconTypes';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -60,7 +61,7 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     }));
   };
   
-  const addCustomProduct = (product: IconOption, iconName: string) => {
+  const addCustomProduct = (product: IconOptionExtended, iconName: string) => {
     // Include the iconName in the stored product
     setCustomProducts(prev => ({
       ...prev,

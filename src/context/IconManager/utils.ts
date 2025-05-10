@@ -2,6 +2,7 @@
 import React from 'react';
 import * as LucideIcons from 'lucide-react';
 import { IconOption } from '@/data/productData';
+import { IconOptionExtended } from '@/types/iconTypes';
 
 // Reconstruct an icon component from an icon name
 export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
@@ -32,7 +33,7 @@ export const createSerializableProducts = (
         value: product.value,
         label: product.label,
         shelfLife: product.shelfLife,
-        // Store icon name explicitly
+        // Store icon name explicitly - make sure it's not lost
         iconName: product.iconName || 'apple'
       }
     };
@@ -52,7 +53,7 @@ export const reconstructProductsFromStorage = (
       const productData = product as Partial<IconOption> & { iconName?: string };
       
       if (productData.value && productData.label && productData.shelfLife) {
-        // Store the icon name for future reference
+        // Use the stored icon name or default to 'apple'
         const iconName = productData.iconName || 'apple';
         
         // Create the icon component from the stored name
@@ -64,7 +65,7 @@ export const reconstructProductsFromStorage = (
           label: productData.label,
           shelfLife: productData.shelfLife,
           icon: IconComponent,
-          iconName: iconName // Store the icon name for reference
+          iconName: iconName // Store the icon name explicitly
         };
       }
     }

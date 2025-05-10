@@ -1,56 +1,36 @@
-# Welcome to your Lovable project
 
-## Project info
+# Fresh Tracker
 
-**URL**: https://lovable.dev/projects/9d8a2f93-c77c-4eee-b17b-9e691ef87c31
+## Track Your Food Freshness with Complete Privacy
 
-## How can I edit this code?
+Fresh Tracker helps you minimize food waste by tracking when items were opened and how long they remain fresh. Never throw out perfectly good food again!
 
-There are several ways of editing your application.
+### Key Features
 
-**Use Lovable**
+- **Track opened items** - Record when you open food products and easily see how much time remains before they expire
+- **Customizable shelf life** - Set your own freshness periods for each type of product
+- **Add custom products** - Create your own product types with custom icons and shelf life settings
+- **Visual freshness indicators** - Color-coded system shows you at a glance what needs to be used soon
+- **100% Privacy Focused** - All your data stays on your device
+- **Works Offline** - No internet connection needed to use the app
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/9d8a2f93-c77c-4eee-b17b-9e691ef87c31) and start prompting.
+### Privacy First
 
-Changes made via Lovable will be committed automatically to this repo.
+Fresh Tracker is designed with your privacy as the top priority:
+- **No tracking** - We don't collect any usage data or analytics
+- **No accounts needed** - Use without signing up or providing any personal information
+- **100% local storage** - All your data is stored locally on your device, not on our servers
+- **No network requests** - The app never sends data over the internet
 
-**Use your preferred IDE**
+### Works Offline
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Fresh Tracker works completely offline. Once installed, you can use all features without an internet connection:
+- Track items
+- Add custom products
+- Set shelf life preferences
+- View freshness status
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
+## Development
 
 This project is built with:
 
@@ -60,14 +40,12 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/9d8a2f93-c77c-4eee-b17b-9e691ef87c31) and click on Share -> Publish.
+Fresh Tracker is available under a custom license:
 
-## Can I connect a custom domain to my Lovable project?
+- **Personal Use**: You are free to fork, modify, and use this code for personal, non-commercial purposes.
+- **Commercial Use**: Commercial use of this code is strictly prohibited without explicit permission.
+- **Distribution**: You may not distribute modified versions of this code for commercial purposes.
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+All rights reserved.

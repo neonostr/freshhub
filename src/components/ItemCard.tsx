@@ -35,7 +35,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
         // Get the component from Lucide
         const IconComponent = (LucideIcons as any)[pascalCaseName];
         if (IconComponent) {
-          return React.createElement(IconComponent, { size: 20 });
+          return <IconComponent size={20} />;
         }
       }
       
