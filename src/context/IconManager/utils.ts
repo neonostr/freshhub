@@ -12,6 +12,8 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     iconName = 'apple'; // Default fallback
   }
   
+  console.log(`Creating icon from name: ${iconName}`);
+  
   const pascalCaseName = iconName.charAt(0).toUpperCase() + 
     iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
   
