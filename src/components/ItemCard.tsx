@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -137,7 +138,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
             <Button 
               variant="default" 
               size="sm" 
-              className="flex-1"
+              className="flex-1 bg-fresh-green hover:bg-fresh-green/90"
               onClick={(e) => { preventPropagation(e); resetItem(item.id); }}
             >
               Reset
