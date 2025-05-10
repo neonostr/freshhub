@@ -21,10 +21,12 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
     const IconComponent = (LucideIcons as any)[pascalCaseName];
     
     if (IconComponent) {
-      return <IconComponent size={20} />;
+      return React.createElement(IconComponent, { size: 20 });
     }
     
-    return <div className="h-5 w-5 flex items-center justify-center">?</div>;
+    return React.createElement('div', {
+      className: "h-5 w-5 flex items-center justify-center"
+    }, '?');
   };
 
   return (

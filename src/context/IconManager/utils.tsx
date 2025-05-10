@@ -21,8 +21,8 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   const IconComponent = (LucideIcons as any)[pascalCaseName];
   
   if (IconComponent) {
-    // Fix: Use JSX to create the element instead of React.createElement
-    return <IconComponent className={className} />;
+    // Use JSX to create the element
+    return React.createElement(IconComponent, { className });
   } else {
     console.warn(`Icon "${iconName}" (${pascalCaseName}) not found in Lucide icons, trying alternate parsing`);
     
@@ -33,15 +33,15 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     );
     
     if (directIcon) {
-      // Fix: Use JSX to create the element instead of React.createElement
       const DirectIconComponent = directIcon[1];
-      return <DirectIconComponent className={className} />;
+      return React.createElement(DirectIconComponent, { className });
     }
   }
   
   console.warn(`Icon "${iconName}" could not be found in Lucide icons`);
-  // Use JSX instead of createElement
-  return <div className={`flex items-center justify-center ${className}`}>?</div>;
+  return React.createElement('div', {
+    className: `flex items-center justify-center ${className}`
+  }, '?');
 };
 
 // Create serializable product data for storage
