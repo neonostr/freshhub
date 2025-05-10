@@ -14,6 +14,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   
   console.log(`Creating icon from name: ${iconName}`);
   
+  // Convert kebab-case to PascalCase for Lucide icon names
   const pascalCaseName = iconName.charAt(0).toUpperCase() + 
     iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
   
@@ -21,9 +22,21 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   
   if (IconComponent) {
     return React.createElement(IconComponent, { className });
+  } else {
+    console.warn(`Icon "${iconName}" (${pascalCaseName}) not found in Lucide icons, trying alternate parsing`);
+    
+    // Try to directly access by the name (some icons might have different naming patterns)
+    const directIcon = Object.entries(LucideIcons).find(([key]) => 
+      key.toLowerCase() === iconName.toLowerCase() || 
+      key.toLowerCase() === pascalCaseName.toLowerCase()
+    );
+    
+    if (directIcon) {
+      return React.createElement(directIcon[1], { className });
+    }
   }
   
-  console.warn(`Icon "${iconName}" (${pascalCaseName}) not found in Lucide icons`);
+  console.warn(`Icon "${iconName}" could not be found in Lucide icons`);
   // Using React.createElement instead of JSX to avoid syntax issues
   return React.createElement('div', {
     className: `flex items-center justify-center ${className}`

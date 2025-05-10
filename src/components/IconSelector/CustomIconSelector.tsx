@@ -37,7 +37,8 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
             size="sm"
             className="p-2 h-10"
             onClick={() => onSelect(icon.icon)}
-            data-icon={icon.icon} // Add data attribute for icon name
+            data-icon={icon.icon}
+            data-state={selectedIcon === icon.icon ? "active" : "inactive"}
           >
             {renderIcon(icon.icon)}
           </Button>

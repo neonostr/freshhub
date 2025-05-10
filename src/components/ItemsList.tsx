@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -5,10 +6,12 @@ import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemU
 import { Slider } from '@/components/ui/slider';
 import { Filter, ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerHeader, DrawerTitle, DrawerFooter } from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
+
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
+
 const ItemsList: React.FC = () => {
   const {
     items
@@ -55,6 +58,7 @@ const ItemsList: React.FC = () => {
   const toggleSortOption = () => {
     setSortOption(prev => prev === 'freshness' ? 'alphabetical' : 'freshness');
   };
+
   if (items.length === 0) {
     return <div className="flex flex-col items-center justify-center p-8 text-center">
         <div className="text-4xl mb-2">🥛</div>
@@ -64,6 +68,7 @@ const ItemsList: React.FC = () => {
         </p>
       </div>;
   }
+
   return <div className="space-y-6 relative pb-16">
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {sortedItems.map(item => <ItemCard key={item.id} item={item} />)}
@@ -77,29 +82,21 @@ const ItemsList: React.FC = () => {
           </Button>
         </DrawerTrigger>
         
-        <DrawerContent side="bottom" className="z-50 py-[38px] px-[21px]">
-          <div className="px-4 relative z-10">
-            <div className="flex flex-col gap-4">
-              {/* Freshness filter moved above sort by */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">Filter by freshness</span>
-                  </div>
-                  <span className="text-sm text-gray-500">
-                    {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
-                  </span>
-                </div>
-                
-                <Slider value={[filterDays]} min={1} max={maxFreshnessDays} step={1} onValueChange={([value]) => setFilterDays(value)} className="w-full" />
+        <DrawerContent side="bottom" className="z-50 py-[25px] px-[21px]">
+          <div className="px-4">
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center justify-between">
+                <span className="font-medium">Filter by freshness</span>
+                <span className="text-sm text-gray-500">
+                  {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
+                </span>
               </div>
               
-              {/* Sort by options now below the filter */}
-              <div className="mb-1">
+              <Slider value={[filterDays]} min={1} max={maxFreshnessDays} step={1} onValueChange={([value]) => setFilterDays(value)} className="w-full" />
+              
+              <div>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">Sort by</span>
-                  </div>
+                  <span className="font-medium">Sort by</span>
                 </div>
                 
                 <div className="flex gap-2">
@@ -122,4 +119,5 @@ const ItemsList: React.FC = () => {
       </Drawer>
     </div>;
 };
+
 export default ItemsList;
