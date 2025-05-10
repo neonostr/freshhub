@@ -8,6 +8,7 @@ import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
@@ -22,6 +23,7 @@ const ItemsList: React.FC = () => {
   const [filterDays, setFilterDays] = useState<number>(365); // Default to show all
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
+  const isMobile = useIsMobile();
 
   // Determine the maximum days across all items for the filter slider
   useEffect(() => {
@@ -80,15 +82,27 @@ const ItemsList: React.FC = () => {
       </div>;
   }
 
+  // Determine proper grid class based on compact mode and mobile status
+  const gridClass = isCompactMode
+    ? isMobile 
+      ? "grid gap-2 grid-cols-1" // Single column on mobile in compact mode
+      : "compact-grid" // Use compact grid for desktop
+    : "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3"; // Normal grid otherwise
+
   return <div className="space-y-6 relative pb-16">
-      <div className={`grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${isCompactMode ? 'compact-grid' : ''}`}>
+      <div className={gridClass}>
         {sortedItems.map(item => <ItemCard key={item.id} item={item} isCompact={isCompactMode} />)}
       </div>
 
       {/* Bottom floating buttons */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
-          <Button className="fixed bottom-6 right-24 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" size="icon" variant="default">
+          <Button 
+            className="fixed bottom-6 right-6 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" 
+            size="icon" 
+            variant="default"
+            style={{ right: "6rem" }} // Position the filter button
+          >
             <Filter className="h-6 w-6" />
           </Button>
         </DrawerTrigger>
@@ -131,10 +145,10 @@ const ItemsList: React.FC = () => {
 
       {/* Compact mode toggle button */}
       <Button 
-        className="fixed bottom-6 right-42 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" 
+        className="fixed bottom-6 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" 
         size="icon" 
         variant={isCompactMode ? "secondary" : "default"}
-        style={{ right: "144px" }}
+        style={{ right: "10.5rem" }} // Position to the left of filter button
         onClick={toggleCompactMode}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}

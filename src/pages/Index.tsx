@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ItemsProvider } from '@/context/ItemsContext';
 import { IconManagerProvider } from '@/context/IconManager';
 import ItemsList from '@/components/ItemsList';
@@ -7,6 +7,27 @@ import AddItemDialog from '@/components/AddItemDialog';
 import IconManagerDialog from '@/components/IconManagerDialog';
 
 const Index = () => {
+  const [isCompactMode, setIsCompactMode] = useState(false);
+
+  // Listen for changes to the display style of the header
+  // which indicates compact mode is enabled/disabled
+  React.useEffect(() => {
+    const header = document.getElementById('app-header');
+    if (header) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'style') {
+            setIsCompactMode(header.style.display === 'none');
+          }
+        });
+      });
+      
+      observer.observe(header, { attributes: true });
+      
+      return () => observer.disconnect();
+    }
+  }, []);
+
   return (
     <IconManagerProvider>
       <ItemsProvider>
@@ -22,7 +43,8 @@ const Index = () => {
             <ItemsList />
           </main>
           
-          <IconManagerDialog />
+          {/* Only show settings when not in compact mode */}
+          {!isCompactMode && <IconManagerDialog />}
           <AddItemDialog />
         </div>
       </ItemsProvider>
