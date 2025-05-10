@@ -1,3 +1,4 @@
+
 import { Item, FreshnessLevel } from '@/types/item';
 import { ALL_ICONS } from '@/data/productData';
 
@@ -9,6 +10,7 @@ export const calculateFreshnessLevel = (item: Item): FreshnessLevel => {
   const daysOpen = Math.ceil(timeDiff / (1000 * 3600 * 24));
   
   // Get shelf life from icon data or use default
+  // Always use the fresh version from localStorage to account for custom shelf life updates
   const shelfLife = getShelfLifeData(item.icon) ?? 30; // Default to 30 days
   
   const warningThreshold = shelfLife * 0.75; // 75% of shelf life
@@ -68,8 +70,35 @@ export const saveItems = (items: Item[]): void => {
   }
 };
 
-// Function to get shelf life data from ALL_ICONS
+// Function to get shelf life data using the most up-to-date values
 export const getShelfLifeData = (iconId: string): number | undefined => {
+  // Check for custom shelf life settings in localStorage
+  try {
+    const customShelfLifeStr = localStorage.getItem('freshTrackerCustomShelfLife');
+    if (customShelfLifeStr) {
+      const customShelfLife = JSON.parse(customShelfLifeStr);
+      if (customShelfLife[iconId] !== undefined) {
+        return customShelfLife[iconId];
+      }
+    }
+  } catch (err) {
+    console.error("Error reading custom shelf life settings:", err);
+  }
+  
+  // Check custom products
+  try {
+    const customProductsStr = localStorage.getItem('freshTrackerCustomProducts');
+    if (customProductsStr) {
+      const customProducts = JSON.parse(customProductsStr);
+      if (customProducts[iconId] && customProducts[iconId].shelfLife !== undefined) {
+        return customProducts[iconId].shelfLife;
+      }
+    }
+  } catch (err) {
+    console.error("Error reading custom products:", err);
+  }
+  
+  // Fall back to built-in icons data
   const iconData = ALL_ICONS[iconId];
   return iconData ? iconData.shelfLife : undefined;
 };
