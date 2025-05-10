@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
 import * as LucideIcons from 'lucide-react';
+import { IconOptionExtended } from '@/types/iconTypes';
 
 interface ItemCardProps {
   item: Item;
@@ -24,7 +25,8 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
       const iconData = allIcons[item.icon];
       
       // For custom products, we need to create the icon from the stored name
-      if (iconData.iconName) {
+      // Check if iconData is of type IconOptionExtended (which has iconName)
+      if ('iconName' in iconData && iconData.iconName) {
         // Get icon name from the iconData object
         const iconName = iconData.iconName;
         
