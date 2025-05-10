@@ -23,7 +23,6 @@ const DrawerPortal = DrawerPrimitive.Portal
 
 const DrawerClose = DrawerPrimitive.Close
 
-// Updated overlay to use consistent styling with 60% opacity
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
@@ -59,7 +58,6 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>,
   VariantProps<typeof sheetVariants> { }
 
-// Updated content to ensure it stands out from the background
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
   SheetContentProps

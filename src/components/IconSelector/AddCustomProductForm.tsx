@@ -29,17 +29,18 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
 }) => {
   const [productName, setProductName] = useState(initialValues?.name || '');
   const [shelfLife, setShelfLife] = useState(initialValues?.shelfLife?.toString() || '7');
-  const [selectedIcon, setSelectedIcon] = useState('');
+  // Initialize with the correct initial icon name
+  const [selectedIcon, setSelectedIcon] = useState(initialValues?.iconName || availableIcons[0]?.icon || 'apple');
 
   // Set initial selected icon value
   useEffect(() => {
-    // If editing, use the initialValues iconName or default to first available icon
-    // If adding new, default to first available icon
-    const initialIcon = initialValues?.iconName || availableIcons[0]?.icon;
-    setSelectedIcon(initialIcon);
-    
-    // For debugging
-    console.log('Initial icon set to:', initialIcon);
+    if (initialValues?.iconName) {
+      setSelectedIcon(initialValues.iconName);
+      console.log('Initial icon set from initialValues:', initialValues.iconName);
+    } else if (availableIcons.length > 0) {
+      setSelectedIcon(availableIcons[0].icon);
+      console.log('Initial icon set to first available:', availableIcons[0].icon);
+    }
   }, [initialValues, availableIcons]);
 
   // Generate a unique ID for the new product

@@ -35,7 +35,7 @@ export const createSerializableProducts = (
   products: Record<string, IconOptionExtended>
 ) => {
   return Object.entries(products).reduce((acc, [key, product]) => {
-    // Ensure iconName is stored properly
+    // Ensure iconName is stored properly - this is a critical fix
     const iconName = product.iconName || 'apple';
     console.log(`Serializing product ${product.label} with icon: ${iconName}`);
     
@@ -46,7 +46,7 @@ export const createSerializableProducts = (
         value: product.value,
         label: product.label,
         shelfLife: product.shelfLife,
-        // Store icon name explicitly - make sure it's not lost
+        // Store icon name explicitly to ensure it's retained
         iconName: iconName
       }
     };

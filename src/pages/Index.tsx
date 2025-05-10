@@ -51,10 +51,7 @@ const Index = () => {
         
         // Handle service worker updates
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-          toast({
-            title: "App updated",
-            description: "The app has been updated to the latest version.",
-          });
+          // Removed toast message for app updates
         });
       });
     }

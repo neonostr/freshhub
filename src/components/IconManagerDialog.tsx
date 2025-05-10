@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Settings, Plus, Check, X } from 'lucide-react';
 import { useIconManager } from '@/context/IconManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import ProductsList from './IconSelector/ProductsList';
 import ShelfLifeList from './IconSelector/ShelfLifeList';
@@ -167,11 +166,6 @@ const IconManagerDialog: React.FC = () => {
     } as IconOptionExtended, iconName);
     
     setEditingProduct(null);
-    
-    toast({
-      title: "Product updated",
-      description: `"${product.label}" has been updated`,
-    });
   };
 
   // Handle adding a new custom product
@@ -185,11 +179,6 @@ const IconManagerDialog: React.FC = () => {
     } as IconOptionExtended, iconName);
     
     setIsAddingProduct(false);
-    
-    toast({
-      title: "Product added",
-      description: `"${newProduct.label}" has been added to your products`,
-    });
   };
 
   // Extract icons from ALL_ICONS to use for custom products
