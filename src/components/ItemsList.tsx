@@ -77,7 +77,7 @@ const ItemsList: React.FC = () => {
           </Button>
         </DrawerTrigger>
         
-        <DrawerContent side="bottom" className="z-50 py-[24px]">
+        <DrawerContent side="bottom" className="z-50 py-[30px]">
           <div className="px-4 relative z-10">
             <div className="flex flex-col gap-4">
               {/* Freshness filter moved above sort by */}
