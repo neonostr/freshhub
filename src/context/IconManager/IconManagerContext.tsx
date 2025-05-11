@@ -6,6 +6,7 @@ import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended } from '@/types/iconTypes';
+import { useItems } from '@/context/ItemsContext';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -18,6 +19,9 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     customProducts,
     setCustomProducts
   } = useIconStorage();
+  
+  // Get access to the items context to directly delete items
+  const itemsContext = useContext(React.createContext<any>(undefined));
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
@@ -115,6 +119,12 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     // If we removed any items, save the updated list
     if (filteredItems.length !== items.length) {
       saveItems(filteredItems);
+      
+      // Force an update to the items context by dispatching an event
+      // This ensures the UI updates immediately without needing user interaction
+      window.dispatchEvent(new CustomEvent('custom-product-deleted', { 
+        detail: { productId: iconValue } 
+      }));
     }
     
     // Then remove the custom product

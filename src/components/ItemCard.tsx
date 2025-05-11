@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
-import { Calendar, Clock, RotateCcw } from "lucide-react";
+import { Calendar, Clock, RotateCcw, Trash2 } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
@@ -36,7 +36,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
   
   const freshnessLevel = calculateFreshnessLevel(item);
   
-  // Handle touch events for swipe-to-delete
+  // Handle touch events for swipe-to-delete (right-to-left only)
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartX(e.touches[0].clientX);
     setIsSwiping(true);
@@ -49,11 +49,12 @@ const ItemCard: React.FC<ItemCardProps> = ({
     const diff = currentX - startX;
     
     // Only allow swiping left (negative diff) for delete
-    if (diff > 0) {
-      setSwipeOffset(diff * 0.3); // Add more resistance to right swipe
-    } else {
+    // Prevent right swipe by setting offset to 0 for positive diff
+    if (diff < 0) {
       // Allow full swipe left with slight resistance
       setSwipeOffset(diff * 0.8);
+    } else {
+      setSwipeOffset(0); // Prevent right swiping
     }
   };
 
@@ -140,8 +141,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
     e.stopPropagation();
   };
 
-  // Calculate delete indicator opacity based on swipe distance
-  const deleteIndicatorOpacity = Math.min(Math.abs(swipeOffset) / 100, 1);
+  // Calculate delete indicator visibility based on swipe distance
+  // Start showing trash icon very early (at 10% of threshold)
+  const deleteIndicatorOpacity = Math.min(Math.abs(swipeOffset) / (SWIPE_THRESHOLD * 0.1), 1);
 
   // Reset card position when not relevant
   useEffect(() => {
@@ -160,9 +162,13 @@ const ItemCard: React.FC<ItemCardProps> = ({
     <div className="relative overflow-hidden rounded-lg">
       {/* Delete background - shown during swipe */}
       {isMobile && (
-        <div className="absolute inset-0 flex items-center bg-destructive rounded-lg">
-          <div className="w-full text-center text-white font-medium">
-            Delete
+        <div className="absolute inset-0 flex items-center justify-end bg-destructive rounded-lg">
+          <div className="flex items-center justify-center w-full pr-8">
+            <Trash2 
+              className="text-white" 
+              size={24} 
+              style={{ opacity: deleteIndicatorOpacity }}
+            />
           </div>
         </div>
       )}
@@ -192,7 +198,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
                 {getFreshnessText(freshnessLevel)}
               </span>
               
-              {/* Reset icon for mobile in signal color */}
+              {/* Reset icon for mobile in primary signal color */}
               {isMobile && (
                 <button 
                   onClick={handleResetTap}

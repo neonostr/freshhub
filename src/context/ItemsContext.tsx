@@ -26,6 +26,22 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       saveItems(items);
     }
   }, [items]);
+  
+  // Listen for custom product deletion events
+  useEffect(() => {
+    const handleCustomProductDeleted = (event: CustomEvent) => {
+      const { productId } = event.detail;
+      setItems(prev => prev.filter(item => item.icon !== productId));
+    };
+    
+    // Add event listener
+    window.addEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
+    };
+  }, []);
 
   const addItem = (item: Omit<Item, 'id' | 'openedDate'>) => {
     const newItem: Item = {
