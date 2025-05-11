@@ -132,50 +132,6 @@ const ItemsList: React.FC = () => {
     return "desktop-compact-grid";
   };
 
-  // Filter items based on the current freshness filter
-  const filteredItems = items.filter(item => {
-    const daysUntilExpiry = calculateDaysUntilExpiry(item);
-    return daysUntilExpiry <= filterDays;
-  });
-
-  // Sort items based on the current sort option and direction
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    if (sortOption === 'freshness') {
-      const aFreshness = calculateDaysUntilExpiry(a);
-      const bFreshness = calculateDaysUntilExpiry(b);
-      return sortDirection === 'asc' ? aFreshness - bFreshness : bFreshness - aFreshness;
-    } else {
-      // Alphabetical sorting
-      return sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-    }
-  });
-
-  // Toggle sort direction
-  const toggleSortDirection = () => {
-    setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-  };
-
-  // Toggle compact mode
-  const toggleCompactMode = () => {
-    setIsCompactMode(prev => !prev);
-    setExpandedItemIds([]); // Reset expanded items when toggling mode
-
-    // If enabled, hide the header
-    const header = document.getElementById('app-header');
-    if (header) {
-      if (!isCompactMode) {
-        header.style.display = 'none';
-      } else {
-        header.style.display = 'block';
-      }
-    }
-  };
-
-  // Toggle expanded/collapsed state for an item
-  const toggleItemExpanded = (itemId: string) => {
-    setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
-  };
-
   return (
     <div className="space-y-6 relative pb-16">
       <div className={getGridClass()}>
