@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect, ReactNode } from 'react';
 import { create } from 'zustand';
 
 type Handedness = 'right' | 'left';
@@ -10,7 +10,7 @@ interface HandednessState {
   setHandedness: (handedness: Handedness) => void;
 }
 
-export const useHandedness = create<HandednessState>((set) => ({
+export const useHandednessStore = create<HandednessState>((set) => ({
   handedness: 'right', // Default to right-handed
   setHandedness: (handedness) => {
     // Save to localStorage
@@ -19,19 +19,34 @@ export const useHandedness = create<HandednessState>((set) => ({
   },
 }));
 
-// Initialize handedness from localStorage if available
-const initializeHandedness = () => {
-  const savedHandedness = localStorage.getItem('handedness') as Handedness;
-  if (savedHandedness && (savedHandedness === 'left' || savedHandedness === 'right')) {
-    useHandedness.getState().setHandedness(savedHandedness);
-  }
-};
+// Create a context for components that don't have direct access to zustand
+const HandednessContext = createContext<HandednessState | undefined>(undefined);
 
 // Handedness provider component
-export const HandednessProvider = ({ children }: { children: React.ReactNode }) => {
+export const HandednessProvider = ({ children }: { children: ReactNode }) => {
+  // Initialize handedness from localStorage if available
   useEffect(() => {
-    initializeHandedness();
+    const savedHandedness = localStorage.getItem('handedness') as Handedness;
+    if (savedHandedness && (savedHandedness === 'left' || savedHandedness === 'right')) {
+      useHandednessStore.getState().setHandedness(savedHandedness);
+    }
   }, []);
+  
+  // Get the current state from the store
+  const { handedness, setHandedness } = useHandednessStore();
 
-  return children;
+  return (
+    <HandednessContext.Provider value={{ handedness, setHandedness }}>
+      {children}
+    </HandednessContext.Provider>
+  );
+};
+
+// Hook for using handedness context
+export const useHandedness = (): HandednessState => {
+  const context = useContext(HandednessContext);
+  if (!context) {
+    throw new Error('useHandedness must be used within a HandednessProvider');
+  }
+  return context;
 };
