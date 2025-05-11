@@ -176,17 +176,6 @@ const ItemsList: React.FC = () => {
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
 
-      {/* Settings button - always visible regardless of compact mode */}
-      <Button
-        className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
-        size="icon"
-        variant="outline"
-        style={getButtonPosition(15)}
-        onClick={() => setIsSettingsOpen(true)}
-      >
-        <Settings className="h-6 w-6" />
-      </Button>
-
       {/* Settings dialog */}
       <SettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
     </div>
