@@ -1,14 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
+import { Filter, ArrowDown, ArrowUp, Minimize, Maximize, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHandedness, type Handedness } from '@/context/HandednessContext';
+import SettingsDialog from './SettingsDialog';
 
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
@@ -62,16 +64,6 @@ const ItemsList: React.FC = () => {
   const toggleCompactMode = () => {
     setIsCompactMode(prev => !prev);
     setExpandedItemIds([]); // Reset expanded items when toggling mode
-
-    // If enabled, hide the header
-    const header = document.getElementById('app-header');
-    if (header) {
-      if (!isCompactMode) {
-        header.style.display = 'none';
-      } else {
-        header.style.display = 'block';
-      }
-    }
   };
 
   // Toggle expanded/collapsed state for an item
@@ -183,6 +175,20 @@ const ItemsList: React.FC = () => {
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
+
+      {/* Settings button - always visible regardless of compact mode */}
+      <Button
+        className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
+        size="icon"
+        variant="outline"
+        style={getButtonPosition(15)}
+        onClick={() => setIsSettingsOpen(true)}
+      >
+        <Settings className="h-6 w-6" />
+      </Button>
+
+      {/* Settings dialog */}
+      <SettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -9,6 +10,7 @@ import { useIconManager } from '@/context/IconManager';
 import * as LucideIcons from 'lucide-react';
 import { IconOptionExtended } from '@/types/iconTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useHandedness } from '@/context/HandednessContext';
 
 interface ItemCardProps {
   item: Item;
@@ -25,6 +27,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
 }) => {
   const { deleteItem, resetItem } = useItems();
   const { allIcons } = useIconManager();
+  const { handedness } = useHandedness();
   const isMobile = useIsMobile();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isSwiping, setIsSwiping] = useState(false);
@@ -35,7 +38,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
   
   const freshnessLevel = calculateFreshnessLevel(item);
   
-  // Handle touch events for swipe-to-delete (right-to-left only)
+  // Handle touch events for swipe-to-delete based on handedness
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartX(e.touches[0].clientX);
     setIsSwiping(true);
@@ -47,19 +50,26 @@ const ItemCard: React.FC<ItemCardProps> = ({
     const currentX = e.touches[0].clientX;
     const diff = currentX - startX;
     
-    // Only allow swiping left (negative diff) for delete
-    if (diff < 0) {
-      // Allow full swipe left with slight resistance
+    // For right-handed users: swipe left to delete (negative diff)
+    // For left-handed users: swipe right to delete (positive diff)
+    if ((handedness === 'right' && diff < 0) || (handedness === 'left' && diff > 0)) {
+      // Apply swipe with slight resistance
       setSwipeOffset(diff * 0.8);
     } else {
-      setSwipeOffset(0); // Prevent right swiping
+      setSwipeOffset(0); // Prevent swiping in non-delete direction
     }
   };
 
   const handleTouchEnd = () => {
-    if (swipeOffset < -SWIPE_THRESHOLD) {
+    // Check if swipe threshold is met
+    // For right-handed: negative threshold, for left-handed: positive threshold
+    const thresholdMet = handedness === 'right' 
+      ? swipeOffset < -SWIPE_THRESHOLD 
+      : swipeOffset > SWIPE_THRESHOLD;
+    
+    if (thresholdMet) {
       // Animation before delete
-      setSwipeOffset(-1000);
+      setSwipeOffset(handedness === 'right' ? -1000 : 1000);
       setTimeout(() => {
         deleteItem(item.id);
       }, 300);
@@ -156,12 +166,19 @@ const ItemCard: React.FC<ItemCardProps> = ({
     transition: isSwiping ? 'none' : 'transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
   };
 
+  // Get the position for the trash icon based on handedness
+  const getDeleteIconPosition = () => {
+    return handedness === 'right' 
+      ? "justify-end pr-4" // Right-handed: icon on right
+      : "justify-start pl-4"; // Left-handed: icon on left
+  };
+
   return (
     <div className="relative overflow-hidden rounded-lg">
       {/* Delete background - shown during swipe */}
       {isMobile && (
-        <div className="absolute inset-0 flex items-center justify-end bg-destructive rounded-lg">
-          <div className="flex items-center justify-center w-16 pr-4">
+        <div className="absolute inset-0 flex items-center bg-destructive rounded-lg">
+          <div className={`flex items-center justify-center w-16 ${getDeleteIconPosition()}`}>
             <Trash2 
               className="text-white" 
               size={24} 
