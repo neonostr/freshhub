@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -49,7 +48,6 @@ const ItemCard: React.FC<ItemCardProps> = ({
     const diff = currentX - startX;
     
     // Only allow swiping left (negative diff) for delete
-    // Prevent right swipe by setting offset to 0 for positive diff
     if (diff < 0) {
       // Allow full swipe left with slight resistance
       setSwipeOffset(diff * 0.8);
@@ -142,8 +140,8 @@ const ItemCard: React.FC<ItemCardProps> = ({
   };
 
   // Calculate delete indicator visibility based on swipe distance
-  // Start showing trash icon very early (at 10% of threshold)
-  const deleteIndicatorOpacity = Math.min(Math.abs(swipeOffset) / (SWIPE_THRESHOLD * 0.1), 1);
+  // Start showing trash icon very early (just after swipe begins, at 5% of threshold)
+  const deleteIndicatorOpacity = Math.min(Math.abs(swipeOffset) / (SWIPE_THRESHOLD * 0.05), 1);
 
   // Reset card position when not relevant
   useEffect(() => {
@@ -163,7 +161,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
       {/* Delete background - shown during swipe */}
       {isMobile && (
         <div className="absolute inset-0 flex items-center justify-end bg-destructive rounded-lg">
-          <div className="flex items-center justify-center w-full pr-8">
+          <div className="flex items-center justify-center w-16 pr-4">
             <Trash2 
               className="text-white" 
               size={24} 

@@ -5,6 +5,16 @@ import { IconManagerProvider } from '@/context/IconManager';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
 import IconManagerDialog from '@/components/IconManagerDialog';
+import SwipeTutorial from '@/components/SwipeTutorial';
+import { useItems } from '@/context/ItemsContext';
+
+// Component to conditionally render the SwipeTutorial
+const TutorialWrapper = () => {
+  const { shouldShowTutorial } = useItems();
+  
+  if (!shouldShowTutorial) return null;
+  return <SwipeTutorial />;
+};
 
 const Index = () => {
   const [isCompactMode, setIsCompactMode] = useState(false);
@@ -46,6 +56,7 @@ const Index = () => {
           {/* Only show settings when not in compact mode */}
           {!isCompactMode && <IconManagerDialog />}
           <AddItemDialog />
+          <TutorialWrapper />
         </div>
       </ItemsProvider>
     </IconManagerProvider>

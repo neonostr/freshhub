@@ -182,3 +182,16 @@
   overflow: hidden;
   border-radius: 0.5rem;
 }
+
+/* Tutorial animation styles */
+@keyframes swipe-hint {
+  0% { transform: translateX(0); }
+  40% { transform: translateX(-100px); }
+  70% { transform: translateX(-100px); }
+  100% { transform: translateX(0); }
+}
+
+.swipe-tutorial-animation {
+  animation: swipe-hint 2.5s ease-in-out;
+  animation-iteration-count: 2;
+}

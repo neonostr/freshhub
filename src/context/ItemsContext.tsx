@@ -9,23 +9,51 @@ interface ItemsContextType {
   deleteItem: (id: string) => void;
   resetItem: (id: string) => void;
   updateItemsWithProductChanges: (productId: string, newName: string) => void;
+  isFirstTimeUser: boolean;
+  setFirstTimeUser: (value: boolean) => void;
+  shouldShowTutorial: boolean;
+  dismissTutorial: () => void;
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
 
 export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<Item[]>([]);
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
+  const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
 
   useEffect(() => {
     const loadedItems = loadItems();
     setItems(loadedItems);
+    
+    // Check if first time user
+    const hasSeenTutorial = localStorage.getItem('hasSeenSwipeTutorial');
+    if (!hasSeenTutorial) {
+      setIsFirstTimeUser(true);
+      
+      // Only show tutorial when we have at least one item and we're on mobile
+      if (loadedItems.length > 0 && window.innerWidth <= 768) {
+        setShouldShowTutorial(true);
+      }
+    }
   }, []);
 
   useEffect(() => {
     if (items.length > 0) {
       saveItems(items);
+      
+      // For first time users, show tutorial when they add their first item
+      if (isFirstTimeUser && items.length === 1 && window.innerWidth <= 768) {
+        setShouldShowTutorial(true);
+      }
     }
-  }, [items]);
+  }, [items, isFirstTimeUser]);
+  
+  const dismissTutorial = () => {
+    setShouldShowTutorial(false);
+    localStorage.setItem('hasSeenSwipeTutorial', 'true');
+    setIsFirstTimeUser(false);
+  };
   
   // Listen for custom product deletion events
   useEffect(() => {
@@ -84,7 +112,11 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       addItem, 
       deleteItem, 
       resetItem, 
-      updateItemsWithProductChanges 
+      updateItemsWithProductChanges,
+      isFirstTimeUser,
+      setFirstTimeUser,
+      shouldShowTutorial,
+      dismissTutorial
     }}>
       {children}
     </ItemsContext.Provider>
