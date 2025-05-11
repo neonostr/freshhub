@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -25,6 +26,27 @@ const ItemsList: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
+  
+  // Force a re-calculation when shelf life is updated
+  useEffect(() => {
+    const handleShelfLifeUpdated = () => {
+      // Recalculate max days across all items
+      if (items.length > 0) {
+        const maxDays = Math.max(...items.map(item => calculateDaysUntilExpiry(item)));
+        setMaxFreshnessDays(maxDays > 0 ? maxDays : 365);
+      }
+    };
+    
+    // Listen for shelf life updates
+    window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
+    
+    // Initial calculation
+    handleShelfLifeUpdated();
+    
+    return () => {
+      window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
+    };
+  }, [items]);
 
   // Determine the maximum days across all items for the filter slider
   useEffect(() => {
@@ -108,6 +130,50 @@ const ItemsList: React.FC = () => {
 
     // For desktop in compact mode, use grid-cols-3
     return "desktop-compact-grid";
+  };
+
+  // Filter items based on the current freshness filter
+  const filteredItems = items.filter(item => {
+    const daysUntilExpiry = calculateDaysUntilExpiry(item);
+    return daysUntilExpiry <= filterDays;
+  });
+
+  // Sort items based on the current sort option and direction
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    if (sortOption === 'freshness') {
+      const aFreshness = calculateDaysUntilExpiry(a);
+      const bFreshness = calculateDaysUntilExpiry(b);
+      return sortDirection === 'asc' ? aFreshness - bFreshness : bFreshness - aFreshness;
+    } else {
+      // Alphabetical sorting
+      return sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+    }
+  });
+
+  // Toggle sort direction
+  const toggleSortDirection = () => {
+    setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
+  // Toggle compact mode
+  const toggleCompactMode = () => {
+    setIsCompactMode(prev => !prev);
+    setExpandedItemIds([]); // Reset expanded items when toggling mode
+
+    // If enabled, hide the header
+    const header = document.getElementById('app-header');
+    if (header) {
+      if (!isCompactMode) {
+        header.style.display = 'none';
+      } else {
+        header.style.display = 'block';
+      }
+    }
+  };
+
+  // Toggle expanded/collapsed state for an item
+  const toggleItemExpanded = (itemId: string) => {
+    setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
   };
 
   return (

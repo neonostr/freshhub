@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
@@ -9,6 +10,7 @@ import { useIconManager } from '@/context/IconManager';
 import * as LucideIcons from 'lucide-react';
 import { IconOptionExtended } from '@/types/iconTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useHandedness } from '@/context/HandednessContext';
 
 interface ItemCardProps {
   item: Item;
@@ -30,12 +32,13 @@ const ItemCard: React.FC<ItemCardProps> = ({
   const [isSwiping, setIsSwiping] = useState(false);
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [startX, setStartX] = useState(0);
+  const { handedness } = useHandedness();
   
   const SWIPE_THRESHOLD = 80; // px needed to trigger delete
   
   const freshnessLevel = calculateFreshnessLevel(item);
   
-  // Handle touch events for swipe-to-delete (right-to-left only)
+  // Handle touch events for swipe-to-delete
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartX(e.touches[0].clientX);
     setIsSwiping(true);
@@ -47,19 +50,25 @@ const ItemCard: React.FC<ItemCardProps> = ({
     const currentX = e.touches[0].clientX;
     const diff = currentX - startX;
     
-    // Only allow swiping left (negative diff) for delete
-    if (diff < 0) {
-      // Allow full swipe left with slight resistance
+    // For right-handed: swipe left (negative diff) for delete
+    // For left-handed: swipe right (positive diff) for delete
+    if ((handedness === 'right' && diff < 0) || (handedness === 'left' && diff > 0)) {
+      // Allow full swipe with slight resistance
       setSwipeOffset(diff * 0.8);
     } else {
-      setSwipeOffset(0); // Prevent right swiping
+      setSwipeOffset(0); // Prevent swiping in wrong direction
     }
   };
 
   const handleTouchEnd = () => {
-    if (swipeOffset < -SWIPE_THRESHOLD) {
-      // Animation before delete
-      setSwipeOffset(-1000);
+    // Check threshold based on handedness
+    const thresholdMet = handedness === 'right' 
+      ? swipeOffset < -SWIPE_THRESHOLD 
+      : swipeOffset > SWIPE_THRESHOLD;
+      
+    if (thresholdMet) {
+      // Animation direction based on handedness
+      setSwipeOffset(handedness === 'right' ? -1000 : 1000);
       setTimeout(() => {
         deleteItem(item.id);
       }, 300);
@@ -160,8 +169,8 @@ const ItemCard: React.FC<ItemCardProps> = ({
     <div className="relative overflow-hidden rounded-lg">
       {/* Delete background - shown during swipe */}
       {isMobile && (
-        <div className="absolute inset-0 flex items-center justify-end bg-destructive rounded-lg">
-          <div className="flex items-center justify-center w-16 pr-4">
+        <div className={`absolute inset-0 flex items-center ${handedness === 'right' ? 'justify-end' : 'justify-start'} bg-destructive rounded-lg`}>
+          <div className={`flex items-center justify-center w-16 ${handedness === 'right' ? 'pr-4' : 'pl-4'}`}>
             <Trash2 
               className="text-white" 
               size={24} 
