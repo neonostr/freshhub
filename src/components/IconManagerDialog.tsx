@@ -37,7 +37,7 @@ const IconManagerDialog: React.FC = () => {
   // Get handedness from context
   const { handedness, setHandedness } = useHandedness();
   
-  // Get header visibility state
+  // Get header visibility state - directly from the store
   const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
   
   // States for UI management
