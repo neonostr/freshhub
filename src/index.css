@@ -105,32 +105,6 @@
   }
 }
 
-/* Hide scrollbars but maintain functionality */
-@layer utilities {
-  .scrollbar-none {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari, Opera */
-  }
-}
-
-/* PWA specific styling - hide scrollbars on the main content */
-@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
-  body, .scroll-container, [data-radix-scroll-area-viewport] {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  body::-webkit-scrollbar, 
-  .scroll-container::-webkit-scrollbar,
-  [data-radix-scroll-area-viewport]::-webkit-scrollbar {
-    display: none;
-  }
-}
-
 /* Compact mode styles */
 .compact-grid {
   @apply grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2;
