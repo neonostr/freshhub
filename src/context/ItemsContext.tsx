@@ -10,7 +10,7 @@ interface ItemsContextType {
   resetItem: (id: string) => void;
   updateItemsWithProductChanges: (productId: string, newName: string) => void;
   isFirstTimeUser: boolean;
-  setIsFirstTimeUser: (value: boolean) => void; // Fixed property name here
+  setIsFirstTimeUser: (value: boolean) => void;
   shouldShowTutorial: boolean;
   dismissTutorial: () => void;
 }
@@ -114,7 +114,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       resetItem, 
       updateItemsWithProductChanges,
       isFirstTimeUser,
-      setIsFirstTimeUser, // Fixed property name here
+      setIsFirstTimeUser,
       shouldShowTutorial,
       dismissTutorial
     }}>
