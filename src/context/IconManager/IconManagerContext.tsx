@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -19,8 +20,8 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     setCustomProducts
   } = useIconStorage();
   
-  // Get access to the items context to directly update items
-  const { items, updateItemsWithShelfLifeChanges } = useContext(React.createContext<any>(undefined));
+  // Get access to the items context properly
+  const itemsContext = useItems();
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
