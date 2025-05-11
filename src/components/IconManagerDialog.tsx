@@ -14,6 +14,7 @@ import { IconOption, ALL_ICONS } from '@/data/productData';
 import * as LucideIcons from 'lucide-react';
 import { useItems } from '@/context/ItemsContext';
 import { useToast } from '@/hooks/use-toast';
+import { useHandedness } from '@/context/HandednessContext';
 
 const IconManagerDialog: React.FC = () => {
   const { toast } = useToast();
@@ -30,6 +31,9 @@ const IconManagerDialog: React.FC = () => {
   } = useIconManager();
   
   const { updateItemsWithProductChanges } = useItems();
+  
+  // Get handedness from context
+  const { handedness } = useHandedness();
   
   // States for UI management
   const [editingProduct, setEditingProduct] = useState<EditableProductProps | null>(null);
@@ -261,8 +265,15 @@ const IconManagerDialog: React.FC = () => {
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" size="icon" className="absolute top-6 right-6 rounded-full">
-            <Settings className="h-4 w-4" />
+          <Button 
+            className="fixed bottom-6 rounded-full h-14 w-14 p-0 shadow-lg z-10" 
+            size="icon"
+            style={{
+              right: handedness === 'left' ? "6rem" : "1.5rem",
+              left: handedness === 'right' ? "15rem" : "auto"
+            }}
+          >
+            <Settings className="h-6 w-6" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
@@ -280,10 +291,11 @@ const IconManagerDialog: React.FC = () => {
               value={currentTab}
               onValueChange={setCurrentTab}
             >
-              <TabsList className="grid grid-cols-3">
+              <TabsList className="grid grid-cols-4">
                 <TabsTrigger value="selection">Products</TabsTrigger>
                 <TabsTrigger value="shelfLife">Shelf Life</TabsTrigger>
-                <TabsTrigger value="custom">Custom Products</TabsTrigger>
+                <TabsTrigger value="custom">Custom</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
               </TabsList>
               
               <div className="flex-1 overflow-hidden mt-4">
@@ -365,6 +377,55 @@ const IconManagerDialog: React.FC = () => {
                         setEditingIcon={() => {}}
                       />
                     )}
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="settings" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
+                  <div className="space-y-6 overflow-y-auto p-1">
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-medium">About Fresh Tracker</h3>
+                      <div className="bg-muted/50 p-4 rounded-md">
+                        <p className="text-sm mb-2">
+                          Fresh Tracker helps you monitor how long your perishable items have been open.
+                        </p>
+                        <ul className="text-sm space-y-2 list-disc pl-5">
+                          <li><strong>100% Private:</strong> Your data never leaves your device</li>
+                          <li><strong>Works Offline:</strong> No internet connection required</li>
+                          <li><strong>No Tracking:</strong> No analytics or data collection</li>
+                          <li><strong>Free:</strong> No paid features or subscriptions</li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3 pt-2 border-t">
+                      <h3 className="text-lg font-medium">Preferences</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-sm font-medium mb-1.5 block">Handedness</label>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant={handedness === 'right' ? "default" : "outline"} 
+                              onClick={() => useHandedness.getState().setHandedness('right')}
+                              className="flex-1"
+                              size="sm"
+                            >
+                              Right-handed
+                            </Button>
+                            <Button 
+                              variant={handedness === 'left' ? "default" : "outline"} 
+                              onClick={() => useHandedness.getState().setHandedness('left')}
+                              className="flex-1"
+                              size="sm"
+                            >
+                              Left-handed
+                            </Button>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Controls the position of buttons for easier access
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </TabsContent>
               </div>

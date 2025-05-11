@@ -6,12 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
-import { useIconManager } from '@/context/IconManager'; // Updated import path
+import { useIconManager } from '@/context/IconManager';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useHandedness } from '@/context/HandednessContext';
 
 const AddItemDialog: React.FC = () => {
   const { addItem } = useItems();
   const { availableIcons, allIcons } = useIconManager();
+  const { handedness } = useHandedness();
   const [open, setOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState('');
   const [customDuration, setCustomDuration] = useState<string>('');
@@ -55,7 +57,14 @@ const AddItemDialog: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="fixed bottom-6 right-6 rounded-full w-14 h-14" size="icon">
+        <Button 
+          className="fixed bottom-6 rounded-full w-14 h-14 shadow-lg z-10" 
+          size="icon"
+          style={{
+            right: handedness === 'right' ? "1.5rem" : "auto",
+            left: handedness === 'left' ? "1.5rem" : "auto"
+          }}
+        >
           <Plus className="h-6 w-6" />
         </Button>
       </DialogTrigger>

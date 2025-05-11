@@ -8,12 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useHandedness } from '@/context/HandednessContext';
+
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
+
 const ItemsList: React.FC = () => {
-  const {
-    items
-  } = useItems();
+  const { items } = useItems();
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365); // Start with a large value
@@ -22,6 +23,7 @@ const ItemsList: React.FC = () => {
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
   const isMobile = useIsMobile();
+  const { handedness } = useHandedness();
 
   // Determine the maximum days across all items for the filter slider
   useEffect(() => {
@@ -75,14 +77,17 @@ const ItemsList: React.FC = () => {
   const toggleItemExpanded = (itemId: string) => {
     setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
   };
+
+  const buttonPositionClass = handedness === 'right' ? 'right-0' : 'left-0';
+
   if (items.length === 0) {
     return <div className="flex flex-col items-center justify-center p-8 text-center">
-        <div className="text-4xl mb-2">🥛</div>
-        <h3 className="text-xl font-medium mb-2">No items yet</h3>
-        <p className="text-gray-500">
-          Add your first item by clicking the + button below
-        </p>
-      </div>;
+      <div className="text-4xl mb-2">🥛</div>
+      <h3 className="text-xl font-medium mb-2">No items yet</h3>
+      <p className="text-gray-500">
+        Add your first item by clicking the + button below
+      </p>
+    </div>;
   }
 
   // Determine proper grid class based on compact mode, device type, and screen size
@@ -97,22 +102,37 @@ const ItemsList: React.FC = () => {
     // For desktop in compact mode, use grid-cols-3
     return "desktop-compact-grid";
   };
-  return <div className="space-y-6 relative pb-16">
+
+  return (
+    <div className="space-y-6 relative pb-16">
       <div className={getGridClass()}>
-        {sortedItems.map(item => <ItemCard key={item.id} item={item} isCompact={isCompactMode && !expandedItemIds.includes(item.id)} onClick={() => toggleItemExpanded(item.id)} isExpandable={isCompactMode} />)}
+        {sortedItems.map(item => (
+          <ItemCard
+            key={item.id}
+            item={item}
+            isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
+            onClick={() => toggleItemExpanded(item.id)}
+            isExpandable={isCompactMode}
+          />
+        ))}
       </div>
 
-      {/* Bottom floating buttons */}
+      {/* Bottom floating buttons - positioned based on handedness */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
-          <Button className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0" size="icon" variant="default" style={{
-          right: "6rem"
-        }} // Position the filter button
-        >
+          <Button
+            className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
+            size="icon"
+            variant="default"
+            style={{
+              right: handedness === 'right' ? "6rem" : "auto",
+              left: handedness === 'left' ? "6rem" : "auto"
+            }}
+          >
             <Filter className="h-6 w-6" />
           </Button>
         </DrawerTrigger>
-        
+
         <DrawerContent side="bottom" className="z-50 px-[21px] py-[34px]">
           <div className="px-4">
             <div className="flex flex-col gap-5">
@@ -150,12 +170,20 @@ const ItemsList: React.FC = () => {
       </Drawer>
 
       {/* Compact mode toggle button */}
-      <Button className="fixed bottom-6 transform z-10 shadow-lg rounded-full h-14 w-14 p-0" size="icon" variant={isCompactMode ? "secondary" : "default"} style={{
-      right: "10.5rem"
-    }} // Position to the left of filter button
-    onClick={toggleCompactMode}>
+      <Button
+        className="fixed bottom-6 transform z-10 shadow-lg rounded-full h-14 w-14 p-0"
+        size="icon"
+        variant={isCompactMode ? "secondary" : "default"}
+        style={{
+          right: handedness === 'right' ? "10.5rem" : "auto",
+          left: handedness === 'left' ? "10.5rem" : "auto"
+        }}
+        onClick={toggleCompactMode}
+      >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
-    </div>;
+    </div>
+  );
 };
+
 export default ItemsList;
