@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Item } from '@/types/item';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHandedness, type Handedness } from '@/context/HandednessContext';
-import SettingsDialog from './SettingsDialog';
 
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
@@ -67,7 +66,8 @@ const ItemsList: React.FC = () => {
   const getButtonPosition = (position: number) => {
     return {
       right: handedness === 'right' ? `${position}rem` : "auto",
-      left: handedness === 'left' ? `${position}rem` : "auto"
+      left: handedness === 'left' ? `${position}rem` : "auto",
+      bottom: "6rem"
     };
   };
 
