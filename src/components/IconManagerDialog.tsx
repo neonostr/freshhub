@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -16,8 +15,6 @@ import * as LucideIcons from 'lucide-react';
 import { useItems } from '@/context/ItemsContext';
 import { useToast } from '@/hooks/use-toast';
 import { useHandedness } from '@/context/HandednessContext';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 
 const IconManagerDialog: React.FC = () => {
   const { toast } = useToast();
@@ -36,7 +33,7 @@ const IconManagerDialog: React.FC = () => {
   const { updateItemsWithProductChanges } = useItems();
   
   // Get handedness from context
-  const { handedness, setHandedness, hideHeader, setHideHeader } = useHandedness();
+  const { handedness, setHandedness } = useHandedness();
   
   // States for UI management
   const [editingProduct, setEditingProduct] = useState<EditableProductProps | null>(null);
@@ -428,21 +425,6 @@ const IconManagerDialog: React.FC = () => {
                             Controls the position of buttons for easier access
                           </p>
                         </div>
-                        
-                        {/* UI Preferences - Hide header option */}
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <Label htmlFor="hide-header">Hide header</Label>
-                            <p className="text-xs text-muted-foreground">
-                              Hide app title and description to show more items
-                            </p>
-                          </div>
-                          <Switch 
-                            id="hide-header"
-                            checked={hideHeader}
-                            onCheckedChange={setHideHeader}
-                          />
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -619,14 +601,6 @@ const IconManagerDialog: React.FC = () => {
           )}
           
           {currentTab === 'custom' && !isAddingProduct && !editingProduct && (
-            <DialogClose asChild>
-              <Button type="button" className="mt-4 w-full">
-                <Check className="mr-1 h-4 w-4" /> Done
-              </Button>
-            </DialogClose>
-          )}
-          
-          {currentTab === 'settings' && (
             <DialogClose asChild>
               <Button type="button" className="mt-4 w-full">
                 <Check className="mr-1 h-4 w-4" /> Done
