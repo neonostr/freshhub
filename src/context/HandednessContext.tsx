@@ -27,7 +27,7 @@ const HandednessContext = createContext<HandednessState | undefined>(undefined);
 export const HandednessProvider = ({ children }: { children: ReactNode }) => {
   // Initialize handedness from localStorage if available
   useEffect(() => {
-    const savedHandedness = localStorage.getItem('handedness') as Handedness;
+    const savedHandedness = localStorage.getItem('handedness') as Handedness | null;
     if (savedHandedness && (savedHandedness === 'left' || savedHandedness === 'right')) {
       useHandednessStore.getState().setHandedness(savedHandedness);
     }

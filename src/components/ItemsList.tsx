@@ -3,7 +3,7 @@ import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { Filter, ArrowDown, ArrowUp, Minimize, Maximize, Settings } from 'lucide-react';
+import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
@@ -183,86 +183,7 @@ const ItemsList: React.FC = () => {
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
-      
-      {/* Settings button */}
-      <Button
-        className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
-        size="icon"
-        variant="outline"
-        style={getButtonPosition(15)}
-        onClick={() => setIsSettingsOpen(true)}
-      >
-        <Settings className="h-6 w-6" />
-      </Button>
-      
-      <SettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
     </div>
-  );
-};
-
-// Settings dialog component
-import { 
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription 
-} from '@/components/ui/dialog';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-
-const SettingsDialog = ({ 
-  open, 
-  onOpenChange 
-}: { 
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) => {
-  const { handedness, setHandedness } = useHandedness();
-  
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
-          <DialogDescription>
-            Customize your app experience
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="space-y-6 py-4">
-          {/* About section */}
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium">About Fresh Tracker</h3>
-            <p className="text-sm text-muted-foreground">
-              Fresh Tracker helps you keep track of perishable items. 
-              The app is 100% private, works offline, and contains no tracking or analytics.
-              Your data never leaves your device and is stored locally.
-            </p>
-          </div>
-          
-          {/* Handedness preference */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-medium">Handedness</h3>
-            <p className="text-sm text-muted-foreground">
-              Choose your dominant hand to optimize button placement
-            </p>
-            
-            <RadioGroup 
-              value={handedness} 
-              onValueChange={(value) => setHandedness(value as Handedness)}
-              className="grid grid-cols-2 gap-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="right" id="right" />
-                <Label htmlFor="right">Right-handed</Label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="left" id="left" />
-                <Label htmlFor="left">Left-handed</Label>
-              </div>
-            </RadioGroup>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
   );
 };
 

@@ -266,11 +266,12 @@ const IconManagerDialog: React.FC = () => {
       <Dialog>
         <DialogTrigger asChild>
           <Button 
-            className="fixed bottom-6 rounded-full h-14 w-14 p-0 shadow-lg z-10" 
+            className="fixed bottom-6 z-10 rounded-full h-14 w-14 p-0 shadow-lg" 
             size="icon"
+            variant="outline" 
             style={{
-              right: handedness === 'left' ? "6rem" : "1.5rem",
-              left: handedness === 'right' ? "15rem" : "auto"
+              right: handedness === 'left' ? "1.5rem" : "auto",
+              left: handedness === 'right' ? "1.5rem" : "auto"
             }}
           >
             <Settings className="h-6 w-6" />
