@@ -33,7 +33,7 @@ const IconManagerDialog: React.FC = () => {
   const { updateItemsWithProductChanges } = useItems();
   
   // Get handedness from context
-  const { handedness } = useHandedness();
+  const { handedness, setHandedness } = useHandedness();
   
   // States for UI management
   const [editingProduct, setEditingProduct] = useState<EditableProductProps | null>(null);
@@ -405,7 +405,7 @@ const IconManagerDialog: React.FC = () => {
                           <div className="flex gap-2">
                             <Button 
                               variant={handedness === 'right' ? "default" : "outline"} 
-                              onClick={() => useHandedness.getState().setHandedness('right')}
+                              onClick={() => setHandedness('right')}
                               className="flex-1"
                               size="sm"
                             >
@@ -413,7 +413,7 @@ const IconManagerDialog: React.FC = () => {
                             </Button>
                             <Button 
                               variant={handedness === 'left' ? "default" : "outline"} 
-                              onClick={() => useHandedness.getState().setHandedness('left')}
+                              onClick={() => setHandedness('left')}
                               className="flex-1"
                               size="sm"
                             >

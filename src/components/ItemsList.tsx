@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useHandedness } from '@/context/HandednessContext';
+import { useHandedness, type Handedness } from '@/context/HandednessContext';
 
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';

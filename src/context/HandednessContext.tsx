@@ -2,7 +2,8 @@
 import { createContext, useContext, useEffect, ReactNode } from 'react';
 import { create } from 'zustand';
 
-type Handedness = 'right' | 'left';
+// Export the type so it can be imported elsewhere
+export type Handedness = 'right' | 'left';
 
 // Create a Zustand store to manage handedness state
 interface HandednessState {
