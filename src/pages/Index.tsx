@@ -89,8 +89,8 @@ const Index = () => {
   return (
     <HeaderVisibilityProvider>
       <HandednessProvider>
-        <IconManagerProvider>
-          <ItemsProvider>
+        <ItemsProvider>
+          <IconManagerProvider>
             <div className="container max-w-5xl mx-auto p-4 pb-20 min-h-screen">
               {!hideHeader && (
                 <header className="py-6 text-center" id="app-header">
@@ -110,8 +110,8 @@ const Index = () => {
               <AddItemDialog />
               <TutorialWrapper />
             </div>
-          </ItemsProvider>
-        </IconManagerProvider>
+          </IconManagerProvider>
+        </ItemsProvider>
       </HandednessProvider>
     </HeaderVisibilityProvider>
   );
