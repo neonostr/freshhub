@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ItemsProvider } from '@/context/ItemsContext';
 import { IconManagerProvider } from '@/context/IconManager';
@@ -9,7 +10,6 @@ import SwipeTutorial from '@/components/SwipeTutorial';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Create a Zustand store to manage header visibility
 interface HeaderVisibilityState {
@@ -91,9 +91,9 @@ const Index = () => {
       <HandednessProvider>
         <ItemsProvider>
           <IconManagerProvider>
-            <div className="container max-w-5xl mx-auto pb-20 min-h-screen flex flex-col overflow-hidden">
+            <div className="container max-w-5xl mx-auto p-4 pb-20 min-h-screen">
               {!hideHeader && (
-                <header className="py-6 text-center flex-shrink-0" id="app-header">
+                <header className="py-6 text-center" id="app-header">
                   <h1 className="text-3xl font-bold">Fresh Tracker</h1>
                   <p className="text-gray-500 mt-2">
                     Track how long your perishable items have been open
@@ -101,13 +101,9 @@ const Index = () => {
                 </header>
               )}
               
-              <ScrollArea className="flex-grow overflow-y-auto">
-                <div className="p-4">
-                  <main className="my-6">
-                    <ItemsList />
-                  </main>
-                </div>
-              </ScrollArea>
+              <main className="my-6">
+                <ItemsList />
+              </main>
               
               {/* Only show settings when not in compact mode */}
               {!isCompactMode && <IconManagerDialog />}
