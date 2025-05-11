@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'fresh-tracker-v4';
+const CACHE_NAME = 'fresh-tracker-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -9,83 +9,67 @@ const urlsToCache = [
   '/lovable-uploads/0cd5dd6f-eea3-49de-8947-b6b427a13b05.png'
 ];
 
-// Performance optimizations
-const PRECACHE = 'precache-' + CACHE_NAME;
-const RUNTIME = 'runtime-' + CACHE_NAME;
-
 // Installation event: cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(PRECACHE)
+    caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(urlsToCache))
-      .then(self.skipWaiting())
+      .then(() => self.skipWaiting()) // Force the waiting service worker to become active
   );
 });
 
 // Activate event: clean up old caches
 self.addEventListener('activate', (event) => {
-  const currentCaches = [PRECACHE, RUNTIME];
+  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (!currentCaches.includes(cacheName)) {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
             return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.clients.claim()) // Take control of all clients as soon as activated
   );
 });
 
-// Fetch event: improved cache strategy with stale-while-revalidate
+// Fetch event: serve from cache, falling back to network
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests
-  if (event.request.url.startsWith(self.location.origin)) {
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        // Use cache-first for HTML and critical assets
-        if (cachedResponse) {
-          // If we have a cached response, return it immediately
-          // but also update the cache in the background
-          const fetchPromise = fetch(event.request)
-            .then((response) => {
-              // Don't cache non-successful responses or API calls
-              if (!response || response.status !== 200 || event.request.url.includes('/api/')) {
-                return response;
-              }
-              
-              const responseToCache = response.clone();
-              caches.open(RUNTIME).then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-              
-              return response;
-            })
-            .catch(() => {
-              // Network request failed, we'll just use the cached response
-            });
-            
-          return cachedResponse;
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => {
+        // Cache hit - return the response
+        if (response) {
+          return response;
         }
         
-        // If not in cache, make a network request
-        return fetch(event.request)
+        // Clone the request because it's a one-time-use stream
+        const fetchRequest = event.request.clone();
+        
+        // For non-navigation requests, try the network first, then cache the response
+        return fetch(fetchRequest)
           .then((response) => {
-            // Don't cache non-successful responses or API calls
-            if (!response || response.status !== 200 || event.request.url.includes('/api/')) {
+            // Check if valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
-            
+
+            // Clone the response because it's a one-time-use stream
             const responseToCache = response.clone();
-            caches.open(RUNTIME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-            
+
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                // Don't cache API calls
+                if (!event.request.url.includes('/api/')) {
+                  cache.put(event.request, responseToCache);
+                }
+              });
+
             return response;
           })
-          .catch((error) => {
-            // If network fails for navigation requests, return the cached homepage
+          .catch(() => {
+            // If the network fails for navigation requests, return the cached homepage
             if (event.request.mode === 'navigate') {
               return caches.match('/');
             }
@@ -97,8 +81,7 @@ self.addEventListener('fetch', (event) => {
             });
           });
       })
-    );
-  }
+  );
 });
 
 // Handle messages from clients
@@ -116,26 +99,3 @@ self.addEventListener('sync', (event) => {
     );
   }
 });
-
-// Pre-fetch important assets during idle time
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'refresh-content') {
-    event.waitUntil(updateContent());
-  }
-});
-
-// Update content function for periodic sync
-async function updateContent() {
-  try {
-    const cache = await caches.open(RUNTIME);
-    await Promise.all(urlsToCache.map(url => {
-      return fetch(url).then(response => {
-        if (response.ok) {
-          return cache.put(url, response);
-        }
-      });
-    }));
-  } catch (error) {
-    console.error('Failed to update content:', error);
-  }
-}
