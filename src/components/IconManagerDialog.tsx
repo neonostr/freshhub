@@ -15,6 +15,8 @@ import * as LucideIcons from 'lucide-react';
 import { useItems } from '@/context/ItemsContext';
 import { useToast } from '@/hooks/use-toast';
 import { useHandedness } from '@/context/HandednessContext';
+import { useHeaderVisibilityStore } from '@/pages/Index';
+import { Switch } from '@/components/ui/switch';
 
 const IconManagerDialog: React.FC = () => {
   const { toast } = useToast();
@@ -34,6 +36,9 @@ const IconManagerDialog: React.FC = () => {
   
   // Get handedness from context
   const { handedness, setHandedness } = useHandedness();
+  
+  // Get header visibility state
+  const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
   
   // States for UI management
   const [editingProduct, setEditingProduct] = useState<EditableProductProps | null>(null);
@@ -425,6 +430,22 @@ const IconManagerDialog: React.FC = () => {
                             Controls the position of buttons for easier access
                           </p>
                         </div>
+
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <label htmlFor="hide-header" className="text-sm font-medium block">Hide Header</label>
+                              <p className="text-xs text-muted-foreground">
+                                Hide the title and description to show more items
+                              </p>
+                            </div>
+                            <Switch 
+                              id="hide-header" 
+                              checked={hideHeader}
+                              onCheckedChange={setHideHeader}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -601,6 +622,14 @@ const IconManagerDialog: React.FC = () => {
           )}
           
           {currentTab === 'custom' && !isAddingProduct && !editingProduct && (
+            <DialogClose asChild>
+              <Button type="button" className="mt-4 w-full">
+                <Check className="mr-1 h-4 w-4" /> Done
+              </Button>
+            </DialogClose>
+          )}
+          
+          {currentTab === 'settings' && (
             <DialogClose asChild>
               <Button type="button" className="mt-4 w-full">
                 <Check className="mr-1 h-4 w-4" /> Done
