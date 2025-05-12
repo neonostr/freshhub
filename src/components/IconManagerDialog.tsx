@@ -15,7 +15,9 @@ import * as LucideIcons from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useHandedness } from '@/context/HandednessContext';
 import { useHeaderVisibilityStore } from '@/pages/Index';
-import { Switch, Badge, Separator } from '@/components/ui';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 const IconManagerDialog: React.FC = () => {
   const {
