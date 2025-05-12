@@ -4,7 +4,7 @@ import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { Filter, ArrowDown, ArrowUp, Minimize, Maximize, Settings } from 'lucide-react';
+import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
@@ -109,13 +109,6 @@ const ItemsList: React.FC = () => {
     };
   };
 
-  // Handle slider value change
-  const handleFilterDaysChange = (values: number[]) => {
-    if (values && values.length > 0) {
-      setFilterDays(values[0]);
-    }
-  };
-
   if (items.length === 0) {
     return <div className="flex flex-col items-center justify-center p-8 text-center">
       <div className="text-4xl mb-2">🥛</div>
@@ -153,7 +146,7 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating buttons - positioned based on handedness - ALWAYS VISIBLE */}
+      {/* Bottom floating buttons - positioned based on handedness */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button
@@ -176,15 +169,7 @@ const ItemsList: React.FC = () => {
                 </span>
               </div>
               
-              <Slider 
-                value={[filterDays]} 
-                min={1} 
-                max={maxFreshnessDays} 
-                step={1} 
-                onValueChange={handleFilterDaysChange} 
-                className="w-full" 
-                aria-label="Filter by freshness days"
-              />
+              <Slider value={[filterDays]} min={1} max={maxFreshnessDays} step={1} onValueChange={([value]) => setFilterDays(value)} className="w-full" />
               
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -210,17 +195,7 @@ const ItemsList: React.FC = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Settings icon (always visible) */}
-      <Button
-        className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
-        size="icon"
-        variant="secondary"
-        style={getButtonPosition(15)}
-      >
-        <Settings className="h-6 w-6" />
-      </Button>
-
-      {/* Compact mode toggle button - always visible */}
+      {/* Compact mode toggle button */}
       <Button
         className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"

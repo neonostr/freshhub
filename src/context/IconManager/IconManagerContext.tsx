@@ -19,8 +19,8 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     setCustomProducts
   } = useIconStorage();
   
-  // Get access to the items context properly now that we've fixed the provider order
-  const { updateItemsWithShelfLifeChanges } = useItems();
+  // Get access to the items context to directly update items
+  const { items, updateItemsWithShelfLifeChanges } = useContext(React.createContext<any>(undefined));
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
@@ -69,11 +69,8 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
       
       // Dispatch an event to notify components of the shelf life change
       window.dispatchEvent(new CustomEvent('shelf-life-updated'));
-      
-      // Update items with shelf life changes using the items context
-      updateItemsWithShelfLifeChanges();
     }
-  }, [customShelfLife, updateItemsWithShelfLifeChanges]);
+  }, [customShelfLife]);
   
   const updateIconShelfLife = (iconValue: string, days: number) => {
     setCustomShelfLife(prev => ({
