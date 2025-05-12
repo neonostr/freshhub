@@ -132,6 +132,12 @@ const ItemsList: React.FC = () => {
     return "desktop-compact-grid";
   };
 
+  const handleSliderChange = (values: number[]) => {
+    if (values && values.length > 0) {
+      setFilterDays(values[0]);
+    }
+  };
+
   return (
     <div className="space-y-6 relative pb-16">
       <div className={getGridClass()}>
@@ -169,7 +175,14 @@ const ItemsList: React.FC = () => {
                 </span>
               </div>
               
-              <Slider value={[filterDays]} min={1} max={maxFreshnessDays} step={1} onValueChange={([value]) => setFilterDays(value)} className="w-full" />
+              <Slider 
+                value={[filterDays]} 
+                min={1} 
+                max={maxFreshnessDays} 
+                step={1} 
+                onValueChange={handleSliderChange} 
+                className="w-full" 
+              />
               
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -205,6 +218,9 @@ const ItemsList: React.FC = () => {
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
+      
+      {/* Always show IconManagerDialog button regardless of compact mode */}
+      <IconManagerDialog />
     </div>
   );
 };
