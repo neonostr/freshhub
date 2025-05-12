@@ -146,7 +146,7 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating buttons - positioned based on handedness */}
+      {/* Bottom floating buttons - positioned based on handedness - ALWAYS VISIBLE */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button
@@ -174,7 +174,7 @@ const ItemsList: React.FC = () => {
                 min={1} 
                 max={maxFreshnessDays} 
                 step={1} 
-                onValueChange={([value]) => setFilterDays(value)} 
+                onValueChange={(value) => setFilterDays(value[0])} 
                 className="w-full" 
                 aria-label="Filter by freshness days"
               />
