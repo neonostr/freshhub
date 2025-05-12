@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useHandedness } from '@/context/HandednessContext';
 import { useHeaderVisibilityStore } from '@/pages/Index';
 import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 const IconManagerDialog: React.FC = () => {
   const {
@@ -328,7 +329,36 @@ const IconManagerDialog: React.FC = () => {
                       </div>
                     </div>
                     
-                    <div className="space-y-3 pt-2 border-t">
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-medium">Understanding Freshness Labels</h3>
+                      <div className="bg-muted/50 p-4 rounded-md">
+                        <p className="text-sm mb-3">
+                          Fresh Tracker uses color-coded labels to indicate the status of your items:
+                        </p>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-fresh-green text-black border-0 w-16 text-center">Fresh</Badge>
+                            <p className="text-sm">Item is within the first 60% of its shelf life</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-fresh-yellow text-black border-0 w-16 text-center">Use Soon</Badge>
+                            <p className="text-sm">Item is between 60% and 90% through its shelf life</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-fresh-orange text-black border-0 w-16 text-center">Use Now</Badge>
+                            <p className="text-sm">Item is between 90% and 100% of its shelf life</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-fresh-red text-white border-0 w-16 text-center">Expired</Badge>
+                            <p className="text-sm">Item has exceeded its recommended shelf life</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <Separator />
+                    
+                    <div className="space-y-3 pt-2">
                       <h3 className="text-lg font-medium">Preferences</h3>
                       <div className="space-y-4">
                         <div>
