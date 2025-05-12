@@ -20,8 +20,8 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     setCustomProducts
   } = useIconStorage();
   
-  // Get access to the items context to directly update items
-  const { items, updateItemsWithProductChanges } = useItems();
+  // Instead of directly using useItems, we'll load items directly when needed
+  // This avoids the dependency on ItemsProvider
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
@@ -106,6 +106,21 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
           label: newName
         }
       }));
+      
+      // Update tracked items with this product
+      const items = loadItems();
+      const updatedItems = items.map(item => {
+        if (item.icon === iconValue) {
+          return { ...item, name: newName };
+        }
+        return item;
+      });
+      
+      if (JSON.stringify(items) !== JSON.stringify(updatedItems)) {
+        saveItems(updatedItems);
+        // Notify about changes
+        window.dispatchEvent(new CustomEvent('custom-product-updated'));
+      }
     }
   };
   
