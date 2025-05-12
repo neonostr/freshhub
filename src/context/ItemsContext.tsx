@@ -9,7 +9,6 @@ interface ItemsContextType {
   deleteItem: (id: string) => void;
   resetItem: (id: string) => void;
   updateItemsWithProductChanges: (productId: string, newName: string) => void;
-  updateItemsWithShelfLifeChanges: () => void;
   isFirstTimeUser: boolean;
   setIsFirstTimeUser: (value: boolean) => void;
   shouldShowTutorial: boolean;
@@ -23,15 +22,9 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
   const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
 
-  // Function to load items from storage
-  const loadAllItems = () => {
+  useEffect(() => {
     const loadedItems = loadItems();
     setItems(loadedItems);
-    return loadedItems;
-  };
-
-  useEffect(() => {
-    const loadedItems = loadAllItems();
     
     // Check if first time user
     const hasSeenTutorial = localStorage.getItem('hasSeenSwipeTutorial');
@@ -69,20 +62,12 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       setItems(prev => prev.filter(item => item.icon !== productId));
     };
     
-    // Listen for shelf life updates
-    const handleShelfLifeUpdated = () => {
-      // Force a re-render of items to update freshness levels
-      setItems(prev => [...prev]);
-    };
-    
-    // Add event listeners
+    // Add event listener
     window.addEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
-    window.addEventListener('shelf-life-updated', handleShelfLifeUpdated as EventListener);
     
     // Cleanup
     return () => {
       window.removeEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
-      window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated as EventListener);
     };
   }, []);
 
@@ -120,12 +105,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       ));
     }
   };
-  
-  // Function to update items when shelf life changes
-  const updateItemsWithShelfLifeChanges = () => {
-    // We just need to trigger a re-render of the items
-    setItems(prev => [...prev]);
-  };
 
   return (
     <ItemsContext.Provider value={{ 
@@ -134,7 +113,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       deleteItem, 
       resetItem, 
       updateItemsWithProductChanges,
-      updateItemsWithShelfLifeChanges,
       isFirstTimeUser,
       setIsFirstTimeUser,
       shouldShowTutorial,

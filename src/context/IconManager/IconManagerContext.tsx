@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -19,8 +20,8 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     setCustomProducts
   } = useIconStorage();
   
-  // Get access to the items context to directly update items
-  const { items, updateItemsWithShelfLifeChanges } = useContext(React.createContext<any>(undefined));
+  // Get access to the items context to directly delete items
+  const itemsContext = useContext(React.createContext<any>(undefined));
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
@@ -57,18 +58,16 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     return selectedIconValues.includes(iconValue);
   };
   
-  // Watch for shelf life changes and update items immediately
+  // Watch for shelf life changes and update items if needed
   useEffect(() => {
     // Get all tracked items
     const items = loadItems();
     
     // Update items using the affected product IDs so they'll recalculate freshness levels
+    // Just saving items will force a re-render of components that depend on them
     if (items.length > 0) {
-      // Save the items to trigger a refresh
+      // Save the items to trigger a refresh of components
       saveItems([...items]);
-      
-      // Dispatch an event to notify components of the shelf life change
-      window.dispatchEvent(new CustomEvent('shelf-life-updated'));
     }
   }, [customShelfLife]);
   

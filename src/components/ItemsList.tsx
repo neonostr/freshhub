@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -26,27 +25,6 @@ const ItemsList: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
-  
-  // Force a re-calculation when shelf life is updated
-  useEffect(() => {
-    const handleShelfLifeUpdated = () => {
-      // Recalculate max days across all items
-      if (items.length > 0) {
-        const maxDays = Math.max(...items.map(item => calculateDaysUntilExpiry(item)));
-        setMaxFreshnessDays(maxDays > 0 ? maxDays : 365);
-      }
-    };
-    
-    // Listen for shelf life updates
-    window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
-    
-    // Initial calculation
-    handleShelfLifeUpdated();
-    
-    return () => {
-      window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
-    };
-  }, [items]);
 
   // Determine the maximum days across all items for the filter slider
   useEffect(() => {
