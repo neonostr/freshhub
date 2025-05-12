@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -168,6 +167,14 @@ const IconManagerDialog: React.FC = () => {
     if (editingProduct) {
       // Update the product in the custom products store
       updateProductName(editingProduct.productId, product.label);
+      
+      // Update shelf life if changed
+      if (editingProduct.shelfLife !== product.shelfLife) {
+        updateIconShelfLife(editingProduct.productId, product.shelfLife);
+        
+        // Trigger UI refresh for shelf life changes
+        window.dispatchEvent(new CustomEvent('shelf-life-updated'));
+      }
     }
 
     // Pass both the complete product (with iconName) and the iconName separately
@@ -188,6 +195,9 @@ const IconManagerDialog: React.FC = () => {
       iconName: iconName
     } as IconOptionExtended, iconName);
     setIsAddingProduct(false);
+    
+    // Trigger UI refresh for newly added product with shelf life
+    window.dispatchEvent(new CustomEvent('shelf-life-updated'));
   };
 
   // Extract icons from ALL_ICONS to use for custom products
@@ -431,6 +441,9 @@ const IconManagerDialog: React.FC = () => {
                 shelfLife: shelfLife
               };
               handleAddCustomProduct(newProduct, iconName);
+              
+              // Trigger UI refresh for shelf life changes
+              window.dispatchEvent(new CustomEvent('shelf-life-updated'));
             }
           }} className="w-2/3">
                 <Plus className="mr-1 h-4 w-4" /> Add Product
@@ -489,6 +502,11 @@ const IconManagerDialog: React.FC = () => {
                 shelfLife: shelfLife
               };
               handleSaveProduct(updatedProduct, iconName);
+              
+              // Trigger UI refresh for shelf life changes
+              if (editingProduct.shelfLife !== shelfLife) {
+                window.dispatchEvent(new CustomEvent('shelf-life-updated'));
+              }
             }
           }} className="w-2/3">
                 <Check className="mr-1 h-4 w-4" /> Save
