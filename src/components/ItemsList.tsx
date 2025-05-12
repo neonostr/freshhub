@@ -25,6 +25,23 @@ const ItemsList: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
+  
+  // Force re-render when shelf life settings change
+  const [forceUpdate, setForceUpdate] = useState(0);
+
+  // Listen for shelf life changes
+  useEffect(() => {
+    const handleShelfLifeUpdated = () => {
+      // Force a re-render by incrementing the counter
+      setForceUpdate(prev => prev + 1);
+    };
+    
+    window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
+    
+    return () => {
+      window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
+    };
+  }, []);
 
   // Determine the maximum days across all items for the filter slider
   useEffect(() => {
@@ -33,7 +50,7 @@ const ItemsList: React.FC = () => {
       setMaxFreshnessDays(maxDays > 0 ? maxDays : 365);
       setFilterDays(maxDays > 0 ? maxDays : 365);
     }
-  }, [items]);
+  }, [items, forceUpdate]); // Added forceUpdate to trigger recalculation
 
   // Filter items based on the current freshness filter
   const filteredItems = items.filter(item => {
@@ -131,7 +148,10 @@ const ItemsList: React.FC = () => {
             className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
             size="icon"
             variant="default"
-            style={getButtonPosition(6)}
+            style={{
+              right: handedness === 'right' ? "6rem" : "auto",
+              left: handedness === 'left' ? "6rem" : "auto"
+            }}
           >
             <Filter className="h-6 w-6" />
           </Button>
@@ -173,12 +193,15 @@ const ItemsList: React.FC = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Compact mode toggle button */}
+      {/* Compact mode toggle button - always visible */}
       <Button
         className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
         variant={isCompactMode ? "secondary" : "default"}
-        style={getButtonPosition(10.5)}
+        style={{
+          right: handedness === 'right' ? "10.5rem" : "auto",
+          left: handedness === 'left' ? "10.5rem" : "auto"
+        }}
         onClick={toggleCompactMode}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
