@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -5,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 relative overflow-hidden",
   {
     variants: {
       variant: {
@@ -37,17 +38,63 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  showRipple?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, showRipple = true, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    const [ripple, setRipple] = React.useState<{
+      x: number
+      y: number
+      show: boolean
+    } | null>(null)
+    
+    const handleMouseDown = React.useCallback(
+      (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!showRipple) return
+        
+        // Get the button's position relative to the viewport
+        const rect = e.currentTarget.getBoundingClientRect()
+        
+        // Calculate the ripple position relative to the button
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        
+        setRipple({ x, y, show: true })
+        
+        // Hide the ripple after animation
+        setTimeout(() => {
+          setRipple(null)
+        }, 600)
+        
+        // Call the original onMouseDown if it exists
+        if (props.onMouseDown) {
+          props.onMouseDown(e)
+        }
+      },
+      [props.onMouseDown, showRipple]
+    )
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        onMouseDown={handleMouseDown}
         {...props}
-      />
+      >
+        {props.children}
+        {ripple && ripple.show && (
+          <span
+            className="absolute rounded-full bg-white/30 pointer-events-none animate-ripple"
+            style={{
+              left: ripple.x,
+              top: ripple.y,
+              transform: "translate(-50%, -50%) scale(0)",
+            }}
+          />
+        )}
+      </Comp>
     )
   }
 )
