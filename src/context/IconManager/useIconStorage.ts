@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { DEFAULT_SELECTED_ICONS } from '@/data/productData';
 import { createSerializableProducts, reconstructProductsFromStorage } from './utils';
 import { IconOptionExtended } from '@/types/iconTypes';
