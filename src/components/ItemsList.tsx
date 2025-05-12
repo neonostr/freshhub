@@ -169,7 +169,15 @@ const ItemsList: React.FC = () => {
                 </span>
               </div>
               
-              <Slider value={[filterDays]} min={1} max={maxFreshnessDays} step={1} onValueChange={([value]) => setFilterDays(value)} className="w-full" />
+              <Slider 
+                value={[filterDays]} 
+                min={1} 
+                max={maxFreshnessDays} 
+                step={1} 
+                onValueChange={([value]) => setFilterDays(value)} 
+                className="w-full" 
+                aria-label="Filter by freshness days"
+              />
               
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -195,7 +203,7 @@ const ItemsList: React.FC = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Compact mode toggle button */}
+      {/* Settings icon and compact mode toggle button - always visible */}
       <Button
         className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
