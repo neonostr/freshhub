@@ -99,8 +99,8 @@ const Index = () => {
           <ItemsList />
         </main>
         
-        {/* Only show settings when not in compact mode */}
-        {!isCompactMode && <IconManagerDialog />}
+        {/* Always show IconManagerDialog regardless of compact mode */}
+        <IconManagerDialog />
         <AddItemDialog />
         <TutorialWrapper />
       </div>

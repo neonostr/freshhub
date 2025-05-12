@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -148,10 +149,7 @@ const ItemsList: React.FC = () => {
             className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
             size="icon"
             variant="default"
-            style={{
-              right: handedness === 'right' ? "6rem" : "auto",
-              left: handedness === 'left' ? "6rem" : "auto"
-            }}
+            style={getButtonPosition(6)}
           >
             <Filter className="h-6 w-6" />
           </Button>
@@ -198,10 +196,7 @@ const ItemsList: React.FC = () => {
         className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
         variant={isCompactMode ? "secondary" : "default"}
-        style={{
-          right: handedness === 'right' ? "10.5rem" : "auto",
-          left: handedness === 'left' ? "10.5rem" : "auto"
-        }}
+        style={getButtonPosition(10.5)}
         onClick={toggleCompactMode}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
