@@ -1,25 +1,25 @@
 
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { DEFAULT_SELECTED_ICONS } from '@/data/productData';
 import { createSerializableProducts, reconstructProductsFromStorage } from './utils';
+import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
 
-// Define the hook as a function that returns an object with state and setters
-export function useIconStorage() {
+export const useIconStorage = () => {
   // Selected icons
-  const [selectedIconValues, setSelectedIconValues] = React.useState<string[]>(() => {
+  const [selectedIconValues, setSelectedIconValues] = useState<string[]>(() => {
     const saved = localStorage.getItem('freshTrackerSelectedIcons');
     return saved ? JSON.parse(saved) : DEFAULT_SELECTED_ICONS;
   });
   
   // Custom shelf life
-  const [customShelfLife, setCustomShelfLife] = React.useState<Record<string, number>>(() => {
+  const [customShelfLife, setCustomShelfLife] = useState<Record<string, number>>(() => {
     const saved = localStorage.getItem('freshTrackerCustomShelfLife');
     return saved ? JSON.parse(saved) : {};
   });
   
   // Custom products
-  const [customProducts, setCustomProducts] = React.useState<Record<string, IconOptionExtended>>(() => {
+  const [customProducts, setCustomProducts] = useState<Record<string, IconOptionExtended>>(() => {
     const saved = localStorage.getItem('freshTrackerCustomProducts');
     if (saved) {
       return reconstructProductsFromStorage(saved);
@@ -28,7 +28,7 @@ export function useIconStorage() {
   });
   
   // Persist selected icons to localStorage
-  React.useEffect(() => {
+  useEffect(() => {
     try {
       localStorage.setItem('freshTrackerSelectedIcons', JSON.stringify(selectedIconValues));
     } catch (err) {
@@ -37,7 +37,7 @@ export function useIconStorage() {
   }, [selectedIconValues]);
   
   // Persist custom shelf life to localStorage
-  React.useEffect(() => {
+  useEffect(() => {
     try {
       localStorage.setItem('freshTrackerCustomShelfLife', JSON.stringify(customShelfLife));
     } catch (err) {
@@ -46,7 +46,7 @@ export function useIconStorage() {
   }, [customShelfLife]);
   
   // Persist custom products to localStorage
-  React.useEffect(() => {
+  useEffect(() => {
     try {
       // Serialize products for storage
       const serializableProducts = createSerializableProducts(customProducts);
@@ -64,4 +64,4 @@ export function useIconStorage() {
     customProducts,
     setCustomProducts
   };
-}
+};

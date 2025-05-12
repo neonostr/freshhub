@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -16,8 +17,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useHandedness } from '@/context/HandednessContext';
 import { useHeaderVisibilityStore } from '@/pages/Index';
 import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 
 const IconManagerDialog: React.FC = () => {
   const {
@@ -177,9 +176,6 @@ const IconManagerDialog: React.FC = () => {
       iconName: iconName
     } as IconOptionExtended, iconName);
     setEditingProduct(null);
-    
-    // Dispatch shelf life updated event to refresh the UI
-    window.dispatchEvent(new Event('shelf-life-updated'));
   };
 
   // Handle adding a new custom product
@@ -192,9 +188,6 @@ const IconManagerDialog: React.FC = () => {
       iconName: iconName
     } as IconOptionExtended, iconName);
     setIsAddingProduct(false);
-    
-    // Dispatch shelf life updated event to refresh the UI
-    window.dispatchEvent(new Event('shelf-life-updated'));
   };
 
   // Extract icons from ALL_ICONS to use for custom products
@@ -361,34 +354,6 @@ const IconManagerDialog: React.FC = () => {
                             </div>
                             <Switch id="hide-header" checked={hideHeader} onCheckedChange={setHideHeader} />
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3 pt-2 border-t">
-                      <h3 className="text-lg font-medium">Freshness Labels Guide</h3>
-                      <div className="space-y-4">
-                        <div className="grid gap-3">
-                          <div className="flex items-center gap-3">
-                            <Badge variant="default" className="bg-fresh-green text-white">Fresh</Badge>
-                            <span className="text-sm">More than 50% shelf life remaining</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <Badge variant="default" className="bg-fresh-yellow text-black">Use Soon</Badge>
-                            <span className="text-sm">Between 20% and 50% shelf life remaining</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <Badge variant="default" className="bg-fresh-orange text-white">Use Now</Badge>
-                            <span className="text-sm">Less than 20% shelf life remaining</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <Badge variant="default" className="bg-fresh-red text-white">Expired</Badge>
-                            <span className="text-sm">Past the recommended shelf life</span>
-                          </div>
-                          <Separator className="my-2" />
-                          <p className="text-xs text-muted-foreground">
-                            Note: Shelf life is based on manufacturer recommendations and may vary. Use your judgment when determining if items are still safe to consume.
-                          </p>
                         </div>
                       </div>
                     </div>
