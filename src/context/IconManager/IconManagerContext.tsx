@@ -6,7 +6,6 @@ import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended } from '@/types/iconTypes';
-import { useItems } from '@/context/ItemsContext';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 

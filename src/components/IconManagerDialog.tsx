@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -12,11 +13,11 @@ import CustomProductsList from './IconSelector/CustomProductsList';
 import { FoodIconOption, EditableProductProps, IconOptionExtended } from '@/types/iconTypes';
 import { IconOption, ALL_ICONS } from '@/data/productData';
 import * as LucideIcons from 'lucide-react';
-import { useItems } from '@/context/ItemsContext';
 import { useToast } from '@/hooks/use-toast';
 import { useHandedness } from '@/context/HandednessContext';
 import { useHeaderVisibilityStore } from '@/pages/Index';
 import { Switch } from '@/components/ui/switch';
+
 const IconManagerDialog: React.FC = () => {
   const {
     toast
@@ -32,9 +33,6 @@ const IconManagerDialog: React.FC = () => {
     isCustomProduct,
     customProducts
   } = useIconManager();
-  const {
-    updateItemsWithProductChanges
-  } = useItems();
 
   // Get handedness from context
   const {
@@ -168,8 +166,8 @@ const IconManagerDialog: React.FC = () => {
 
     // Ensure we're passing the iconName correctly
     if (editingProduct) {
-      // Update tracked items with the new product name
-      updateItemsWithProductChanges(editingProduct.productId, product.label);
+      // Update the product in the custom products store
+      updateProductName(editingProduct.productId, product.label);
     }
 
     // Pass both the complete product (with iconName) and the iconName separately
@@ -533,4 +531,5 @@ const IconManagerDialog: React.FC = () => {
       </AlertDialog>
     </>;
 };
+
 export default IconManagerDialog;
