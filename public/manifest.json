@@ -3,10 +3,15 @@
   "name": "Fresh Tracker",
   "short_name": "Fresh",
   "description": "Track how long your perishable items have been open",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
+  "orientation": "portrait",
+  "categories": ["utilities", "productivity"],
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
   "icons": [
     {
       "src": "/icon-192x192.png",

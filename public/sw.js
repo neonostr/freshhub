@@ -1,6 +1,7 @@
 
-const CACHE_NAME = 'fresh-tracker-v3';
-const urlsToCache = [
+// Optimized service worker for Fresh Tracker
+const CACHE_NAME = 'fresh-tracker-v4';
+const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
@@ -9,93 +10,128 @@ const urlsToCache = [
   '/lovable-uploads/0cd5dd6f-eea3-49de-8947-b6b427a13b05.png'
 ];
 
-// Installation event: cache static assets
+// Precache app shell during installation for faster startup
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting()) // Force the waiting service worker to become active
+      .then((cache) => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting()) // Immediately take control
   );
 });
 
-// Activate event: clean up old caches
+// Clean up old caches during activation
 self.addEventListener('activate', (event) => {
-  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim()) // Take control of all clients as soon as activated
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames
+            .filter(name => name !== CACHE_NAME)
+            .map(name => caches.delete(name))
+        );
+      })
+      .then(() => self.clients.claim()) // Take control of all clients immediately
   );
 });
 
-// Fetch event: serve from cache, falling back to network
+// Optimize fetch strategy using stale-while-revalidate pattern
 self.addEventListener('fetch', (event) => {
+  // For navigation requests, prefer the cache but update it in the background
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      caches.match('/')
+        .then(cachedResponse => {
+          const fetchPromise = fetch(event.request)
+            .then(networkResponse => {
+              // Update the cache with the latest version in background
+              if (networkResponse && networkResponse.status === 200) {
+                const clonedResponse = networkResponse.clone();
+                caches.open(CACHE_NAME).then(cache => {
+                  cache.put(event.request, clonedResponse);
+                });
+              }
+              return networkResponse;
+            })
+            .catch(() => cachedResponse);
+          
+          // Return cached response immediately if available
+          return cachedResponse || fetchPromise;
+        })
+    );
+    return;
+  }
+
+  // For static assets, use stale-while-revalidate strategy
+  if (event.request.url.includes('/static/') || 
+      APP_SHELL.some(url => event.request.url.endsWith(url)) ||
+      event.request.url.endsWith('.js') ||
+      event.request.url.endsWith('.css')) {
+    event.respondWith(
+      caches.match(event.request)
+        .then(cachedResponse => {
+          // Return cached response immediately if available
+          if (cachedResponse) {
+            // Update cache in background
+            fetch(event.request)
+              .then(networkResponse => {
+                if (networkResponse && networkResponse.status === 200) {
+                  caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, networkResponse.clone());
+                  });
+                }
+              })
+              .catch(() => {/* Ignore network errors */});
+            
+            return cachedResponse;
+          }
+          
+          // If not in cache, fetch from network and cache
+          return fetch(event.request)
+            .then(networkResponse => {
+              if (!networkResponse || networkResponse.status !== 200) {
+                return networkResponse;
+              }
+              
+              const responseToCache = networkResponse.clone();
+              caches.open(CACHE_NAME).then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+              
+              return networkResponse;
+            });
+        })
+    );
+    return;
+  }
+
+  // For API or other dynamic requests, try network first, fall back to generic offline response
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return the response
-        if (response) {
-          return response;
+    fetch(event.request)
+      .catch(() => {
+        // Show simple cached homepage for navigation requests
+        if (event.request.mode === 'navigate') {
+          return caches.match('/');
         }
         
-        // Clone the request because it's a one-time-use stream
-        const fetchRequest = event.request.clone();
-        
-        // For non-navigation requests, try the network first, then cache the response
-        return fetch(fetchRequest)
-          .then((response) => {
-            // Check if valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response because it's a one-time-use stream
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                // Don't cache API calls
-                if (!event.request.url.includes('/api/')) {
-                  cache.put(event.request, responseToCache);
-                }
-              });
-
-            return response;
-          })
-          .catch(() => {
-            // If the network fails for navigation requests, return the cached homepage
-            if (event.request.mode === 'navigate') {
-              return caches.match('/');
-            }
-            
-            // For other types of requests, return a simple offline message
-            return new Response('Network error occurred. App is in offline mode.', {
-              status: 200,
-              headers: { 'Content-Type': 'text/plain' }
-            });
-          });
+        // For other types of requests, return a simple offline message
+        return new Response('Network error occurred. App is in offline mode.', {
+          status: 200,
+          headers: { 'Content-Type': 'text/plain' }
+        });
       })
   );
 });
 
-// Handle messages from clients
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+// Periodic background sync when online
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'check-updates') {
+    event.waitUntil(self.registration.update());
   }
 });
 
-// Periodically check for updates when online
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'check-updates') {
-    event.waitUntil(
-      self.registration.update()
-    );
+// Immediately handle skipWaiting messages
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
   }
 });
