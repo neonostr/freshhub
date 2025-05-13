@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { RotateCcw } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -15,17 +14,8 @@ const CardActions: React.FC<CardActionsProps> = ({ onDelete, onReset, isCompact 
   
   // Don't render actions if compact or not on desktop
   if (isCompact || isMobile) {
-    // For mobile, only show the reset button
-    if (isMobile) {
-      return (
-        <button 
-          onClick={onReset}
-          className="text-primary p-1 rounded-full hover:bg-gray-100"
-        >
-          <RotateCcw className="h-4 w-4" />
-        </button>
-      );
-    }
+    // For mobile, we previously had a reset button here,
+    // but it's redundant so we're removing it
     return null;
   }
   
