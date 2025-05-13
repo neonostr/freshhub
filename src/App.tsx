@@ -7,30 +7,27 @@ import NotFound from "./pages/NotFound";
 import { HandednessProvider } from '@/context/HandednessContext';
 import { ItemsProvider } from '@/context/ItemsContext';
 import { IconManagerProvider } from '@/context/IconManager';
-import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/context/ThemeProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <TooltipProvider>
-        <HandednessProvider>
-          <ItemsProvider>
-            <IconManagerProvider>
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                <Toaster />
-              </BrowserRouter>
-            </IconManagerProvider>
-          </ItemsProvider>
-        </HandednessProvider>
-      </TooltipProvider>
-    </ThemeProvider>
+    <TooltipProvider>
+      <HandednessProvider>
+        <ItemsProvider>
+          <IconManagerProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Toaster />
+            </BrowserRouter>
+          </IconManagerProvider>
+        </ItemsProvider>
+      </HandednessProvider>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 
