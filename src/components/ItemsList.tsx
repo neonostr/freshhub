@@ -191,11 +191,11 @@ const ItemsList: React.FC = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Compact mode toggle button - always visible */}
+      {/* Compact mode toggle button - updated to use default variant like other buttons */}
       <Button
         className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
-        variant={isCompactMode ? "secondary" : "default"}
+        variant="default"
         style={getButtonPosition(10.5)}
         onClick={toggleCompactMode}
       >
