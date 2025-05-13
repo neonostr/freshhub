@@ -8,7 +8,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 // Import our newly created components
 import ItemIcon from './ItemIcon';
-import FreshnessBadge from './FreshnessBadge';
+import FreshnessBadge, { getFreshnessColor } from './FreshnessBadge';
 import ItemDetails from './ItemDetails';
 import CardActions from './CardActions';
 import SwipeableCard from './SwipeableCard';
@@ -78,10 +78,6 @@ const ItemCard: React.FC<ItemCardProps> = ({
       </CardContent>
     </Card>
   );
-
-  // We need to import this function from FreshnessBadge since we're using it directly
-  // This could be refactored further to avoid this duplication
-  const { getFreshnessColor } = require('./FreshnessBadge');
 
   // On mobile, wrap the card with swipeable behavior
   if (isMobile) {
