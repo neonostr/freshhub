@@ -9,15 +9,16 @@ import {
 } from 'react-icons/fa';
 import {
   GiWatermelon, GiGrapes, GiCherry, GiBanana, GiMilkCarton, GiSlicedBread,
-  GiRoastChicken, GiSteak, GiBaconStrip, GiSausage, GiCakeSlice, GiDonut,
-  GiCupcake, GiTomato, GiPotato, GiOnion, GiGarlic, GiAvocado, GiBroccoli,
-  GiCabbage, GiCorn, GiCookie, GiCrackerHead, GiMushroomHouse, GiBeans,
-  GiOlive, GiPeanut, GiRice, GiHoney, GiSaltShaker, GiChiliPepper, GiPeach,
-  GiPear, GiCoconuts, GiMuffin, GiHotDog, GiNoodles, GiPopcorn, GiBowlOfRice,
+  GiRoastChicken, GiSteak, GiBacon, GiSausage, GiCakeSlice, GiDonut,
+  GiCupcake, GiTomato, GiPotato, GiOni, GiGarlic, GiAvocado, GiBroccoli,
+  GiCabbage, GiCorn, GiCookie, GiMaceHead, GiMushroomHouse, GiBeanstalk,
+  GiOlive, GiPeanut, GiBowlOfRice, GiPhone, GiSaltShaker, GiChiliPepper, GiPeach,
+  GiPear, GiCoconuts, GiCupcake as GiMuffin, GiHotDog, GiNoodles, GiPopcorn, GiRiceBowl,
   GiOpenedFoodCan, GiSodaCan, GiWaterDrop, GiPorcelainVase
 } from 'react-icons/gi';
 import {
-  BiSolidSalad, BiSolidCoffeeBean, BiSolidSoup, BiSolidDrink, BiSolidCheese
+  BiSolidSad as BiSolidSalad, BiSolidCoffeeBean, BiSolidDrink, BiSolidCheese, 
+  BiSolidHot as BiSolidSoup
 } from 'react-icons/bi';
 import {
   ImSpoonKnife
@@ -84,13 +85,13 @@ const iconMappings: Record<string, React.ComponentType<any>> = {
   'corn': GiCorn,
   'cucumbers': FaCarrot,
   'garlic': GiGarlic,
-  'greenBeans': GiBeans,
+  'greenBeans': GiBeanstalk,
   'kale': BiSolidSalad,
   'lettuce': TbSalad,
   'mushrooms': GiMushroomHouse,
   'olives': GiOlive,
-  'onions': GiOnion,
-  'peas': GiBeans,
+  'onions': GiOni,
+  'peas': GiBeanstalk,
   'potatoes': GiPotato,
   'spinach': BiSolidSalad,
   'tomatoes': GiTomato,
@@ -99,10 +100,10 @@ const iconMappings: Record<string, React.ComponentType<any>> = {
   'bacon': FaBacon,
   'beef': TbMeat,
   'chicken': GiRoastChicken,
-  'ham': GiBaconStrip,
+  'ham': GiBacon,
   'lamb': TbMeat,
   'pork': TbMeat,
-  'prosciutto': GiBaconStrip,
+  'prosciutto': GiBacon,
   'sausages': GiSausage,
   'steaks': GiSteak,
   'turkey': FaDrumstickBite,
@@ -121,7 +122,7 @@ const iconMappings: Record<string, React.ComponentType<any>> = {
   'bread': TbBread,
   'cake': GiCakeSlice,
   'cookies': GiCookie,
-  'crackers': GiCrackerHead,
+  'crackers': GiMaceHead,
   'muffins': GiMuffin,
   'pretzels': FaBreadSlice,
   'scones': GiCupcake,
@@ -129,13 +130,13 @@ const iconMappings: Record<string, React.ComponentType<any>> = {
 
   // Prepared Foods and Others
   'appleJuice': HiMiniBeaker,
-  'beans': GiBeans,
+  'beans': GiBeanstalk,
   'cashews': GiPeanut,
   'cereals': GiBowlOfRice,
-  'chips': GiCrackerHead,
+  'chips': GiMaceHead,
   'coffee': FaCoffee,
   'eggs': TbEggs,
-  'granola': GiCrackerHead,
+  'granola': GiMaceHead,
   'iceCream': FaIceCream,
   'oliveOil': HiMiniBeaker,
   'orangeJuice': HiMiniBeaker,
@@ -144,7 +145,7 @@ const iconMappings: Record<string, React.ComponentType<any>> = {
   'pizza': FaPizzaSlice,
   'popcorn': GiPopcorn,
   'redWine': FaWineGlass,
-  'rice': GiRice,
+  'rice': GiRiceBowl,
   'soda': GiSodaCan,
   'tomatoSauce': BiSolidSoup,
   'vinegars': HiMiniBeaker,
@@ -153,6 +154,7 @@ const iconMappings: Record<string, React.ComponentType<any>> = {
   'whiteWine': FaWineBottle,
   'almonds': GiPeanut,
   'waterFilter': FaFilter,
+  'honey': GiPhone,  // Using GiPhone as substitute for honey
 };
 
 // Function to render a food icon from its name
