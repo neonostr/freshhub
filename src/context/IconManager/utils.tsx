@@ -3,30 +3,17 @@ import React from 'react';
 import * as LucideIcons from 'lucide-react';
 import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
-import { Icon } from '@iconify/react';
 
 // Reconstruct an icon component from an icon name
 export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   // Ensure we have a valid icon name
   if (!iconName) {
     console.error("No icon name provided to createIconFromName");
-    iconName = 'tabler:apple'; // Default fallback
+    iconName = 'apple'; // Default fallback
   }
   
   console.log(`Creating icon from name: ${iconName}`);
   
-  // Check if this is an Iconify icon (contains a colon)
-  if (iconName.includes(':')) {
-    try {
-      return <Icon icon={iconName} className={className} />;
-    } catch (error) {
-      console.warn(`Failed to render Iconify icon: ${iconName}`, error);
-      // Fallback to apple icon for failed Iconify icons
-      return <Icon icon="tabler:apple" className={className} />;
-    }
-  }
-  
-  // Legacy Lucide icon handling (for backwards compatibility)
   // Convert kebab-case to PascalCase for Lucide icon names
   const pascalCaseName = iconName.charAt(0).toUpperCase() + 
     iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
@@ -40,7 +27,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     'bowl': 'CircleOff',
     'pumpkin': 'CircleDot',
     'watermelon': 'Cherry', // Better representation for watermelon
-    'water-filter': 'Filter', // Use Filter for water filter
+    'water-filter': 'Filter', // Use Filter icon for water filter
   };
   
   // Check if we have a special mapping for this icon
@@ -66,9 +53,10 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     }
   }
   
-  console.warn(`Icon "${iconName}" could not be found in Lucide icons, using default`);
-  // Fallback to Iconify apple icon
-  return <Icon icon="tabler:apple" className={className} />;
+  console.warn(`Icon "${iconName}" could not be found in Lucide icons`);
+  return React.createElement('div', {
+    className: `flex items-center justify-center ${className}`
+  }, '?');
 };
 
 // Create serializable product data for storage
@@ -77,7 +65,7 @@ export const createSerializableProducts = (
 ) => {
   return Object.entries(products).reduce((acc, [key, product]) => {
     // Ensure iconName is stored properly - this is a critical fix
-    const iconName = product.iconName || 'tabler:apple';
+    const iconName = product.iconName || 'apple';
     console.log(`Serializing product ${product.label} with icon: ${iconName}`);
     
     // Store only the essential data without the React element
@@ -107,8 +95,8 @@ export const reconstructProductsFromStorage = (
       const productData = product as Partial<IconOptionExtended>;
       
       if (productData.value && productData.label && productData.shelfLife) {
-        // Use the stored icon name or default to 'tabler:apple' only if iconName is undefined
-        const iconName = productData.iconName || 'tabler:apple';
+        // Use the stored icon name or default to 'apple' only if iconName is undefined
+        const iconName = productData.iconName || 'apple';
         console.log(`Reconstructing product ${productData.label} with icon: ${iconName}`);
         
         // Create the icon component from the stored name
