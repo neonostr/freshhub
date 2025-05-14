@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import * as LucideIcons from 'lucide-react';
@@ -20,7 +21,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
     // Check if this is an Iconify icon (contains a colon)
     if (iconName.includes(':')) {
       try {
-        return <Icon icon={iconName} width={20} height={20} />;
+        return <Icon icon={iconName} width={20} height={20} className="text-foreground" />;
       } catch (error) {
         console.warn(`Failed to render Iconify icon: ${iconName}`, error);
         // Fallback to question mark for failed Iconify icons

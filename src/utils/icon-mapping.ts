@@ -1,59 +1,59 @@
-// Map legacy Lucide icon names to Iconify icon names
+// Map legacy Lucide icon names to Iconify icon names with flat black & white style
 export const iconMapping: Record<string, string> = {
   // Fruits
-  'apple': 'noto:red-apple',
-  'cherry': 'noto:cherries',
-  'grape': 'noto:grapes',
-  'citrus': 'noto:tangerine',
+  'apple': 'tabler:apple',
+  'cherry': 'tabler:cherry',
+  'grape': 'tabler:grape',
+  'citrus': 'tabler:lemon',
   
   // Vegetables
-  'carrot': 'noto:carrot',
-  'salad': 'noto:leafy-green',
+  'carrot': 'tabler:carrot',
+  'salad': 'tabler:salad',
   
   // Dairy
-  'milk': 'noto:glass-of-milk',
+  'milk': 'tabler:milk',
   
   // Meat
-  'beef': 'noto:cut-of-meat',
-  'drumstick': 'noto:poultry-leg',
-  'ham': 'streamline-emojis:ham',
+  'beef': 'tabler:meat',
+  'drumstick': 'tabler:bone',
+  'ham': 'tabler:meat',
   
   // Seafood
-  'fish': 'noto:fish',
-  'shell': 'noto:oyster',
+  'fish': 'tabler:fish',
+  'shell': 'tabler:seeding',
   
   // Baked Goods
-  'cake': 'noto:shortcake',
-  'cookie': 'noto:cookie',
+  'cake': 'tabler:cake',
+  'cookie': 'tabler:cookie',
   
   // Drinks
-  'coffee': 'noto:hot-beverage',
-  'wine': 'noto:wine-glass',
-  'beaker': 'noto:beverage-box',
+  'coffee': 'tabler:coffee',
+  'wine': 'tabler:bottle',
+  'beaker': 'tabler:glass',
   
   // Other Foods
-  'sandwich': 'noto:sandwich',
-  'pizza': 'noto:pizza',
-  'ice-cream': 'noto:soft-ice-cream',
-  'egg': 'noto:egg',
-  'popcorn': 'noto:popcorn',
-  'bean': 'streamline-emojis:beans',
-  'soup': 'noto:pot-of-food',
+  'sandwich': 'tabler:bread',
+  'pizza': 'tabler:pizza',
+  'ice-cream': 'tabler:ice-cream',
+  'egg': 'tabler:egg',
+  'popcorn': 'tabler:soup',
+  'bean': 'tabler:bean',
+  'soup': 'tabler:soup',
   
   // Miscellaneous
-  'circle': 'noto:hollow-red-circle',
-  'circle-dot': 'noto:white-circle',
-  'circle-dashed': 'noto:dotted-circle',
-  'aperture': 'noto:bullseye',
-  'layers': 'noto:card-file-box',
-  'snowflake': 'noto:snowflake',
-  'filter': 'noto:filter',
-  'utensils': 'noto:fork-and-knife',
+  'circle': 'tabler:circle',
+  'circle-dot': 'tabler:circle-dot',
+  'circle-dashed': 'tabler:circle-dashed',
+  'aperture': 'tabler:aperture',
+  'layers': 'tabler:layers',
+  'snowflake': 'tabler:snowflake',
+  'filter': 'tabler:filter',
+  'utensils': 'tabler:tools-kitchen',
 };
 
 // Get an Iconify equivalent for a Lucide icon
 export const getIconifyEquivalent = (lucideIconName: string): string => {
-  return iconMapping[lucideIconName.toLowerCase()] || 'noto:question-mark';
+  return iconMapping[lucideIconName.toLowerCase()] || 'tabler:question-mark';
 };
 
 // Check if an icon name is an Iconify icon (contains a colon)

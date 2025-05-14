@@ -10,7 +10,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   // Ensure we have a valid icon name
   if (!iconName) {
     console.error("No icon name provided to createIconFromName");
-    iconName = 'noto:apple'; // Default fallback
+    iconName = 'tabler:apple'; // Default fallback
   }
   
   console.log(`Creating icon from name: ${iconName}`);
@@ -22,7 +22,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     } catch (error) {
       console.warn(`Failed to render Iconify icon: ${iconName}`, error);
       // Fallback to apple icon for failed Iconify icons
-      return <Icon icon="noto:apple" className={className} />;
+      return <Icon icon="tabler:apple" className={className} />;
     }
   }
   
@@ -68,7 +68,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   
   console.warn(`Icon "${iconName}" could not be found in Lucide icons, using default`);
   // Fallback to Iconify apple icon
-  return <Icon icon="noto:apple" className={className} />;
+  return <Icon icon="tabler:apple" className={className} />;
 };
 
 // Create serializable product data for storage
@@ -77,7 +77,7 @@ export const createSerializableProducts = (
 ) => {
   return Object.entries(products).reduce((acc, [key, product]) => {
     // Ensure iconName is stored properly - this is a critical fix
-    const iconName = product.iconName || 'noto:apple';
+    const iconName = product.iconName || 'tabler:apple';
     console.log(`Serializing product ${product.label} with icon: ${iconName}`);
     
     // Store only the essential data without the React element
@@ -107,8 +107,8 @@ export const reconstructProductsFromStorage = (
       const productData = product as Partial<IconOptionExtended>;
       
       if (productData.value && productData.label && productData.shelfLife) {
-        // Use the stored icon name or default to 'noto:apple' only if iconName is undefined
-        const iconName = productData.iconName || 'noto:apple';
+        // Use the stored icon name or default to 'tabler:apple' only if iconName is undefined
+        const iconName = productData.iconName || 'tabler:apple';
         console.log(`Reconstructing product ${productData.label} with icon: ${iconName}`);
         
         // Create the icon component from the stored name
