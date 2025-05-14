@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -20,19 +19,28 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
-// List of all Lucide food and beverage icons
+// List of all Lucide food and beverage icons (deduplicated)
 const FOOD_BEVERAGE_ICON_NAMES = [
+  // Basic food icons
   'apple', 'banana', 'bean', 'beer', 'cake', 'candy', 'carrot', 'cherry',
   'coffee', 'cookie', 'egg', 'fish', 'grape', 'ham', 'ice-cream', 'lemon',
   'milk', 'wine', 'sandwich', 'pizza', 'popcorn', 'beef', 'drumstick', 'salad',
+  // Containers and kitchenware
   'beaker', 'utensils', 'soup', 'shell', 'wheat', 'citrus', 'aperture',
   'lollipop', 'candy-cane', 'cake-slice', 'snowflake', 'filter', 'flame',
-  'flower', 'package', 'layers', 'circle', 'circle-dot', 'circle-dashed',
-  'circle-off', 'dices', 'flask-round', 'croissant', 'cup-soda', 'dessert',
-  'egg-fried', 'ice-cream-cone', 'banana', 'orange', 'popsicle', 'steak',
-  'watermelon', 'cup', 'martini', 'glass-water', 'glass', 'cooking-pot',
-  'flask-conical', 'leaf', 'fruit-cherries', 'fruit-pear', 'fruit', 'utensils-crossed'
-];
+  'flower', 'package', 'layers',
+  // Basic shapes used for food representation
+  'circle', 'circle-dot', 'circle-dashed', 'circle-off', 
+  // Additional food icons
+  'croissant', 'cup-soda', 'dessert', 'egg-fried', 'ice-cream-cone',
+  'orange', 'popsicle', 'steak', 'watermelon', 'cup', 'martini', 
+  'glass-water', 'glass', 'cooking-pot', 'flask-conical', 'leaf',
+  'fruit-cherries', 'fruit-pear', 'fruit', 'utensils-crossed',
+  // Additional kitchen/food-related icons
+  'refrigerator', 'chef-hat', 'drop', 'flame', 'cookie',
+  'bottle', 'bowl', 'flask', 'thermometer', 'timer',
+  'knife', 'spoon', 'fork', 'wine-glass', 'bread'
+].filter((value, index, self) => self.indexOf(value) === index); // Remove any duplicates
 
 const IconManagerDialog: React.FC = () => {
   const {

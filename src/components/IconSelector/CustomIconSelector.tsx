@@ -15,8 +15,10 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
   // Helper to render an icon from the Lucide library by name
   const renderIcon = (iconName: string) => {
     // Convert kebab-case to PascalCase for Lucide icon names
-    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
-      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+    const pascalCaseName = iconName
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('');
     
     // Specific mappings for food items that don't have dedicated icons
     const iconMappings: Record<string, string> = {
@@ -26,7 +28,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
       'pretzels': 'CircleDashed', // Twisted shape suggestion
       'bowl': 'CircleOff',
       'pumpkin': 'CircleDot',
-      'watermelon': 'Cherry', // Use Cherry instead for watermelon
+      'watermelon': 'Watermelon', // Use dedicated watermelon icon
       'water-filter': 'Filter', // Use Filter for water filter
     };
     
@@ -40,9 +42,12 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
       return React.createElement(IconComponent, { size: 20 });
     }
     
+    // Log the missing icon to help with debugging
+    console.warn(`Icon not found: ${iconName} (mapped to ${mappedName})`);
+    
     // Fallback rendering if icon not found
     return React.createElement('div', {
-      className: "h-5 w-5 flex items-center justify-center"
+      className: "h-5 w-5 flex items-center justify-center text-muted-foreground"
     }, '?');
   };
 
