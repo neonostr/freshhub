@@ -28,7 +28,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
       'pretzels': 'CircleDashed', // Twisted shape suggestion
       'bowl': 'CircleOff',
       'pumpkin': 'CircleDot',
-      'watermelon': 'Watermelon', // Use dedicated watermelon icon
+      'watermelon': 'Cherry', // Use Cherry for watermelon since Watermelon doesn't exist
       'water-filter': 'Filter', // Use Filter for water filter
     };
     

@@ -7,7 +7,7 @@ import {
   Candy, Snowflake, Lollipop, Popcorn, Shell, Apple as AppleIcon,
   Wheat, Aperture, ChevronsUp, Citrus, AlignHorizontalDistributeCenter,
   Layers, Snowflake as Frozen, Flame, Flower, CircleDot, CandyCane,
-  Filter, Watermelon
+  Filter
 } from "lucide-react";
 
 export type IconOption = {
@@ -53,7 +53,7 @@ export const ALL_ICONS: Record<string, IconOption> = {
   raisins: { value: 'raisins', label: 'Raisins', icon: <Grape className="h-5 w-5" />, shelfLife: 180 },
   raspberries: { value: 'raspberries', label: 'Raspberries', icon: <Cherry className="h-5 w-5" />, shelfLife: 3 },
   strawberries: { value: 'strawberries', label: 'Strawberries', icon: <Cherry className="h-5 w-5" />, shelfLife: 5 },
-  watermelon: { value: 'watermelon', label: 'Watermelon', icon: <Watermelon className="h-5 w-5" />, shelfLife: 7 },
+  watermelon: { value: 'watermelon', label: 'Watermelon', icon: <Cherry className="h-5 w-5" />, shelfLife: 7 }, // Using Cherry instead of non-existent Watermelon
   
   // Vegetables
   asparagus: { value: 'asparagus', label: 'Asparagus', icon: <Salad className="h-5 w-5" />, shelfLife: 5 },
