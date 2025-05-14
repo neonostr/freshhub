@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
+import { migrateItems, NEW_PRODUCT_LIST } from '@/utils/productMigration';
 
 interface ItemsContextType {
   items: Item[];
@@ -21,10 +22,25 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
   const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
+  const [hasMigrated, setHasMigrated] = useState<boolean>(false);
 
   useEffect(() => {
+    // Load items and check if migration is needed
     const loadedItems = loadItems();
-    setItems(loadedItems);
+    
+    // Check if we've done the migration
+    const migrationDone = localStorage.getItem('freshTrackerMigrationDone') === 'true';
+    
+    if (!migrationDone && loadedItems.length > 0) {
+      // Perform the migration
+      const migratedItems = migrateItems(loadedItems);
+      setItems(migratedItems);
+      saveItems(migratedItems);
+      localStorage.setItem('freshTrackerMigrationDone', 'true');
+      setHasMigrated(true);
+    } else {
+      setItems(loadedItems);
+    }
     
     // Check if first time user
     const hasSeenTutorial = localStorage.getItem('hasSeenSwipeTutorial');
