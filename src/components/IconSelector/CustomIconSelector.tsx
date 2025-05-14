@@ -48,7 +48,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
 
   return (
     <ScrollArea className={cn("h-40 w-full", className)}>
-      <div className="grid grid-cols-4 gap-2 p-1">
+      <div className="grid grid-cols-5 gap-2 p-1">
         {icons.map((icon) => (
           <Button
             key={icon.icon}
