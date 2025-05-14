@@ -6,7 +6,7 @@ import { toast } from '@/hooks/use-toast';
 import CustomIconSelector from './CustomIconSelector';
 import { IconOption } from '@/data/productData';
 import { FoodIconOption } from '@/types/iconTypes';
-import { renderFoodIcon } from '@/context/IconManager/utils';
+import * as LucideIcons from 'lucide-react';
 
 interface AddCustomProductFormProps {
   availableIcons: FoodIconOption[];
@@ -85,7 +85,17 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
     
     // Create React element for the icon from the selected icon name
     const iconName = selectedIcon;
-    const iconElement = renderFoodIcon(iconName);
+    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+    
+    const IconComponent = (LucideIcons as any)[pascalCaseName];
+    
+    let iconElement;
+    if (IconComponent) {
+      iconElement = React.createElement(IconComponent, { className: "h-5 w-5" });
+    } else {
+      iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
+    }
     
     // Create a new custom product with the selected icon
     const newProduct: IconOption = {

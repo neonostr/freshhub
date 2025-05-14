@@ -6,7 +6,6 @@ import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended } from '@/types/iconTypes';
-import { renderFoodIcon } from './utils';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -19,6 +18,9 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     customProducts,
     setCustomProducts
   } = useIconStorage();
+  
+  // Instead of directly using useItems, we'll load items directly when needed
+  // This avoids the dependency on ItemsProvider
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };

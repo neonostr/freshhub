@@ -1,6 +1,6 @@
 
-// Optimized service worker for Fresh Tracker with icon caching
-const CACHE_NAME = 'fresh-tracker-v5';
+// Optimized service worker for Fresh Tracker
+const CACHE_NAME = 'fresh-tracker-v4';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -10,19 +10,11 @@ const APP_SHELL = [
   '/lovable-uploads/0cd5dd6f-eea3-49de-8947-b6b427a13b05.png'
 ];
 
-// Add icon resources that need to be cached
-const ICON_RESOURCES = [
-  // Empty - react-icons are bundled with the JS and don't need separate caching
-];
-
 // Precache app shell during installation for faster startup
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Caching app shell and icon resources');
-        return cache.addAll([...APP_SHELL, ...ICON_RESOURCES]);
-      })
+      .then((cache) => cache.addAll(APP_SHELL))
       .then(() => self.skipWaiting()) // Immediately take control
   );
 });
@@ -35,16 +27,10 @@ self.addEventListener('activate', (event) => {
         return Promise.all(
           cacheNames
             .filter(name => name !== CACHE_NAME)
-            .map(name => {
-              console.log('Deleting old cache:', name);
-              return caches.delete(name);
-            })
+            .map(name => caches.delete(name))
         );
       })
-      .then(() => {
-        console.log('Service Worker activated and controlling');
-        return self.clients.claim(); // Take control of all clients immediately
-      })
+      .then(() => self.clients.claim()) // Take control of all clients immediately
   );
 });
 
@@ -78,7 +64,6 @@ self.addEventListener('fetch', (event) => {
   // For static assets, use stale-while-revalidate strategy
   if (event.request.url.includes('/static/') || 
       APP_SHELL.some(url => event.request.url.endsWith(url)) ||
-      ICON_RESOURCES.some(url => event.request.url.includes(url)) ||
       event.request.url.endsWith('.js') ||
       event.request.url.endsWith('.css')) {
     event.respondWith(
