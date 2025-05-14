@@ -13,7 +13,7 @@ import {
   GiCupcake, GiTomato, GiPotato, GiOni, GiGarlic, GiAvocado, GiBroccoli,
   GiCabbage, GiCorn, GiCookie, GiMaceHead, GiMushroomHouse, GiBeanstalk,
   GiOlive, GiPeanut, GiBowlOfRice, GiPhone, GiSaltShaker, GiChiliPepper, GiPeach,
-  GiPear, GiCoconuts, GiCupcake as GiMuffin, GiHotDog, GiNoodles, GiPopcorn, GiRiceBowl,
+  GiPear, GiCoconuts, GiCupcake as GiMuffin, GiHotDog, GiNoodles, GiPopcorn, 
   GiOpenedFoodCan, GiSodaCan, GiWaterDrop, GiPorcelainVase
 } from 'react-icons/gi';
 import {
@@ -145,7 +145,7 @@ const iconMappings: Record<string, React.ComponentType<any>> = {
   'pizza': FaPizzaSlice,
   'popcorn': GiPopcorn,
   'redWine': FaWineGlass,
-  'rice': GiRiceBowl,
+  'rice': GiBowlOfRice,
   'soda': GiSodaCan,
   'tomatoSauce': BiSolidSoup,
   'vinegars': HiMiniBeaker,
