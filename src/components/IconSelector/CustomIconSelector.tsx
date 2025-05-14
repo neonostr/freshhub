@@ -14,8 +14,6 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
 }) => {
   // Helper to render an icon from the Lucide library by name
   const renderIcon = (iconName: string) => {
-    // Using improved icon rendering for better food representation
-    
     // Convert kebab-case to PascalCase for Lucide icon names
     const pascalCaseName = iconName.charAt(0).toUpperCase() + 
       iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
@@ -28,6 +26,8 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
       'pretzels': 'CircleDashed', // Twisted shape suggestion
       'bowl': 'CircleOff',
       'pumpkin': 'CircleDot',
+      'watermelon': 'Cherry', // Use Cherry instead for watermelon
+      'water-filter': 'Filter', // Use Filter for water filter
     };
     
     // Check if we have a special mapping for this icon

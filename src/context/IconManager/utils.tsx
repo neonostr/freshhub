@@ -26,6 +26,8 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     'pretzels': 'CircleDashed', // Twisted shape suggestion
     'bowl': 'CircleOff',
     'pumpkin': 'CircleDot',
+    'watermelon': 'Cherry', // Better representation for watermelon
+    'water-filter': 'Filter', // Use Filter icon for water filter
   };
   
   // Check if we have a special mapping for this icon

@@ -7,7 +7,8 @@ import {
   Grape, Ham, Soup, Circle, Cookie as CookieIcon, Dices, CakeSlice, 
   Candy, Snowflake, Lollipop, Popcorn, Shell, Apple as AppleIcon,
   Wheat, Aperture, ChevronsUp, Citrus, AlignHorizontalDistributeCenter,
-  Layers, Snowflake as Frozen, Flame, Flower, CircleDot, CandyCane
+  Layers, Snowflake as Frozen, Flame, Flower, CircleDot, CandyCane,
+  Filter
 } from "lucide-react";
 
 export type IconOption = {
@@ -134,6 +135,8 @@ export const ALL_ICONS: Record<string, IconOption> = {
   water: { value: 'water', label: 'Water', icon: <Beaker className="h-5 w-5" />, shelfLife: 365 },
   whiteWine: { value: 'whiteWine', label: 'White Wine', icon: <Wine className="h-5 w-5" />, shelfLife: 5 },
   almonds: { value: 'almonds', label: 'Almonds', icon: <Bean className="h-5 w-5" />, shelfLife: 30 },
+  // Add the new Water Filter product
+  waterFilter: { value: 'waterFilter', label: 'Water Filter', icon: <Filter className="h-5 w-5" />, shelfLife: 30 },
 };
 
 // Default selected icons (initial state) - first 9 items alphabetically sorted
