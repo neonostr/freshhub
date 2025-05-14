@@ -1,10 +1,11 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import * as LucideIcons from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FoodIconOption, IconSelectorProps } from '@/types/iconTypes';
+import { Icon } from '@iconify/react';
+import { useToast } from '@/hooks/use-toast';
 
 const CustomIconSelector: React.FC<IconSelectorProps> = ({
   icons,
@@ -12,8 +13,25 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
   onSelect,
   className
 }) => {
-  // Helper to render an icon from the Lucide library by name
+  const { toast } = useToast();
+  
+  // Helper to render an icon - supports both Lucide and Iconify icons
   const renderIcon = (iconName: string) => {
+    // Check if this is an Iconify icon (contains a colon)
+    if (iconName.includes(':')) {
+      try {
+        return <Icon icon={iconName} width={20} height={20} />;
+      } catch (error) {
+        console.warn(`Failed to render Iconify icon: ${iconName}`, error);
+        // Fallback to question mark for failed Iconify icons
+        return (
+          <div className="h-5 w-5 flex items-center justify-center text-xs">?</div>
+        );
+      }
+    }
+    
+    // Otherwise try to render a Lucide icon (for backward compatibility)
+    
     // Convert kebab-case to PascalCase for Lucide icon names
     const pascalCaseName = iconName.charAt(0).toUpperCase() + 
       iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
@@ -41,9 +59,9 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
     }
     
     // Fallback rendering if icon not found
-    return React.createElement('div', {
-      className: "h-5 w-5 flex items-center justify-center"
-    }, '?');
+    return (
+      <div className="h-5 w-5 flex items-center justify-center text-xs">?</div>
+    );
   };
 
   return (

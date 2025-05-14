@@ -1,6 +1,6 @@
 
-// Optimized service worker for Fresh Tracker
-const CACHE_NAME = 'fresh-tracker-v4';
+// Optimized service worker for Fresh Tracker with Iconify support
+const CACHE_NAME = 'fresh-tracker-v5';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -10,12 +10,29 @@ const APP_SHELL = [
   '/lovable-uploads/0cd5dd6f-eea3-49de-8947-b6b427a13b05.png'
 ];
 
+// Iconify CDN URLs to cache
+const ICONIFY_CACHE_NAME = 'iconify-cache-v1';
+const ICONIFY_PATTERNS = [
+  'https://api.iconify.design/',
+  'https://cdn.iconify.design/'
+];
+
 // Precache app shell during installation for faster startup
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting()) // Immediately take control
+    Promise.all([
+      // Cache app shell assets
+      caches.open(CACHE_NAME)
+        .then((cache) => cache.addAll(APP_SHELL)),
+      
+      // Create a separate cache for Iconify icons
+      caches.open(ICONIFY_CACHE_NAME)
+        .then(cache => {
+          console.log('Iconify cache created');
+          return cache;
+        })
+    ])
+    .then(() => self.skipWaiting()) // Immediately take control
   );
 });
 
@@ -26,7 +43,7 @@ self.addEventListener('activate', (event) => {
       .then((cacheNames) => {
         return Promise.all(
           cacheNames
-            .filter(name => name !== CACHE_NAME)
+            .filter(name => name !== CACHE_NAME && name !== ICONIFY_CACHE_NAME)
             .map(name => caches.delete(name))
         );
       })
@@ -34,8 +51,59 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Helper function to determine if a request is for an Iconify icon
+function isIconifyRequest(url) {
+  return ICONIFY_PATTERNS.some(pattern => url.startsWith(pattern));
+}
+
 // Optimize fetch strategy using stale-while-revalidate pattern
 self.addEventListener('fetch', (event) => {
+  const url = event.request.url;
+  
+  // Special handling for Iconify icon requests
+  if (isIconifyRequest(url)) {
+    event.respondWith(
+      caches.open(ICONIFY_CACHE_NAME).then(cache => {
+        return cache.match(event.request).then(cachedResponse => {
+          // Return cached response if available
+          if (cachedResponse) {
+            // Update cache in background
+            fetch(event.request)
+              .then(networkResponse => {
+                if (networkResponse && networkResponse.status === 200) {
+                  cache.put(event.request, networkResponse.clone());
+                }
+              })
+              .catch(error => console.log('Error updating Iconify cache:', error));
+            
+            return cachedResponse;
+          }
+          
+          // If not in cache, fetch from network and cache
+          return fetch(event.request)
+            .then(networkResponse => {
+              if (networkResponse && networkResponse.status === 200) {
+                cache.put(event.request, networkResponse.clone());
+              }
+              return networkResponse;
+            })
+            .catch(error => {
+              console.log('Fetch failed for Iconify icon:', error);
+              // Return a simple transparent SVG as fallback
+              return new Response(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"></svg>', 
+                { 
+                  headers: { 'Content-Type': 'image/svg+xml' },
+                  status: 200
+                }
+              );
+            });
+        });
+      })
+    );
+    return;
+  }
+
   // For navigation requests, prefer the cache but update it in the background
   if (event.request.mode === 'navigate') {
     event.respondWith(
@@ -134,4 +202,14 @@ self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') {
     self.skipWaiting();
   }
+});
+
+// When going online, try to update the icon cache
+self.addEventListener('online', () => {
+  // This will update any icons that were previously requested but may have failed
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({ type: 'online' });
+    });
+  });
 });

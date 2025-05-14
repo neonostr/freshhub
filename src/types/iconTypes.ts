@@ -3,7 +3,7 @@ import React from 'react';
 
 export interface FoodIconOption {
   name: string;
-  icon: string;
+  icon: string; // Icon reference, can be Lucide name or Iconify identifier (e.g., "noto:apple")
 }
 
 export interface IconSelectorProps {
@@ -16,7 +16,7 @@ export interface IconSelectorProps {
 export interface EditableProductProps {
   productId: string;
   name: string;
-  icon: string;
+  icon: string; // Icon reference, can be Lucide name or Iconify identifier
   shelfLife: number;
 }
 
@@ -26,5 +26,5 @@ export interface IconOptionExtended {
   label: string;
   icon: React.ReactElement; // Keep as ReactElement for consistency with IconOption
   shelfLife: number;
-  iconName?: string; // Optional iconName property
+  iconName?: string; // Optional iconName property - can be Lucide name or Iconify identifier
 }
