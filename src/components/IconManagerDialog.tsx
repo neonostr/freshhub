@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Settings, Plus, Check, X } from 'lucide-react';
@@ -18,29 +18,6 @@ import { useHeaderVisibilityStore } from '@/pages/Index';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-
-// List of all Lucide food and beverage icons (deduplicated)
-const FOOD_BEVERAGE_ICON_NAMES = [
-  // Basic food icons
-  'apple', 'banana', 'bean', 'beer', 'cake', 'candy', 'carrot', 'cherry',
-  'coffee', 'cookie', 'egg', 'fish', 'grape', 'ham', 'ice-cream', 'lemon',
-  'milk', 'wine', 'sandwich', 'pizza', 'popcorn', 'beef', 'drumstick', 'salad',
-  // Containers and kitchenware
-  'beaker', 'utensils', 'soup', 'shell', 'wheat', 'citrus', 'aperture',
-  'lollipop', 'candy-cane', 'cake-slice', 'snowflake', 'filter', 'flame',
-  'flower', 'package', 'layers',
-  // Basic shapes used for food representation
-  'circle', 'circle-dot', 'circle-dashed', 'circle-off', 
-  // Additional food icons
-  'croissant', 'cup-soda', 'dessert', 'egg-fried', 'ice-cream-cone',
-  'orange', 'popsicle', 'steak', 'watermelon', 'cup', 'martini', 
-  'glass-water', 'glass', 'cooking-pot', 'flask-conical', 'leaf',
-  'fruit-cherries', 'fruit-pear', 'fruit', 'utensils-crossed',
-  // Additional kitchen/food-related icons
-  'refrigerator', 'chef-hat', 'drop', 'flame', 'cookie',
-  'bottle', 'bowl', 'flask', 'thermometer', 'timer',
-  'knife', 'spoon', 'fork', 'wine-glass', 'bread'
-].filter((value, index, self) => self.indexOf(value) === index); // Remove any duplicates
 
 const IconManagerDialog: React.FC = () => {
   const {
@@ -214,26 +191,32 @@ const IconManagerDialog: React.FC = () => {
     setIsAddingProduct(false);
   };
 
-  // Extract all available Lucide food and beverage icons
-  const [foodIcons, setFoodIcons] = useState<FoodIconOption[]>([]);
-  
-  useEffect(() => {
-    // Create food icons list from Lucide
-    const icons: FoodIconOption[] = FOOD_BEVERAGE_ICON_NAMES.map(iconName => {
-      // Convert kebab-case to display name
-      const displayName = iconName
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-      
-      return {
-        name: displayName,
-        icon: iconName
+  // Extract icons from ALL_ICONS to use for custom products
+  const foodIcons: FoodIconOption[] = Object.entries(ALL_ICONS).map(([key, iconData]) => {
+    // Extract icon name from component
+    let iconName = '';
+    if (React.isValidElement(iconData.icon)) {
+      const iconType = iconData.icon.type as {
+        displayName?: string;
       };
-    }).sort((a, b) => a.name.localeCompare(b.name));
-    
-    setFoodIcons(icons);
-  }, []);
+      if (iconType && iconType.displayName) {
+        iconName = iconType.displayName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+      }
+    }
+
+    // Use default if extraction failed
+    if (!iconName) {
+      // Try to derive from the key if possible
+      const match = key.match(/[a-zA-Z]+/);
+      iconName = match ? match[0].toLowerCase() : 'apple';
+    }
+    return {
+      name: iconData.label,
+      icon: iconName
+    };
+  }).filter((icon, index, self) =>
+  // Remove duplicates based on icon name
+  index === self.findIndex(t => t.icon === icon.icon)).sort((a, b) => a.name.localeCompare(b.name));
 
   // Function to properly collect icon selection from the form
   const collectFormData = () => {

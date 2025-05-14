@@ -12,11 +12,11 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     iconName = 'apple'; // Default fallback
   }
   
+  console.log(`Creating icon from name: ${iconName}`);
+  
   // Convert kebab-case to PascalCase for Lucide icon names
-  const pascalCaseName = iconName
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('');
+  const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+    iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
   
   // Define better mappings for food items that need specialized icons
   const iconMappings: Record<string, string> = {
@@ -26,8 +26,8 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     'pretzels': 'CircleDashed', // Twisted shape suggestion
     'bowl': 'CircleOff',
     'pumpkin': 'CircleDot',
-    'watermelon': 'Watermelon', // Use dedicated watermelon icon
-    'water-filter': 'Filter', // Use Filter for water filter
+    'watermelon': 'Cherry', // Better representation for watermelon
+    'water-filter': 'Filter', // Use Filter icon for water filter
   };
   
   // Check if we have a special mapping for this icon
@@ -55,7 +55,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   
   console.warn(`Icon "${iconName}" could not be found in Lucide icons`);
   return React.createElement('div', {
-    className: `flex items-center justify-center ${className} text-muted-foreground`
+    className: `flex items-center justify-center ${className}`
   }, '?');
 };
 
@@ -66,6 +66,7 @@ export const createSerializableProducts = (
   return Object.entries(products).reduce((acc, [key, product]) => {
     // Ensure iconName is stored properly - this is a critical fix
     const iconName = product.iconName || 'apple';
+    console.log(`Serializing product ${product.label} with icon: ${iconName}`);
     
     // Store only the essential data without the React element
     return {
@@ -96,6 +97,7 @@ export const reconstructProductsFromStorage = (
       if (productData.value && productData.label && productData.shelfLife) {
         // Use the stored icon name or default to 'apple' only if iconName is undefined
         const iconName = productData.iconName || 'apple';
+        console.log(`Reconstructing product ${productData.label} with icon: ${iconName}`);
         
         // Create the icon component from the stored name
         const iconElement = createIconFromName(iconName);

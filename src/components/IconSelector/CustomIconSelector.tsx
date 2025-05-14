@@ -15,10 +15,8 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
   // Helper to render an icon from the Lucide library by name
   const renderIcon = (iconName: string) => {
     // Convert kebab-case to PascalCase for Lucide icon names
-    const pascalCaseName = iconName
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('');
+    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
     
     // Specific mappings for food items that don't have dedicated icons
     const iconMappings: Record<string, string> = {
@@ -28,7 +26,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
       'pretzels': 'CircleDashed', // Twisted shape suggestion
       'bowl': 'CircleOff',
       'pumpkin': 'CircleDot',
-      'watermelon': 'Cherry', // Use Cherry for watermelon since Watermelon doesn't exist
+      'watermelon': 'Cherry', // Use Cherry instead for watermelon
       'water-filter': 'Filter', // Use Filter for water filter
     };
     
@@ -42,18 +40,15 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
       return React.createElement(IconComponent, { size: 20 });
     }
     
-    // Log the missing icon to help with debugging
-    console.warn(`Icon not found: ${iconName} (mapped to ${mappedName})`);
-    
     // Fallback rendering if icon not found
     return React.createElement('div', {
-      className: "h-5 w-5 flex items-center justify-center text-muted-foreground"
+      className: "h-5 w-5 flex items-center justify-center"
     }, '?');
   };
 
   return (
     <ScrollArea className={cn("h-40 w-full", className)}>
-      <div className="grid grid-cols-5 gap-2 p-1">
+      <div className="grid grid-cols-4 gap-2 p-1">
         {icons.map((icon) => (
           <Button
             key={icon.icon}
