@@ -4,10 +4,10 @@ import {
   Milk, Apple, Carrot, Cherry, Coffee, Cookie, Egg, Fish, 
   Wine, Banana, Beef, Cake, Beer, Salad, Drumstick, Pizza, 
   IceCream, Sandwich, Package, Utensils, Beaker, Bean, 
-  Grape, Ham, Soup, BowlFood, Bread, Dices, CakeSlice, 
-  Candy, Ice, Lollipop, Popcorn, Shell, Apple as AppleIcon,
+  Grape, Ham, Soup, Bowl, Bed, Dices, CakeSlice, 
+  Candy, Snowflake, Lollipop, Popcorn, Shell, Apple as AppleIcon,
   Wheat, Aperture, ChevronsUp, Citrus, AlignHorizontalDistributeCenter,
-  Layers, Snowflake, Flame, Flower, Potato, CandyCane
+  Layers, Snowflake as Frozen, Flame, Flower, Pumpkin, CandyCane
 } from "lucide-react";
 
 export type IconOption = {
@@ -73,7 +73,7 @@ export const ALL_ICONS: Record<string, IconOption> = {
   olives: { value: 'olives', label: 'Olives', icon: <Cherry className="h-5 w-5" />, shelfLife: 30 },
   onions: { value: 'onions', label: 'Onions', icon: <Aperture className="h-5 w-5" />, shelfLife: 30 },
   peas: { value: 'peas', label: 'Peas', icon: <Bean className="h-5 w-5" />, shelfLife: 7 },
-  potatoes: { value: 'potatoes', label: 'Potatoes', icon: <Potato className="h-5 w-5" />, shelfLife: 21 },
+  potatoes: { value: 'potatoes', label: 'Potatoes', icon: <Pumpkin className="h-5 w-5" />, shelfLife: 21 },
   spinach: { value: 'spinach', label: 'Spinach', icon: <Salad className="h-5 w-5" />, shelfLife: 5 },
   tomatoes: { value: 'tomatoes', label: 'Tomatoes', icon: <Cherry className="h-5 w-5" />, shelfLife: 7 },
   
@@ -98,16 +98,16 @@ export const ALL_ICONS: Record<string, IconOption> = {
   tuna: { value: 'tuna', label: 'Tuna', icon: <Fish className="h-5 w-5" />, shelfLife: 2 },
   
   // Baked Goods
-  bagels: { value: 'bagels', label: 'Bagels', icon: <Bread className="h-5 w-5" />, shelfLife: 5 },
+  bagels: { value: 'bagels', label: 'Bagels', icon: <Bed className="h-5 w-5" />, shelfLife: 5 },
   biscotti: { value: 'biscotti', label: 'Biscotti', icon: <Cookie className="h-5 w-5" />, shelfLife: 14 },
-  bread: { value: 'bread', label: 'Bread', icon: <Bread className="h-5 w-5" />, shelfLife: 7 },
+  bread: { value: 'bread', label: 'Bread', icon: <Bed className="h-5 w-5" />, shelfLife: 7 },
   cake: { value: 'cake', label: 'Cake', icon: <Cake className="h-5 w-5" />, shelfLife: 5 },
   cookies: { value: 'cookies', label: 'Cookies', icon: <Cookie className="h-5 w-5" />, shelfLife: 14 },
   crackers: { value: 'crackers', label: 'Crackers', icon: <Cookie className="h-5 w-5" />, shelfLife: 14 },
   muffins: { value: 'muffins', label: 'Muffins', icon: <Cake className="h-5 w-5" />, shelfLife: 5 },
-  pretzels: { value: 'pretzels', label: 'Pretzels', icon: <Bread className="h-5 w-5" />, shelfLife: 14 },
+  pretzels: { value: 'pretzels', label: 'Pretzels', icon: <Bed className="h-5 w-5" />, shelfLife: 14 },
   scones: { value: 'scones', label: 'Scones', icon: <Cookie className="h-5 w-5" />, shelfLife: 5 },
-  tortillas: { value: 'tortillas', label: 'Tortillas', icon: <Bread className="h-5 w-5" />, shelfLife: 7 },
+  tortillas: { value: 'tortillas', label: 'Tortillas', icon: <Bed className="h-5 w-5" />, shelfLife: 7 },
   
   // Prepared Foods and Others
   appleJuice: { value: 'appleJuice', label: 'Apple Juice', icon: <Beaker className="h-5 w-5" />, shelfLife: 7 },
