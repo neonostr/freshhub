@@ -18,13 +18,26 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   const pascalCaseName = iconName.charAt(0).toUpperCase() + 
     iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
   
-  // Cast to unknown first, then to the specific type we need
-  const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<any>>)[pascalCaseName];
+  // Define better mappings for food items that need specialized icons
+  const iconMappings: Record<string, string> = {
+    'bread': 'Cookie', // Better representation for bread
+    'bagels': 'Circle', // Circle shape for bagels
+    'tortillas': 'CircleDot', // Flat circular shape
+    'pretzels': 'CircleDashed', // Twisted shape suggestion
+    'bowl': 'CircleOff',
+    'pumpkin': 'CircleDot',
+  };
+  
+  // Check if we have a special mapping for this icon
+  const mappedName = iconMappings[iconName] || pascalCaseName;
+  
+  // Try to use the mapped or pascal-cased name to get the icon
+  const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<any>>)[mappedName];
   
   if (IconComponent) {
     return React.createElement(IconComponent, { className });
   } else {
-    console.warn(`Icon "${iconName}" (${pascalCaseName}) not found in Lucide icons, trying alternate parsing`);
+    console.warn(`Icon "${iconName}" (${mappedName}) not found in Lucide icons, trying alternate parsing`);
     
     // Try to directly access by the name (some icons might have different naming patterns)
     const directIcon = Object.entries(LucideIcons).find(([key]) => 

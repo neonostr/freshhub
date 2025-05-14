@@ -30,8 +30,10 @@ const IconGridButton: React.FC<IconGridButtonProps> = ({
       className={cn("flex flex-col items-center justify-center h-20 py-2", className)}
       onClick={onClick}
     >
-      {renderIcon(icon)}
-      <span className="text-xs mt-1">{label}</span>
+      <div className="food-icon-wrapper">
+        {renderIcon(icon)}
+      </div>
+      <span className="text-xs mt-1 text-center truncate w-full px-1">{label}</span>
     </Button>
   );
 };
