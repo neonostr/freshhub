@@ -1,10 +1,180 @@
 
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
-import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
+import {
+  FaApple, FaCarrot, FaCheese, FaWineBottle, FaWineGlass, FaCoffee, FaEgg, 
+  FaCookieBite, FaBreadSlice, FaPizzaSlice, FaFish, FaBeer, FaIceCream, 
+  FaLemon, FaBacon, FaHamburger, FaBirthdayCake, FaWater, FaCandyCane,
+  FaBone, FaDrumstickBite, FaFilter
+} from 'react-icons/fa';
+import {
+  GiWatermelon, GiGrapes, GiCherry, GiBanana, GiMilkCarton, GiSlicedBread,
+  GiRoastChicken, GiSteak, GiBaconStrip, GiSausage, GiCakeSlice, GiDonut,
+  GiCupcake, GiTomato, GiPotato, GiOnion, GiGarlic, GiAvocado, GiBroccoli,
+  GiCabbage, GiCorn, GiCookie, GiCrackerHead, GiMushroomHouse, GiBeans,
+  GiOlive, GiPeanut, GiRice, GiHoney, GiSaltShaker, GiChiliPepper, GiPeach,
+  GiPear, GiCoconuts, GiMuffin, GiHotDog, GiNoodles, GiPopcorn, GiBowlOfRice,
+  GiOpenedFoodCan, GiSodaCan, GiWaterDrop, GiPorcelainVase
+} from 'react-icons/gi';
+import {
+  BiSolidSalad, BiSolidCoffeeBean, BiSolidSoup, BiSolidDrink, BiSolidCheese
+} from 'react-icons/bi';
+import {
+  ImSpoonKnife
+} from 'react-icons/im';
+import {
+  IoFastFoodSharp
+} from 'react-icons/io5';
+import {
+  HiMiniBeaker
+} from 'react-icons/hi2';
+import { 
+  TbBread, TbMilk, TbSalad, TbMeat, TbEggs, TbSoup, TbCheese, 
+  TbBottle, TbApple, TbMushroom
+} from 'react-icons/tb';
+import { BsFillCircleFill } from 'react-icons/bs';
 
-// Reconstruct an icon component from an icon name
+// Comprehensive mapping of food icons to appropriate React Icons
+const iconMappings: Record<string, React.ComponentType<any>> = {
+  // Dairy products
+  'milk': TbMilk,
+  'almondMilk': TbMilk,
+  'cashewMilk': TbMilk,
+  'coconutMilk': TbMilk,
+  'cream': TbMilk,
+  'oatMilk': TbMilk,
+  'sourCream': TbMilk,
+  'soyMilk': TbMilk,
+  'buttermilk': TbMilk,
+  'kefir': TbMilk,
+  'yogurt': TbMilk,
+  'cheese': TbCheese,
+  'butter': BiSolidCheese,
+
+  // Fruits
+  'apples': FaApple,
+  'apricots': GiPeach,
+  'blackberries': GiCherry,
+  'blueberries': GiCherry,
+  'cherries': GiCherry,
+  'bananas': GiBanana,
+  'coconuts': GiCoconuts,
+  'cranberries': GiCherry,
+  'grapes': GiGrapes,
+  'kiwi': FaLemon,
+  'mangoes': GiPeach,
+  'oranges': FaLemon,
+  'peaches': GiPeach,
+  'pears': GiPear,
+  'pineapple': GiPeach,
+  'plums': GiPeach,
+  'raisins': GiGrapes,
+  'raspberries': GiCherry,
+  'strawberries': GiCherry,
+  'watermelon': GiWatermelon,
+
+  // Vegetables
+  'asparagus': BiSolidSalad,
+  'avocados': GiAvocado,
+  'basil': BiSolidSalad,
+  'bellPepper': GiChiliPepper,
+  'broccoli': GiBroccoli,
+  'carrots': FaCarrot,
+  'cauliflower': GiCabbage,
+  'corn': GiCorn,
+  'cucumbers': FaCarrot,
+  'garlic': GiGarlic,
+  'greenBeans': GiBeans,
+  'kale': BiSolidSalad,
+  'lettuce': TbSalad,
+  'mushrooms': GiMushroomHouse,
+  'olives': GiOlive,
+  'onions': GiOnion,
+  'peas': GiBeans,
+  'potatoes': GiPotato,
+  'spinach': BiSolidSalad,
+  'tomatoes': GiTomato,
+
+  // Meat and Poultry
+  'bacon': FaBacon,
+  'beef': TbMeat,
+  'chicken': GiRoastChicken,
+  'ham': GiBaconStrip,
+  'lamb': TbMeat,
+  'pork': TbMeat,
+  'prosciutto': GiBaconStrip,
+  'sausages': GiSausage,
+  'steaks': GiSteak,
+  'turkey': FaDrumstickBite,
+
+  // Seafood
+  'crab': FaFish,
+  'fish': FaFish,
+  'lobster': FaFish,
+  'scallops': FaFish,
+  'shrimp': FaFish,
+  'tuna': FaFish,
+
+  // Baked Goods
+  'bagels': FaBreadSlice,
+  'biscotti': FaCookieBite,
+  'bread': TbBread,
+  'cake': GiCakeSlice,
+  'cookies': GiCookie,
+  'crackers': GiCrackerHead,
+  'muffins': GiMuffin,
+  'pretzels': FaBreadSlice,
+  'scones': GiCupcake,
+  'tortillas': FaBreadSlice,
+
+  // Prepared Foods and Others
+  'appleJuice': HiMiniBeaker,
+  'beans': GiBeans,
+  'cashews': GiPeanut,
+  'cereals': GiBowlOfRice,
+  'chips': GiCrackerHead,
+  'coffee': FaCoffee,
+  'eggs': TbEggs,
+  'granola': GiCrackerHead,
+  'iceCream': FaIceCream,
+  'oliveOil': HiMiniBeaker,
+  'orangeJuice': HiMiniBeaker,
+  'pasta': GiNoodles,
+  'pecans': GiPeanut,
+  'pizza': FaPizzaSlice,
+  'popcorn': GiPopcorn,
+  'redWine': FaWineGlass,
+  'rice': GiRice,
+  'soda': GiSodaCan,
+  'tomatoSauce': BiSolidSoup,
+  'vinegars': HiMiniBeaker,
+  'walnuts': GiPeanut,
+  'water': GiWaterDrop,
+  'whiteWine': FaWineBottle,
+  'almonds': GiPeanut,
+  'waterFilter': FaFilter,
+};
+
+// Function to render a food icon from its name
+export const renderFoodIcon = (iconName: string, className = "h-5 w-5") => {
+  // Ensure we have a valid icon name
+  if (!iconName) {
+    console.error("No icon name provided to renderFoodIcon");
+    iconName = 'apple'; // Default fallback
+  }
+  
+  // Get the component from our mappings
+  const IconComponent = iconMappings[iconName];
+  
+  if (IconComponent) {
+    return <IconComponent className={className} />;
+  }
+  
+  console.warn(`Icon "${iconName}" not found in food icon mappings, using fallback`);
+  return <BsFillCircleFill className={className} />;
+};
+
+// Create icon component from name
 export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   // Ensure we have a valid icon name
   if (!iconName) {
@@ -14,49 +184,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   
   console.log(`Creating icon from name: ${iconName}`);
   
-  // Convert kebab-case to PascalCase for Lucide icon names
-  const pascalCaseName = iconName.charAt(0).toUpperCase() + 
-    iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
-  
-  // Define better mappings for food items that need specialized icons
-  const iconMappings: Record<string, string> = {
-    'bread': 'Cookie', // Better representation for bread
-    'bagels': 'Circle', // Circle shape for bagels
-    'tortillas': 'CircleDot', // Flat circular shape
-    'pretzels': 'CircleDashed', // Twisted shape suggestion
-    'bowl': 'CircleOff',
-    'pumpkin': 'CircleDot',
-    'watermelon': 'Cherry', // Better representation for watermelon
-    'water-filter': 'Filter', // Use Filter icon for water filter
-  };
-  
-  // Check if we have a special mapping for this icon
-  const mappedName = iconMappings[iconName] || pascalCaseName;
-  
-  // Try to use the mapped or pascal-cased name to get the icon
-  const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<any>>)[mappedName];
-  
-  if (IconComponent) {
-    return React.createElement(IconComponent, { className });
-  } else {
-    console.warn(`Icon "${iconName}" (${mappedName}) not found in Lucide icons, trying alternate parsing`);
-    
-    // Try to directly access by the name (some icons might have different naming patterns)
-    const directIcon = Object.entries(LucideIcons).find(([key]) => 
-      key.toLowerCase() === iconName.toLowerCase() || 
-      key.toLowerCase() === pascalCaseName.toLowerCase()
-    );
-    
-    if (directIcon && directIcon[1]) {
-      const DirectIconComponent = directIcon[1] as React.ComponentType<any>;
-      return React.createElement(DirectIconComponent, { className });
-    }
-  }
-  
-  console.warn(`Icon "${iconName}" could not be found in Lucide icons`);
-  return React.createElement('div', {
-    className: `flex items-center justify-center ${className}`
-  }, '?');
+  return renderFoodIcon(iconName, className);
 };
 
 // Create serializable product data for storage

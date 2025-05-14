@@ -26,5 +26,5 @@ export interface IconOptionExtended {
   label: string;
   icon: React.ReactElement; // Keep as ReactElement for consistency with IconOption
   shelfLife: number;
-  iconName?: string; // Optional iconName property
+  iconName?: string; // Optional iconName property for storage/retrieval
 }
