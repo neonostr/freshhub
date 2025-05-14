@@ -62,12 +62,39 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       setItems(prev => prev.filter(item => item.icon !== productId));
     };
     
-    // Add event listener
+    // Listen for custom product updates
+    const handleCustomProductUpdated = (event: CustomEvent) => {
+      const { productId, newName, action } = event.detail;
+      
+      if (action === 'updated' && newName) {
+        // Update all items using this product to have the new name
+        setItems(prev => prev.map(item => 
+          item.icon === productId 
+            ? { ...item, name: newName } 
+            : item
+        ));
+      } else {
+        // Force a re-render to ensure UI is updated with the latest product info
+        setItems(prev => [...prev]);
+      }
+    };
+    
+    // Listen for shelf life updates
+    const handleShelfLifeUpdated = () => {
+      // Force a re-render to update freshness calculations
+      setItems(prev => [...prev]);
+    };
+    
+    // Add event listeners
     window.addEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
+    window.addEventListener('custom-product-updated', handleCustomProductUpdated as EventListener);
+    window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
     
     // Cleanup
     return () => {
       window.removeEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
+      window.removeEventListener('custom-product-updated', handleCustomProductUpdated as EventListener);
+      window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
     };
   }, []);
 

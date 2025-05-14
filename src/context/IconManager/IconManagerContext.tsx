@@ -94,6 +94,13 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     if (!isIconSelected(product.value)) {
       setSelectedIconValues(prev => [...prev, product.value]);
     }
+    
+    // Notify that a custom product was added/updated
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('custom-product-updated', { 
+        detail: { productId: product.value, action: 'added' } 
+      }));
+    }, 0);
   };
   
   const updateProductName = (iconValue: string, newName: string) => {
@@ -117,8 +124,10 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
       
       if (JSON.stringify(items) !== JSON.stringify(updatedItems)) {
         saveItems(updatedItems);
-        // Notify about changes
-        window.dispatchEvent(new CustomEvent('custom-product-updated'));
+        // Notify about changes immediately to trigger UI updates
+        window.dispatchEvent(new CustomEvent('custom-product-updated', {
+          detail: { productId: iconValue, newName, action: 'updated' }
+        }));
       }
     }
   };

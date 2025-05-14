@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
 import { Calendar, Clock, RotateCcw, Trash2 } from "lucide-react";
@@ -35,7 +36,8 @@ const ItemCard: React.FC<ItemCardProps> = ({
   
   const SWIPE_THRESHOLD = 80; // px needed to trigger delete
   
-  const freshnessLevel = calculateFreshnessLevel(item);
+  // Memoize the freshness level to prevent unnecessary recalculations
+  const freshnessLevel = useMemo(() => calculateFreshnessLevel(item), [item]);
   
   // Determine swipe direction based on handedness
   const isRightHanded = handedness === 'right';
@@ -90,7 +92,8 @@ const ItemCard: React.FC<ItemCardProps> = ({
     resetItem(item.id);
   };
   
-  const renderIcon = () => {
+  // Memoize the icon rendering to prevent unnecessary recomputation
+  const iconElement = useMemo(() => {
     // Try to get the icon from our icon manager
     if (item.icon in allIcons) {
       const iconData = allIcons[item.icon];
@@ -120,7 +123,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
     
     // If the icon isn't found, show the item name in a styled div
     return <div className="flex items-center justify-center w-5 h-5">{item.name.charAt(0)}</div>;
-  };
+  }, [item.icon, allIcons, item.name]);
   
   const getFreshnessColor = (level: FreshnessLevel): string => {
     switch (level) {
@@ -202,7 +205,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <div className="p-2 bg-gray-100 rounded-full flex items-center justify-center w-9 h-9">
-                {renderIcon()}
+                {iconElement}
               </div>
               <h3 className="font-medium text-lg">{item.name}</h3>
             </div>

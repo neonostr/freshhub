@@ -27,20 +27,27 @@ const ItemsList: React.FC = () => {
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
   
-  // Force re-render when shelf life settings change
+  // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
 
-  // Listen for shelf life changes
+  // Listen for shelf life changes and product updates
   useEffect(() => {
     const handleShelfLifeUpdated = () => {
       // Force a re-render by incrementing the counter
       setForceUpdate(prev => prev + 1);
     };
     
+    const handleProductUpdated = () => {
+      // Force a re-render when products are updated
+      setForceUpdate(prev => prev + 1);
+    };
+    
     window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
+    window.addEventListener('custom-product-updated', handleProductUpdated);
     
     return () => {
       window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
+      window.removeEventListener('custom-product-updated', handleProductUpdated);
     };
   }, []);
 
@@ -133,7 +140,7 @@ const ItemsList: React.FC = () => {
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
-            key={item.id}
+            key={`${item.id}-${forceUpdate}`} // Add forceUpdate to key to ensure fresh render
             item={item}
             isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
             onClick={() => toggleItemExpanded(item.id)}
@@ -191,7 +198,7 @@ const ItemsList: React.FC = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Compact mode toggle button - updated to use default variant like other buttons */}
+      {/* Compact mode toggle button - using default variant */}
       <Button
         className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"

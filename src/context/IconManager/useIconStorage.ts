@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { DEFAULT_SELECTED_ICONS } from '@/data/productData';
 import { createSerializableProducts, reconstructProductsFromStorage } from './utils';
 import { IconOption } from '@/data/productData';
@@ -45,12 +45,19 @@ export const useIconStorage = () => {
     }
   }, [customShelfLife]);
   
-  // Persist custom products to localStorage
+  // Persist custom products to localStorage with proper debouncing
   useEffect(() => {
     try {
       // Serialize products for storage
       const serializableProducts = createSerializableProducts(customProducts);
       localStorage.setItem('freshTrackerCustomProducts', JSON.stringify(serializableProducts));
+      
+      // Notify the UI about the change
+      const timer = setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('custom-products-storage-updated'));
+      }, 50);
+      
+      return () => clearTimeout(timer);
     } catch (err) {
       console.error("Error saving customProducts to localStorage:", err);
     }
