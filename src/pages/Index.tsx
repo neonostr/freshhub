@@ -93,9 +93,7 @@ const Index = () => {
       <div className="container max-w-5xl mx-auto p-4 pb-20 min-h-screen">
         {!hideHeader && <header className="py-6 text-center" id="app-header">
             <h1 className="text-3xl font-bold">Freshify</h1>
-            <p className="text-gray-500 mt-2">
-              Track how long your perishable items have been open
-            </p>
+            <p className="text-gray-500 mt-2">Keep it fresh, keep it tracked.</p>
           </header>}
         
         <main className="my-6">
