@@ -9,14 +9,16 @@ import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useHandedness } from '@/context/HandednessContext';
+import PaywallDialog from './PaywallDialog';
 
 const AddItemDialog: React.FC = () => {
-  const { addItem } = useItems();
+  const { addItem, canAddMoreItems } = useItems();
   const { availableIcons, allIcons } = useIconManager();
   const { handedness } = useHandedness();
   const [open, setOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState('');
   const [customDuration, setCustomDuration] = useState<string>('');
+  const [showPaywall, setShowPaywall] = useState(false);
 
   // Set initial selected icon when dialog opens
   useEffect(() => {
@@ -24,6 +26,14 @@ const AddItemDialog: React.FC = () => {
       setSelectedIcon(availableIcons[0].value);
     }
   }, [open, availableIcons, selectedIcon]);
+
+  const handleAddButtonClick = () => {
+    if (!canAddMoreItems) {
+      setShowPaywall(true);
+    } else {
+      setOpen(true);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,69 +64,79 @@ const AddItemDialog: React.FC = () => {
     setSelectedIcon(iconValue);
   };
 
+  const handlePaywallClose = (open: boolean) => {
+    setShowPaywall(open);
+    // If user has paid (context will update), next click will open the add dialog
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button 
-          className="fixed bottom-6 rounded-full w-14 h-14 shadow-lg z-10" 
-          size="icon"
-          style={{
-            right: handedness === 'right' ? "1.5rem" : "auto",
-            left: handedness === 'left' ? "1.5rem" : "auto"
-          }}
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add New Product</DialogTitle>
-        </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          {/* Icon selection at the top */}
-          <div className="space-y-2">
-            <Label>Choose a Product</Label>
-            <ScrollArea className="h-[200px]">
-              <div className="grid grid-cols-3 gap-2">
-                {availableIcons.map((icon) => (
-                  <Button
-                    key={icon.value}
-                    type="button"
-                    variant={selectedIcon === icon.value ? "default" : "outline"}
-                    className="flex flex-col items-center justify-center h-20 py-2"
-                    onClick={() => handleIconSelect(icon.value)}
-                  >
-                    {icon.icon}
-                    <span className="text-xs mt-1 overflow-hidden text-ellipsis max-w-full px-1">{icon.label}</span>
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
-          </div>
+    <>
+      <Button 
+        className="fixed bottom-6 rounded-full w-14 h-14 shadow-lg z-10" 
+        size="icon"
+        style={{
+          right: handedness === 'right' ? "1.5rem" : "auto",
+          left: handedness === 'left' ? "1.5rem" : "auto"
+        }}
+        onClick={handleAddButtonClick}
+      >
+        <Plus className="h-6 w-6" />
+      </Button>
+      
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Product</DialogTitle>
+          </DialogHeader>
           
-          {/* Custom shelf life */}
-          <div className="space-y-2">
-            <Label htmlFor="customDuration">
-              Custom Shelf Life (days, optional)
-            </Label>
-            <Input
-              id="customDuration"
-              type="number"
-              inputMode="numeric"
-              min="1"
-              placeholder={`Default: ${allIcons[selectedIcon]?.shelfLife || 7} days`}
-              value={customDuration}
-              onChange={(e) => setCustomDuration(e.target.value)}
-            />
-          </div>
-          
-          <Button type="submit" className="w-full">
-            Add Product
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
+          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            {/* Icon selection at the top */}
+            <div className="space-y-2">
+              <Label>Choose a Product</Label>
+              <ScrollArea className="h-[200px]">
+                <div className="grid grid-cols-3 gap-2">
+                  {availableIcons.map((icon) => (
+                    <Button
+                      key={icon.value}
+                      type="button"
+                      variant={selectedIcon === icon.value ? "default" : "outline"}
+                      className="flex flex-col items-center justify-center h-20 py-2"
+                      onClick={() => handleIconSelect(icon.value)}
+                    >
+                      {icon.icon}
+                      <span className="text-xs mt-1 overflow-hidden text-ellipsis max-w-full px-1">{icon.label}</span>
+                    </Button>
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
+            
+            {/* Custom shelf life */}
+            <div className="space-y-2">
+              <Label htmlFor="customDuration">
+                Custom Shelf Life (days, optional)
+              </Label>
+              <Input
+                id="customDuration"
+                type="number"
+                inputMode="numeric"
+                min="1"
+                placeholder={`Default: ${allIcons[selectedIcon]?.shelfLife || 7} days`}
+                value={customDuration}
+                onChange={(e) => setCustomDuration(e.target.value)}
+              />
+            </div>
+            
+            <Button type="submit" className="w-full">
+              Add Product
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Paywall Dialog */}
+      <PaywallDialog open={showPaywall} onOpenChange={handlePaywallClose} />
+    </>
   );
 };
 

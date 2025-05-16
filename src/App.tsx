@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import { HandednessProvider } from '@/context/HandednessContext';
 import { ItemsProvider } from '@/context/ItemsContext';
 import { IconManagerProvider } from '@/context/IconManager';
+import { PaymentProvider } from '@/context/PaymentContext';
 import { Toaster } from "@/components/ui/toaster";
 
 const queryClient = new QueryClient();
@@ -15,17 +16,19 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <HandednessProvider>
-        <ItemsProvider>
-          <IconManagerProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <Toaster />
-            </BrowserRouter>
-          </IconManagerProvider>
-        </ItemsProvider>
+        <PaymentProvider>
+          <ItemsProvider>
+            <IconManagerProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                <Toaster />
+              </BrowserRouter>
+            </IconManagerProvider>
+          </ItemsProvider>
+        </PaymentProvider>
       </HandednessProvider>
     </TooltipProvider>
   </QueryClientProvider>
