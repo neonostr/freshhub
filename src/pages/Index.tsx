@@ -6,7 +6,6 @@ import SwipeTutorial from '@/components/SwipeTutorial';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
-import { InstallButton } from '@/components/InstallButton';
 
 // Create a Zustand store to manage header visibility
 interface HeaderVisibilityState {
@@ -66,7 +65,6 @@ const TutorialWrapper = () => {
   if (!shouldShowTutorial) return null;
   return <SwipeTutorial />;
 };
-
 const Index = () => {
   const [isCompactMode, setIsCompactMode] = useState(false);
   const {
@@ -94,18 +92,8 @@ const Index = () => {
   return <HeaderVisibilityProvider>
       <div className="container max-w-5xl mx-auto p-4 pb-20 min-h-screen">
         {!hideHeader && <header className="py-6 text-center" id="app-header">
-            <div className="flex justify-between items-center">
-              <div className="flex-1">
-                {/* Empty div for flex spacing */}
-              </div>
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold">Freshify</h1>
-                <p className="text-gray-500 mt-2">Know when it's been open too long</p>
-              </div>
-              <div className="flex-1 flex justify-end">
-                <InstallButton />
-              </div>
-            </div>
+            <h1 className="text-3xl font-bold">Freshify</h1>
+            <p className="text-gray-500 mt-2">Know when it's been open too long</p>
           </header>}
         
         <main className="my-6">

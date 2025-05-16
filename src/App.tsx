@@ -8,8 +8,6 @@ import { HandednessProvider } from '@/context/HandednessContext';
 import { ItemsProvider } from '@/context/ItemsContext';
 import { IconManagerProvider } from '@/context/IconManager';
 import { Toaster } from "@/components/ui/toaster";
-import { InstallPromptProvider } from "@/context/InstallPromptContext";
-import { InstallBanner } from "@/components/InstallBanner";
 
 const queryClient = new QueryClient();
 
@@ -19,16 +17,13 @@ const App = () => (
       <HandednessProvider>
         <ItemsProvider>
           <IconManagerProvider>
-            <InstallPromptProvider>
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                <InstallBanner />
-                <Toaster />
-              </BrowserRouter>
-            </InstallPromptProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Toaster />
+            </BrowserRouter>
           </IconManagerProvider>
         </ItemsProvider>
       </HandednessProvider>
