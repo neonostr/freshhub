@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
-import { usePayment } from '@/context/PaymentContext';
 
 interface ItemsContextType {
   items: Item[];
@@ -14,7 +13,6 @@ interface ItemsContextType {
   setIsFirstTimeUser: (value: boolean) => void;
   shouldShowTutorial: boolean;
   dismissTutorial: () => void;
-  canAddMoreItems: boolean;
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
@@ -23,10 +21,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
   const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
-  const { hasPaid } = usePayment();
-  
-  // Calculate if user can add more items (max 3 for free tier)
-  const canAddMoreItems = hasPaid || items.length < 3;
 
   useEffect(() => {
     const loadedItems = loadItems();
@@ -149,8 +143,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       isFirstTimeUser,
       setIsFirstTimeUser,
       shouldShowTutorial,
-      dismissTutorial,
-      canAddMoreItems
+      dismissTutorial
     }}>
       {children}
     </ItemsContext.Provider>
