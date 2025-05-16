@@ -12,11 +12,13 @@ interface PaywallDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+type PaymentStatus = 'initial' | 'generating' | 'ready' | 'verifying' | 'success';
+
 const PaywallDialog: React.FC<PaywallDialogProps> = ({ open, onOpenChange }) => {
   const [invoice, setInvoice] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<'initial' | 'generating' | 'ready' | 'verifying' | 'success'>('initial');
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('initial');
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   const { setHasPaid } = usePayment();
