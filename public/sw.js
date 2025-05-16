@@ -1,4 +1,3 @@
-
 // Optimized service worker for Fresh Tracker
 const CACHE_NAME = 'fresh-tracker-v6';
 const APP_SHELL = [
