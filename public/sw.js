@@ -1,13 +1,13 @@
 
 // Optimized service worker for Fresh Tracker
-const CACHE_NAME = 'fresh-tracker-v4';
+const CACHE_NAME = 'fresh-tracker-v5';
 const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/icon-192x192.png',
-  '/icon-512x512.png',
-  '/lovable-uploads/0cd5dd6f-eea3-49de-8947-b6b427a13b05.png'
+  '/lovable-uploads/e78b0f07-33d3-4cd6-b657-1b0574021f09.png',
+  '/lovable-uploads/cc19c9db-0bb0-42d2-889f-f841b1812e5b.png',
+  '/lovable-uploads/d644ced8-6e6d-4acd-8f87-baef71aacc91.png'
 ];
 
 // Precache app shell during installation for faster startup
