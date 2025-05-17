@@ -9,7 +9,6 @@ export type Handedness = 'right' | 'left';
 interface HandednessState {
   handedness: Handedness;
   setHandedness: (handedness: Handedness) => void;
-  toggleHandedness: () => void;
 }
 
 export const useHandednessStore = create<HandednessState>((set) => ({
@@ -19,12 +18,6 @@ export const useHandednessStore = create<HandednessState>((set) => ({
     localStorage.setItem('handedness', handedness);
     set({ handedness });
   },
-  toggleHandedness: () => set((state) => {
-    const newHandedness = state.handedness === 'right' ? 'left' : 'right';
-    // Save to localStorage
-    localStorage.setItem('handedness', newHandedness);
-    return { handedness: newHandedness };
-  }),
 }));
 
 // Create a context for components that don't have direct access to zustand
@@ -41,10 +34,10 @@ export const HandednessProvider = ({ children }: { children: ReactNode }) => {
   }, []);
   
   // Get the current state from the store
-  const { handedness, setHandedness, toggleHandedness } = useHandednessStore();
+  const { handedness, setHandedness } = useHandednessStore();
 
   return (
-    <HandednessContext.Provider value={{ handedness, setHandedness, toggleHandedness }}>
+    <HandednessContext.Provider value={{ handedness, setHandedness }}>
       {children}
     </HandednessContext.Provider>
   );
