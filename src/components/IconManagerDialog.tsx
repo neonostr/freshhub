@@ -337,19 +337,19 @@ const IconManagerDialog: React.FC = () => {
                         </p>
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-green text-white border-0 w-16 text-center rounded-md">Fresh</Badge>
+                            <Badge className="bg-fresh-green text-black border-0 w-16 text-center">Fresh</Badge>
                             <p className="text-sm">Item is within the first 60% of its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-yellow text-black border-0 w-16 text-center rounded-md">Use Soon</Badge>
+                            <Badge className="bg-fresh-yellow text-black border-0 w-16 text-center">Use Soon</Badge>
                             <p className="text-sm">Item is between 60% and 90% through its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-orange text-black border-0 w-16 text-center rounded-md">Use Now</Badge>
+                            <Badge className="bg-fresh-orange text-black border-0 w-16 text-center">Use Now</Badge>
                             <p className="text-sm">Item is between 90% and 100% of its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-red text-white border-0 w-16 text-center rounded-md">Expired</Badge>
+                            <Badge className="bg-fresh-red text-white border-0 w-16 text-center">Expired</Badge>
                             <p className="text-sm">Item has exceeded its recommended shelf life</p>
                           </div>
                         </div>
@@ -384,10 +384,6 @@ const IconManagerDialog: React.FC = () => {
                             </div>
                             <Switch id="hide-header" checked={hideHeader} onCheckedChange={setHideHeader} />
                           </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between pt-2 text-sm text-muted-foreground">
-                          <span>Version 1.0.0</span>
                         </div>
                       </div>
                     </div>
