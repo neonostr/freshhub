@@ -8,6 +8,7 @@ import { HandednessProvider } from '@/context/HandednessContext';
 import { ItemsProvider } from '@/context/ItemsContext';
 import { IconManagerProvider } from '@/context/IconManager';
 import { Toaster } from "@/components/ui/toaster";
+import { SubscriptionProvider } from '@/context/SubscriptionContext';
 
 const queryClient = new QueryClient();
 
@@ -15,17 +16,19 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <HandednessProvider>
-        <ItemsProvider>
-          <IconManagerProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <Toaster />
-            </BrowserRouter>
-          </IconManagerProvider>
-        </ItemsProvider>
+        <SubscriptionProvider>
+          <ItemsProvider>
+            <IconManagerProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                <Toaster />
+              </BrowserRouter>
+            </IconManagerProvider>
+          </ItemsProvider>
+        </SubscriptionProvider>
       </HandednessProvider>
     </TooltipProvider>
   </QueryClientProvider>
