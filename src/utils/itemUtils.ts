@@ -62,8 +62,8 @@ export const saveItems = (items: Item[]): void => {
 
 // Function to get shelf life data using the most up-to-date values
 export const getShelfLifeData = (iconId: string): number | undefined => {
-  // Check for custom shelf life settings in localStorage
   try {
+    // Check for custom shelf life settings in localStorage first
     const customShelfLifeStr = localStorage.getItem('freshTrackerCustomShelfLife');
     if (customShelfLifeStr) {
       const customShelfLife = JSON.parse(customShelfLifeStr);
@@ -71,12 +71,8 @@ export const getShelfLifeData = (iconId: string): number | undefined => {
         return customShelfLife[iconId];
       }
     }
-  } catch (err) {
-    console.error("Error reading custom shelf life settings:", err);
-  }
-  
-  // Check custom products
-  try {
+    
+    // Then check custom products
     const customProductsStr = localStorage.getItem('freshTrackerCustomProducts');
     if (customProductsStr) {
       const customProducts = JSON.parse(customProductsStr);
@@ -84,13 +80,14 @@ export const getShelfLifeData = (iconId: string): number | undefined => {
         return customProducts[iconId].shelfLife;
       }
     }
+    
+    // Fall back to built-in icons data
+    const iconData = ALL_ICONS[iconId];
+    return iconData ? iconData.shelfLife : undefined;
   } catch (err) {
-    console.error("Error reading custom products:", err);
+    console.error("Error retrieving shelf life data:", err);
+    return undefined;
   }
-  
-  // Fall back to built-in icons data
-  const iconData = ALL_ICONS[iconId];
-  return iconData ? iconData.shelfLife : undefined;
 };
 
 // Calculate days until the item expires based on its shelf life
@@ -101,15 +98,24 @@ export const calculateDaysUntilExpiry = (item: Item): number => {
   // Calculate days since the item was opened
   const daysSinceOpened = Math.floor((currentDate.getTime() - openedDate.getTime()) / (1000 * 60 * 60 * 24));
   
-  // If we don't have shelf life data for this item, use a default value
-  const defaultShelfLife = 30; // default shelf life in days if none specified
+  // Set a default shelf life in days if none specified
+  const defaultShelfLife = 30; 
   
-  // Get the shelf life from the item's icon data if available
-  const shelfLifeData = getShelfLifeData(item.icon);
+  // Get the shelf life from the item's icon data or use custom duration if available
+  const shelfLife = item.customDuration || getShelfLifeData(item.icon) || defaultShelfLife;
   
   // Calculate days until expiry
-  const shelfLife = shelfLifeData ?? defaultShelfLife;
-  const daysUntilExpiry = shelfLife - daysSinceOpened;
+  const daysUntilExpiry = Math.max(0, shelfLife - daysSinceOpened);
   
-  return daysUntilExpiry > 0 ? daysUntilExpiry : 0;
+  return daysUntilExpiry;
 };
+
+// Calculate the maximum days until expiry across all items
+// This is used to set the upper bound for the freshness filter slider
+export const calculateMaxFreshnessDays = (items: Item[]): number => {
+  if (items.length === 0) return 365; // Default if no items
+  
+  const maxDays = Math.max(...items.map(item => calculateDaysUntilExpiry(item)));
+  return maxDays > 0 ? maxDays : 365; // Fallback to 365 if calculation fails
+};
+

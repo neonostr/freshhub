@@ -40,6 +40,18 @@ export const useIconStorage = () => {
   useEffect(() => {
     try {
       localStorage.setItem('freshTrackerCustomShelfLife', JSON.stringify(customShelfLife));
+      
+      // Trigger shelf-life-updated event to update UI components
+      const event = new CustomEvent('shelf-life-updated');
+      window.dispatchEvent(event);
+      
+      // Also dispatch a storage event for PWA listeners
+      window.dispatchEvent(new StorageEvent('storage', { 
+        key: 'freshTrackerCustomShelfLife',
+        newValue: JSON.stringify(customShelfLife),
+        storageArea: localStorage
+      }));
+      
     } catch (err) {
       console.error("Error saving customShelfLife to localStorage:", err);
     }
@@ -55,6 +67,13 @@ export const useIconStorage = () => {
       // Notify the UI about the change
       const timer = setTimeout(() => {
         window.dispatchEvent(new CustomEvent('custom-products-storage-updated'));
+        
+        // Also dispatch a storage event for PWA listeners
+        window.dispatchEvent(new StorageEvent('storage', { 
+          key: 'freshTrackerCustomProducts',
+          newValue: JSON.stringify(serializableProducts),
+          storageArea: localStorage
+        }));
       }, 50);
       
       return () => clearTimeout(timer);

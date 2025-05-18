@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
-import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemUtils';
+import { calculateFreshnessLevel, calculateDaysUntilExpiry, calculateMaxFreshnessDays } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
 import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ const ItemsList: React.FC = () => {
   const { items } = useItems();
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365); // Start with a large value
+  const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365); // Start with a default value
   const [filterDays, setFilterDays] = useState<number>(365); // Default to show all
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
@@ -30,14 +30,33 @@ const ItemsList: React.FC = () => {
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
 
+  // Calculate max freshness days and update when items change or shelf life updates occur
+  useEffect(() => {
+    if (items.length > 0) {
+      const maxDays = calculateMaxFreshnessDays(items);
+      
+      // Only update if the value has actually changed to prevent slider issues
+      if (maxDays !== maxFreshnessDays) {
+        setMaxFreshnessDays(maxDays);
+        
+        // If the filterDays is beyond our new max, adjust it
+        if (filterDays > maxDays) {
+          setFilterDays(maxDays);
+        }
+      }
+    }
+  }, [items, forceUpdate]);
+
   // Listen for shelf life changes and product updates
   useEffect(() => {
     const handleShelfLifeUpdated = () => {
+      console.log("Shelf life updated, recalculating freshness values");
       // Force a re-render by incrementing the counter
       setForceUpdate(prev => prev + 1);
     };
     
     const handleProductUpdated = () => {
+      console.log("Product updated, recalculating freshness values");
       // Force a re-render when products are updated
       setForceUpdate(prev => prev + 1);
     };
@@ -45,20 +64,21 @@ const ItemsList: React.FC = () => {
     window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
     window.addEventListener('custom-product-updated', handleProductUpdated);
     
+    // Custom event for storage changes to handle PWA cache issues
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'freshTrackerCustomShelfLife' || 
+          event.key === 'freshTrackerCustomProducts' ||
+          event.key === 'freshItems') {
+        console.log(`Storage '${event.key}' changed, forcing UI update`);
+        setForceUpdate(prev => prev + 1);
+      }
+    });
+    
     return () => {
       window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
       window.removeEventListener('custom-product-updated', handleProductUpdated);
     };
   }, []);
-
-  // Determine the maximum days across all items for the filter slider
-  useEffect(() => {
-    if (items.length > 0) {
-      const maxDays = Math.max(...items.map(item => calculateDaysUntilExpiry(item)));
-      setMaxFreshnessDays(maxDays > 0 ? maxDays : 365);
-      setFilterDays(maxDays > 0 ? maxDays : 365);
-    }
-  }, [items, forceUpdate]); // Added forceUpdate to trigger recalculation
 
   // Filter items based on the current freshness filter
   const filteredItems = items.filter(item => {
@@ -140,7 +160,7 @@ const ItemsList: React.FC = () => {
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
-            key={`${item.id}-${forceUpdate}`} // Add forceUpdate to key to ensure fresh render
+            key={`${item.id}-${forceUpdate}`} // Add forceUpdate to key to ensure fresh render on shelf life changes
             item={item}
             isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
             onClick={() => toggleItemExpanded(item.id)}
@@ -172,7 +192,17 @@ const ItemsList: React.FC = () => {
                 </span>
               </div>
               
-              <Slider value={[filterDays]} min={1} max={maxFreshnessDays} step={1} onValueChange={([value]) => setFilterDays(value)} className="w-full" />
+              <Slider 
+                value={[Math.min(filterDays, maxFreshnessDays)]} 
+                min={1} 
+                max={maxFreshnessDays || 365}  // Ensure we always have a valid max
+                step={1} 
+                onValueChange={([value]) => {
+                  console.log(`Changing filter days to ${value} (max: ${maxFreshnessDays})`);
+                  setFilterDays(value);
+                }} 
+                className="w-full" 
+              />
               
               <div>
                 <div className="flex items-center justify-between mb-3">
