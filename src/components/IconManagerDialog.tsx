@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -365,19 +364,19 @@ const IconManagerDialog: React.FC = () => {
                         </p>
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-green text-black border-0 w-16 text-center rounded-md">Fresh</Badge>
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-green text-black w-16 text-center">Fresh</span>
                             <p className="text-sm">Item is within the first 60% of its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-yellow text-black border-0 w-16 text-center rounded-md">Use Soon</Badge>
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-yellow text-black w-16 text-center">Use Soon</span>
                             <p className="text-sm">Item is between 60% and 90% through its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-orange text-black border-0 w-16 text-center rounded-md">Use Now</Badge>
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-orange text-black w-16 text-center">Use Now</span>
                             <p className="text-sm">Item is between 90% and 100% of its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-red text-white border-0 w-16 text-center rounded-md">Expired</Badge>
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-red text-white w-16 text-center">Expired</span>
                             <p className="text-sm">Item has exceeded its recommended shelf life</p>
                           </div>
                         </div>
