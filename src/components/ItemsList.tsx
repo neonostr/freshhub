@@ -1,8 +1,8 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
-import { calculateFreshnessLevel, calculateDaysUntilExpiry, getMaxDaysUntilExpiry } from '@/utils/itemUtils';
+import { calculateFreshnessLevel, calculateDaysUntilExpiry } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
 import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,8 @@ const ItemsList: React.FC = () => {
   const { items } = useItems();
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [filterDays, setFilterDays] = useState<number>(30); // Default reasonable value
+  const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365); // Start with a large value
+  const [filterDays, setFilterDays] = useState<number>(365); // Default to show all
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
@@ -26,35 +27,56 @@ const ItemsList: React.FC = () => {
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
   
-  // Maximum days to show on the slider - compute this once based on items
-  const maxFreshnessDays = useMemo(() => getMaxDaysUntilExpiry(items), [items]);
+  // Force re-render when data changes
+  const [forceUpdate, setForceUpdate] = useState(0);
 
-  // Initialize filter days to match maxFreshnessDays when items load or change
+  // Listen for shelf life changes and product updates
   useEffect(() => {
-    setFilterDays(maxFreshnessDays);
-  }, [maxFreshnessDays]);
+    const handleShelfLifeUpdated = () => {
+      // Force a re-render by incrementing the counter
+      setForceUpdate(prev => prev + 1);
+    };
+    
+    const handleProductUpdated = () => {
+      // Force a re-render when products are updated
+      setForceUpdate(prev => prev + 1);
+    };
+    
+    window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
+    window.addEventListener('custom-product-updated', handleProductUpdated);
+    
+    return () => {
+      window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
+      window.removeEventListener('custom-product-updated', handleProductUpdated);
+    };
+  }, []);
+
+  // Determine the maximum days across all items for the filter slider
+  useEffect(() => {
+    if (items.length > 0) {
+      const maxDays = Math.max(...items.map(item => calculateDaysUntilExpiry(item)));
+      setMaxFreshnessDays(maxDays > 0 ? maxDays : 365);
+      setFilterDays(maxDays > 0 ? maxDays : 365);
+    }
+  }, [items, forceUpdate]); // Added forceUpdate to trigger recalculation
 
   // Filter items based on the current freshness filter
-  const filteredItems = useMemo(() => {
-    return items.filter(item => {
-      const daysUntilExpiry = calculateDaysUntilExpiry(item);
-      return daysUntilExpiry <= filterDays;
-    });
-  }, [items, filterDays]);
+  const filteredItems = items.filter(item => {
+    const daysUntilExpiry = calculateDaysUntilExpiry(item);
+    return daysUntilExpiry <= filterDays;
+  });
 
   // Sort items based on the current sort option and direction
-  const sortedItems = useMemo(() => {
-    return [...filteredItems].sort((a, b) => {
-      if (sortOption === 'freshness') {
-        const aFreshness = calculateDaysUntilExpiry(a);
-        const bFreshness = calculateDaysUntilExpiry(b);
-        return sortDirection === 'asc' ? aFreshness - bFreshness : bFreshness - aFreshness;
-      } else {
-        // Alphabetical sorting
-        return sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-      }
-    });
-  }, [filteredItems, sortOption, sortDirection]);
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    if (sortOption === 'freshness') {
+      const aFreshness = calculateDaysUntilExpiry(a);
+      const bFreshness = calculateDaysUntilExpiry(b);
+      return sortDirection === 'asc' ? aFreshness - bFreshness : bFreshness - aFreshness;
+    } else {
+      // Alphabetical sorting
+      return sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+    }
+  });
 
   // Toggle sort direction
   const toggleSortDirection = () => {
@@ -90,13 +112,6 @@ const ItemsList: React.FC = () => {
     };
   };
 
-  // Handle slider value change with debouncing
-  const handleSliderChange = (value: number[]) => {
-    if (value.length > 0) {
-      setFilterDays(value[0]);
-    }
-  };
-
   if (items.length === 0) {
     return <div className="flex flex-col items-center justify-center p-8 text-center">
       <div className="text-4xl mb-2">🥛</div>
@@ -125,7 +140,7 @@ const ItemsList: React.FC = () => {
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
-            key={`${item.id}-${filterDays}`} // Add filterDays to key to ensure re-render when filter changes
+            key={`${item.id}-${forceUpdate}`} // Add forceUpdate to key to ensure fresh render
             item={item}
             isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
             onClick={() => toggleItemExpanded(item.id)}
@@ -157,14 +172,7 @@ const ItemsList: React.FC = () => {
                 </span>
               </div>
               
-              <Slider 
-                value={[filterDays]} 
-                min={1} 
-                max={maxFreshnessDays} 
-                step={1} 
-                onValueChange={handleSliderChange} 
-                className="w-full" 
-              />
+              <Slider value={[filterDays]} min={1} max={maxFreshnessDays} step={1} onValueChange={([value]) => setFilterDays(value)} className="w-full" />
               
               <div>
                 <div className="flex items-center justify-between mb-3">

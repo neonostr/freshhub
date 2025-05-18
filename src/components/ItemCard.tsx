@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen, calculateDaysUntilExpiry } from '@/utils/itemUtils';
@@ -136,12 +135,12 @@ const ItemCard: React.FC<ItemCardProps> = ({
       case 'expired': return 'bg-fresh-red text-white';
     }
   };
-
-  const getDaysLeftText = (): string => {
+  
+  const getDaysLeftDisplay = (): string => {
     if (daysLeft <= 0) {
       return 'Expired';
     } else {
-      return `${daysLeft}`;
+      return `${daysLeft} day${daysLeft !== 1 ? 's' : ''}`;
     }
   };
 
@@ -213,7 +212,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <span className={`text-xs px-2 py-1 rounded-full ${getFreshnessColor(freshnessLevel)}`}>
-                {getDaysLeftText()}
+                {getDaysLeftDisplay()}
               </span>
               
               {/* Reset icon for mobile in primary signal color */}
