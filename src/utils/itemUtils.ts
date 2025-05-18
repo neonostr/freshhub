@@ -113,3 +113,12 @@ export const calculateDaysUntilExpiry = (item: Item): number => {
   
   return daysUntilExpiry > 0 ? daysUntilExpiry : 0;
 };
+
+// Calculate the maximum days until expiry across all items
+export const getMaxDaysUntilExpiry = (items: Item[]): number => {
+  if (items.length === 0) return 30; // Default value for empty list
+  
+  const maxDays = Math.max(...items.map(item => calculateDaysUntilExpiry(item)));
+  // Ensure we always have a reasonable value (between 7 and 365 days)
+  return Math.max(7, Math.min(maxDays, 365));
+};
