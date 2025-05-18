@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Settings, Plus, Check, X } from 'lucide-react';
 import { useIconManager } from '@/context/IconManager';
@@ -18,6 +19,8 @@ import { useHeaderVisibilityStore } from '@/pages/Index';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useSubscription } from '@/context/SubscriptionContext';
+import PremiumUpgradeDialog from './PremiumUpgradeDialog';
 
 const IconManagerDialog: React.FC = () => {
   const {
@@ -34,6 +37,9 @@ const IconManagerDialog: React.FC = () => {
     isCustomProduct,
     customProducts
   } = useIconManager();
+
+  const { status, checkCanAddItems } = useSubscription();
+  const isPremium = status === 'premium';
 
   // Get handedness from context
   const {
@@ -53,6 +59,7 @@ const IconManagerDialog: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState('');
   const [currentTab, setCurrentTab] = useState('selection'); // Track the active tab
+  const [premiumDialogOpen, setPremiumDialogOpen] = useState(false);
 
   // Get sorted icons list by label
   const sortedIcons = Object.values(allIcons).filter(icon => !isCustomProduct(icon.value)).sort((a, b) => a.label.localeCompare(b.label));
@@ -115,6 +122,12 @@ const IconManagerDialog: React.FC = () => {
   const startEditingProduct = (product: IconOption & {
     iconName?: string;
   }) => {
+    // Check if user is premium before allowing edit
+    if (!isPremium) {
+      setPremiumDialogOpen(true);
+      return;
+    }
+
     // Get the icon name from the product
     let iconName = product.iconName || '';
 
@@ -143,6 +156,12 @@ const IconManagerDialog: React.FC = () => {
 
   // Confirm delete custom product
   const confirmDelete = (iconValue: string) => {
+    // Check if user is premium before allowing delete
+    if (!isPremium) {
+      setPremiumDialogOpen(true);
+      return;
+    }
+    
     setProductToDelete(iconValue);
     setDeleteDialogOpen(true);
   };
@@ -189,6 +208,15 @@ const IconManagerDialog: React.FC = () => {
       iconName: iconName
     } as IconOptionExtended, iconName);
     setIsAddingProduct(false);
+  };
+
+  // Check subscription and show upgrade dialog if needed
+  const handleAddCustomProductClick = () => {
+    if (!isPremium) {
+      setPremiumDialogOpen(true);
+      return;
+    }
+    setIsAddingProduct(true);
   };
 
   // Extract icons from ALL_ICONS to use for custom products
@@ -295,10 +323,10 @@ const IconManagerDialog: React.FC = () => {
                 <TabsContent value="custom" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden overflow-hidden">
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-sm text-muted-foreground">
-                      Add your own custom products or edit existing ones.
+                      {isPremium ? "Add your own custom products or edit existing ones." : "Upgrade to Premium to create custom products."}
                     </p>
                     
-                    {!isAddingProduct && !editingProduct && <Button size="sm" variant="outline" onClick={() => setIsAddingProduct(true)}>
+                    {!isAddingProduct && !editingProduct && <Button size="sm" variant="outline" onClick={handleAddCustomProductClick}>
                         <span className="flex items-center gap-1">+&nbsp;New Product</span>
                       </Button>}
                   </div>
@@ -308,7 +336,7 @@ const IconManagerDialog: React.FC = () => {
                     name: editingProduct.name,
                     iconName: editingProduct.icon,
                     shelfLife: editingProduct.shelfLife
-                  }} isEditing={true} /> : <CustomProductsList products={Object.values(customProducts).sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]} editingProduct={null} startEditingProduct={startEditingProduct} saveProductChanges={() => {}} cancelEditingProduct={() => {}} confirmDelete={confirmDelete} renderIcon={renderIcon} onAddNewClick={() => setIsAddingProduct(true)} isAdding={isAddingProduct} updateEditingField={() => {}} availableIcons={foodIcons} editingIcon={''} setEditingIcon={() => {}} />}
+                  }} isEditing={true} /> : <CustomProductsList products={Object.values(customProducts).sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]} editingProduct={null} startEditingProduct={startEditingProduct} saveProductChanges={() => {}} cancelEditingProduct={() => {}} confirmDelete={confirmDelete} renderIcon={renderIcon} onAddNewClick={handleAddCustomProductClick} isAdding={isAddingProduct} updateEditingField={() => {}} availableIcons={foodIcons} editingIcon={''} setEditingIcon={() => {}} />}
                   </div>
                 </TabsContent>
                 
@@ -337,19 +365,19 @@ const IconManagerDialog: React.FC = () => {
                         </p>
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-green text-black border-0 w-16 text-center">Fresh</Badge>
+                            <Badge className="bg-fresh-green text-black border-0 w-16 text-center rounded-md">Fresh</Badge>
                             <p className="text-sm">Item is within the first 60% of its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-yellow text-black border-0 w-16 text-center">Use Soon</Badge>
+                            <Badge className="bg-fresh-yellow text-black border-0 w-16 text-center rounded-md">Use Soon</Badge>
                             <p className="text-sm">Item is between 60% and 90% through its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-orange text-black border-0 w-16 text-center">Use Now</Badge>
+                            <Badge className="bg-fresh-orange text-black border-0 w-16 text-center rounded-md">Use Now</Badge>
                             <p className="text-sm">Item is between 90% and 100% of its shelf life</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className="bg-fresh-red text-white border-0 w-16 text-center">Expired</Badge>
+                            <Badge className="bg-fresh-red text-white border-0 w-16 text-center rounded-md">Expired</Badge>
                             <p className="text-sm">Item has exceeded its recommended shelf life</p>
                           </div>
                         </div>
@@ -386,6 +414,11 @@ const IconManagerDialog: React.FC = () => {
                           </div>
                         </div>
                       </div>
+                    </div>
+                    
+                    {/* Add version display at the bottom */}
+                    <div className="pt-4 text-center">
+                      <p className="text-xs text-muted-foreground">Version 1.0.0</p>
                     </div>
                   </div>
                 </TabsContent>
@@ -559,6 +592,12 @@ const IconManagerDialog: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      {/* Premium upgrade dialog */}
+      <PremiumUpgradeDialog 
+        open={premiumDialogOpen}
+        onOpenChange={setPremiumDialogOpen}
+      />
     </>;
 };
 

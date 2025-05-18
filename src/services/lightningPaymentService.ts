@@ -3,7 +3,7 @@ import { toast } from "@/hooks/use-toast";
 
 const COINOS_BASE_URL = 'https://coinos.io';
 const USERNAME = 'freshify';
-const PAYMENT_AMOUNT_SATS = 2100;
+const PAYMENT_AMOUNT_SATS = 21; // Changed from 2100 to 21 for testing
 
 interface LnurlData {
   callback: string;

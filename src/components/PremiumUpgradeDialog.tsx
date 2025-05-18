@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from '@/context/SubscriptionContext';
 import { generateInvoice, checkPaymentStatus, formatInvoice, copyInvoiceToClipboard } from '@/services/lightningPaymentService';
 import QRCodeDisplay from './QRCodeDisplay';
-import { Bitcoin, QrCode, Check, Copy, Loader2 } from 'lucide-react';
+import { Bitcoin, Copy, Loader2 } from 'lucide-react';
 
 interface PremiumUpgradeDialogProps {
   open: boolean;
@@ -115,7 +115,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
             Upgrade to Premium
           </DialogTitle>
           <DialogDescription>
-            Upgrade to Premium for unlimited items. Pay 2,100 sats (approximately $1) one-time fee.
+            Upgrade to Premium for unlimited items and custom products. Pay 21 sats (test price) one-time fee.
           </DialogDescription>
         </DialogHeader>
         
@@ -149,7 +149,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
               <div className="text-center">
                 <h3 className="font-medium mb-1">Scan QR Code to Pay</h3>
                 <p className="text-sm text-gray-500">
-                  {isVerifying ? "Waiting for payment..." : "Pay 2,100 sats to upgrade"}
+                  {isVerifying ? "Waiting for payment..." : "Pay 21 sats to upgrade"}
                 </p>
               </div>
               
