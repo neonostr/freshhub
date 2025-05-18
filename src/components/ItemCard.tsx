@@ -1,7 +1,6 @@
-
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
-import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen } from '@/utils/itemUtils';
+import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen, calculateDaysUntilExpiry } from '@/utils/itemUtils';
 import { Calendar, Clock, RotateCcw, Trash2 } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,6 +37,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
   
   // Memoize the freshness level to prevent unnecessary recalculations
   const freshnessLevel = useMemo(() => calculateFreshnessLevel(item), [item]);
+  
+  // Calculate days until expiry
+  const daysLeft = useMemo(() => calculateDaysUntilExpiry(item), [item]);
   
   // Determine swipe direction based on handedness
   const isRightHanded = handedness === 'right';
@@ -127,19 +129,18 @@ const ItemCard: React.FC<ItemCardProps> = ({
   
   const getFreshnessColor = (level: FreshnessLevel): string => {
     switch (level) {
-      case 'fresh': return 'bg-fresh-green text-white';
+      case 'fresh': return 'bg-fresh-green text-black';
       case 'good': return 'bg-fresh-yellow text-black';
       case 'warning': return 'bg-fresh-orange text-black';
       case 'expired': return 'bg-fresh-red text-white';
     }
   };
   
-  const getFreshnessText = (level: FreshnessLevel): string => {
-    switch (level) {
-      case 'fresh': return 'Fresh';
-      case 'good': return 'Good';
-      case 'warning': return 'Use soon';
-      case 'expired': return 'Expired';
+  const getDaysLeftDisplay = (): string => {
+    if (daysLeft <= 0) {
+      return 'Expired';
+    } else {
+      return `${daysLeft} day${daysLeft !== 1 ? 's' : ''}`;
     }
   };
 
@@ -211,7 +212,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <span className={`text-xs px-2 py-1 rounded-full ${getFreshnessColor(freshnessLevel)}`}>
-                {getFreshnessText(freshnessLevel)}
+                {getDaysLeftDisplay()}
               </span>
               
               {/* Reset icon for mobile in primary signal color */}

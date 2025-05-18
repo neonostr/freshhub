@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Settings, Plus, Check, X } from 'lucide-react';
+import { Settings, Plus, Edit, Trash2, Check, X } from 'lucide-react';
 import { useIconManager } from '@/context/IconManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -360,24 +360,24 @@ const IconManagerDialog: React.FC = () => {
                       <h3 className="text-lg font-medium">Understanding Freshness Labels</h3>
                       <div className="bg-muted/50 p-4 rounded-md">
                         <p className="text-sm mb-3">
-                          Fresh Tracker uses color-coded labels to indicate the status of your items:
+                          Fresh Tracker shows the number of days until an item expires:
                         </p>
                         <div className="space-y-3">
                           <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-green text-black w-16 text-center">Fresh</span>
-                            <p className="text-sm">Item is within the first 60% of its shelf life</p>
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-green text-black w-16 text-center">3+ days</span>
+                            <p className="text-sm">Item has 3 or more days until expiry</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-yellow text-black w-16 text-center">Use Soon</span>
-                            <p className="text-sm">Item is between 60% and 90% through its shelf life</p>
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-yellow text-black w-16 text-center">2-3 days</span>
+                            <p className="text-sm">Item has 2-3 days until expiry</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-orange text-black w-16 text-center">Use Now</span>
-                            <p className="text-sm">Item is between 90% and 100% of its shelf life</p>
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-orange text-black w-16 text-center">0-1 days</span>
+                            <p className="text-sm">Item has 0-1 days until expiry</p>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-red text-white w-16 text-center">Expired</span>
-                            <p className="text-sm">Item has exceeded its recommended shelf life</p>
+                            <p className="text-sm">Item has expired (0 or negative days left)</p>
                           </div>
                         </div>
                       </div>

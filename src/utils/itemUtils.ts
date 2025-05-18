@@ -2,25 +2,15 @@
 import { Item, FreshnessLevel } from '@/types/item';
 import { ALL_ICONS } from '@/data/productData';
 
-// Function to calculate freshness level based on opened date
+// Function to calculate freshness level based on days until expiry
 export const calculateFreshnessLevel = (item: Item): FreshnessLevel => {
-  const openedDate = new Date(item.openedDate);
-  const currentDate = new Date();
-  const timeDiff = currentDate.getTime() - openedDate.getTime();
-  const daysOpen = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  const daysUntilExpiry = calculateDaysUntilExpiry(item);
   
-  // Get shelf life from icon data or use default
-  // Always use the fresh version from localStorage to account for custom shelf life updates
-  const shelfLife = getShelfLifeData(item.icon) ?? 30; // Default to 30 days
-  
-  const warningThreshold = shelfLife * 0.75; // 75% of shelf life
-  const expiredThreshold = shelfLife; // 100% of shelf life
-  
-  if (daysOpen > expiredThreshold) {
+  if (daysUntilExpiry <= 0) {
     return 'expired';
-  } else if (daysOpen > warningThreshold) {
+  } else if (daysUntilExpiry <= 1) {
     return 'warning';
-  } else if (daysOpen > shelfLife / 2) {
+  } else if (daysUntilExpiry <= 3) {
     return 'good';
   } else {
     return 'fresh';
