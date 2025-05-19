@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -6,7 +7,6 @@ import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended, FoodIconOption } from '@/types/iconTypes';
 import { createIconFromName } from './utils';
-import * as LucideIcons from 'lucide-react';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -167,15 +167,14 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
   };
 
   // Get all available Lucide icons that are suitable for food items
-  // These are the food and kitchen related Lucide icons we can use
   const getAllAvailableIcons = () => {
+    // These are the food-related icons that exist in lucide-react
     const foodRelatedIcons = [
-      'cherry', 'apple', 'banana', 'watermelon', 'bread', 'orange', 
-      'lemon', 'grape', 'strawberry', 'kiwi', 'avocado', 'olive', 
-      'carrot', 'egg', 'milk', 'cheese', 'pizza', 'cake-slice',
-      'candy', 'ice-cream-cone', 'cup-soda', 'coffee', 'beer', 
-      'wine', 'soup', 'salad', 'sandwich', 'croissant', 
-      'beef', 'ham', 'fish', 'bean', 'nut', 'lollipop'
+      'apple', 'banana', 'beef', 'cake-slice', 'candy',
+      'carrot', 'cherry', 'coffee', 'cup-soda', 'egg',
+      'fish', 'grape', 'ham', 'ice-cream', 'milk',
+      'nut', 'pizza', 'salad', 'sandwich', 'soup',
+      'bean', 'beer', 'cheese', 'cherry', 'croissant', 'wine'
     ];
     
     const iconOptions = foodRelatedIcons.map(iconName => {
