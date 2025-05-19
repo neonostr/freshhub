@@ -114,8 +114,8 @@ const ItemCard: React.FC<ItemCardProps> = ({
         
         const iconComponentName = `Icon${pascalCase}`;
         
-        // Get the component from TablerIcons
-        const IconComponent = (TablerIcons as Record<string, React.ComponentType<any>>)[iconComponentName];
+        // Get the component from TablerIcons using type assertion for safety
+        const IconComponent = (TablerIcons as any)[iconComponentName];
         
         if (IconComponent) {
           return <IconComponent size={20} stroke={1.5} />;

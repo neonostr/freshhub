@@ -23,8 +23,8 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   
   const iconComponentName = `Icon${pascalCase}`;
   
-  // Get the component from TablerIcons
-  const IconComponent = (TablerIcons as Record<string, React.ComponentType<any>>)[iconComponentName];
+  // Get the component from TablerIcons using type assertion for safety
+  const IconComponent = (TablerIcons as any)[iconComponentName];
   
   if (IconComponent) {
     // For TablerIcons, we need to pass appropriate props

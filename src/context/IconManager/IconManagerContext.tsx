@@ -5,7 +5,7 @@ import { IconOption } from '@/data/productData';
 import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
-import { IconOptionExtended } from '@/types/iconTypes';
+import { IconOptionExtended, FoodIconOption } from '@/types/iconTypes';
 import { createIconFromName } from './utils';
 import * as TablerIcons from '@tabler/icons-react';
 
