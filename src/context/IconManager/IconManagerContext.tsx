@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -6,7 +5,7 @@ import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended, FoodIconOption } from '@/types/iconTypes';
-import { createIconFromName } from './utils';
+import { createIconFromName, TextIcon } from './utils';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -166,32 +165,22 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     return !!customProducts[iconValue];
   };
 
-  // Get all available Lucide icons that are suitable for food items
+  // Modified function to get all available icons for the custom product selector
   const getAllAvailableIcons = () => {
-    // These are the food-related icons that exist in lucide-react
-    const foodRelatedIcons = [
-      'apple', 'banana', 'beef', 'cake-slice', 'candy',
-      'carrot', 'cherry', 'coffee', 'cup-soda', 'egg',
-      'fish', 'grape', 'ham', 'ice-cream', 'milk',
-      'nut', 'pizza', 'salad', 'sandwich', 'soup',
-      'bean', 'beer', 'cheese', 'cherry', 'croissant', 'wine'
+    // Create a list of text-based icons suitable for selection
+    const iconCategories = [
+      'food', 'fruit', 'vegetable', 'meat', 'drink', 'dairy', 'baked'
     ];
     
-    const iconOptions = foodRelatedIcons.map(iconName => {
-      // Convert kebab-case to PascalCase for display
-      const displayName = iconName
-        .split('-')
-        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(' ');
-        
+    return iconCategories.map(category => {
+      const displayName = category.charAt(0).toUpperCase() + category.slice(1);
+      
       return {
         name: displayName,
-        icon: iconName,
+        icon: category,
         displayName: displayName
       };
     });
-    
-    return iconOptions;
   };
 
   return (

@@ -6,10 +6,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
-import * as LucideIcons from 'lucide-react';
 import { IconOptionExtended } from '@/types/iconTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHandedness } from '@/context/HandednessContext';
+
+// Simple text icon component for consistent rendering
+const TextIcon = ({ text, className = "h-5 w-5" }: { text: string; className?: string }) => (
+  <div className={`flex items-center justify-center ${className} bg-primary/10 text-primary rounded-full font-medium text-xs`}>
+    {text.charAt(0).toUpperCase()}
+  </div>
+);
 
 interface ItemCardProps {
   item: Item;
@@ -98,36 +104,24 @@ const ItemCard: React.FC<ItemCardProps> = ({
   const iconElement = useMemo(() => {
     // Try to get the icon from our icon manager
     if (item.icon in allIcons) {
+      // If it's a valid item in allIcons, use the icon from there
       const iconData = allIcons[item.icon];
       
-      // For custom products, we need to create the icon from the stored name
-      // Check if iconData is of type IconOptionExtended (which has iconName)
+      // For custom products with iconName
       if ('iconName' in iconData && (iconData as IconOptionExtended).iconName) {
-        // Get icon name from the iconData object
-        const iconName = (iconData as IconOptionExtended).iconName;
-        
-        // Convert to PascalCase for Lucide component lookup
-        const pascalCase = iconName
-          .split('-')
-          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-          .join('');
-        
-        // Get the component from LucideIcons
-        const IconComponent = (LucideIcons as any)[pascalCase];
-        
-        if (IconComponent) {
-          return <IconComponent size={20} />;
-        }
+        const iconName = (iconData as IconOptionExtended).iconName || '';
+        const initials = iconName.split('-').map(part => part.charAt(0).toUpperCase()).join('');
+        return <TextIcon text={initials || item.name.charAt(0)} />;
       }
       
-      // If it's not a custom product or we couldn't find the icon by name
+      // If it has a React icon element
       if (React.isValidElement(iconData.icon)) {
-        return React.cloneElement(iconData.icon as React.ReactElement, { size: 20 });
+        return iconData.icon;
       }
     }
     
-    // If the icon isn't found, show the item name in a styled div
-    return <div className="flex items-center justify-center w-5 h-5">{item.name.charAt(0)}</div>;
+    // Fallback to first letter of item name
+    return <TextIcon text={item.name.charAt(0)} />;
   }, [item.icon, allIcons, item.name]);
   
   const getFreshnessColor = (level: FreshnessLevel): string => {
@@ -213,6 +207,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
               </div>
               <h3 className="font-medium text-lg">{item.name}</h3>
             </div>
+            
             <div className="flex items-center gap-2">
               <span className={`text-xs px-2 py-1 rounded-full ${getFreshnessColor(freshnessLevel)}`}>
                 {getDaysLeftDisplay()}

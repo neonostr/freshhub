@@ -1,38 +1,32 @@
 
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
 import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
 
-// Reconstruct an icon component from an icon name
+// TextIcon component for creating simple text-based icons
+export const TextIcon = ({ text, className = "h-5 w-5" }: { text: string; className?: string }) => (
+  <div className={`flex items-center justify-center ${className} bg-primary/10 text-primary rounded-full font-medium text-xs`}>
+    {text.charAt(0).toUpperCase()}
+  </div>
+);
+
+// Create an icon element from a name (now using TextIcon instead of LucideIcons)
 export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   // Ensure we have a valid icon name
   if (!iconName) {
     console.error("No icon name provided to createIconFromName");
-    iconName = 'apple'; // Default fallback
+    return <TextIcon text="?" className={className} />;
   }
   
-  console.log(`Creating icon from name: ${iconName}`);
+  console.log(`Creating text icon from name: ${iconName}`);
   
-  // Convert kebab-case to PascalCase for Lucide icon names
-  const pascalCase = iconName
+  // Generate a text representation based on the icon name
+  const label = iconName
     .split('-')
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .map(part => part.charAt(0).toUpperCase())
     .join('');
   
-  // Get the component from LucideIcons
-  const IconComponent = (LucideIcons as any)[pascalCase];
-  
-  if (IconComponent) {
-    // For LucideIcons, we need to pass appropriate props
-    return <IconComponent className={className} />;
-  } else {
-    console.warn(`Icon "${iconName}" (${pascalCase}) not found in Lucide icons, using fallback`);
-    
-    // Fallback to a generic icon
-    const FallbackIcon = LucideIcons.HelpCircle;
-    return <FallbackIcon className={className} />;
-  }
+  return <TextIcon text={label} className={className} />;
 };
 
 // Create serializable product data for storage
@@ -41,7 +35,7 @@ export const createSerializableProducts = (
 ) => {
   return Object.entries(products).reduce((acc, [key, product]) => {
     // Ensure iconName is stored properly - this is a critical fix
-    const iconName = product.iconName || 'apple';
+    const iconName = product.iconName || 'default';
     console.log(`Serializing product ${product.label} with icon: ${iconName}`);
     
     // Store only the essential data without the React element
@@ -71,11 +65,11 @@ export const reconstructProductsFromStorage = (
       const productData = product as Partial<IconOptionExtended>;
       
       if (productData.value && productData.label && productData.shelfLife) {
-        // Use the stored icon name or default to 'apple' only if iconName is undefined
-        const iconName = productData.iconName || 'apple';
+        // Use the stored icon name or default to a placeholder
+        const iconName = productData.iconName || 'default';
         console.log(`Reconstructing product ${productData.label} with icon: ${iconName}`);
         
-        // Create the icon component from the stored name
+        // Create a text-based icon element
         const iconElement = createIconFromName(iconName);
         
         // Create the fully reconstructed product

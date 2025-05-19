@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import * as LucideIcons from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FoodIconOption, IconSelectorProps } from '@/types/iconTypes';
@@ -12,23 +11,19 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
   onSelect,
   className
 }) => {
-  // Helper to render an icon from the Lucide library by name
-  const renderIcon = (iconName: string) => {
-    // Convert kebab-case to PascalCase for Lucide icon names
-    const pascalCase = iconName
+  // Text-based icon renderer
+  const renderTextIcon = (iconName: string) => {
+    // Extract initials from icon name
+    const initials = iconName
       .split('-')
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .map(part => part.charAt(0).toUpperCase())
       .join('');
     
-    // Get the component from LucideIcons
-    const IconComponent = (LucideIcons as any)[pascalCase];
-    
-    if (IconComponent) {
-      return <IconComponent size={20} />;
-    }
-    
-    // Fallback rendering if icon not found
-    return <LucideIcons.HelpCircle size={20} />;
+    return (
+      <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+        {initials || "?"}
+      </div>
+    );
   };
 
   return (
@@ -45,7 +40,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
             data-icon={icon.icon}
             data-state={selectedIcon === icon.icon ? "active" : "inactive"}
           >
-            {renderIcon(icon.icon)}
+            {renderTextIcon(icon.icon)}
           </Button>
         ))}
       </div>
