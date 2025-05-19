@@ -30,7 +30,7 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
     // For TablerIcons, we need to pass appropriate props
     return <IconComponent className={className} size={20} stroke={1.5} />;
   } else {
-    console.warn(`Icon "${iconName}" (${iconComponentName}) not found in Tabler icons`);
+    console.warn(`Icon "${iconName}" (${iconComponentName}) not found in Tabler icons, using fallback`);
     
     // Fallback to a generic icon
     const FallbackIcon = TablerIcons.IconQuestionMark;

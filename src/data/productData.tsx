@@ -1,17 +1,16 @@
-
 import React from 'react';
 import {
   IconApple, IconGlass, IconBowl, IconCherry, IconCup, IconCookie,
   IconEgg, IconFish, IconBottle, IconBeer, IconCake,
   IconSalad, IconMeat, IconPizza, IconIceCream, IconBread,
   IconPackage, IconQuestionMark, IconFlask, IconLeaf, IconGrain,
-  IconSoup, IconBreadSlice, IconCandy, IconSnowflake,
-  IconMilkshake, IconCircle, IconCircleDot, IconAppleHalf,
-  IconWheat, IconLemon, IconCitrus, 
+  IconSoup, IconBread as IconBreadSlice, IconCandy, IconSnowflake,
+  IconMilkshake, IconCircle, IconCircleDot, IconApple as IconAppleHalf,
+  IconWheat, IconLemon, IconLemon as IconCitrus, 
   IconFlower, IconFilter, IconPepper, IconMushroom, IconEggFried,
   IconCoffee, IconBottle as IconWaterBottle, IconToolsKitchen, IconChefHat, IconMicrowave, IconFridge,
   IconPlant, IconCherry as IconDrumstick, IconQuestionMark as IconPineapple, IconPlant as IconBanana,
-  IconCheese, IconLeaf as IconShrimp, IconWheat as IconRice, IconSugar
+  IconCheese, IconLeaf as IconShrimp, IconWheat as IconRice, IconGrain as IconSugar
 } from '@tabler/icons-react';
 
 export type IconOption = {

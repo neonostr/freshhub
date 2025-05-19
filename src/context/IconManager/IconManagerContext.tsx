@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -210,7 +209,7 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
       deleteCustomProduct,
       isCustomProduct,
       customProducts,
-      getAllAvailableIcons // Add this new function to the context
+      getAllAvailableIcons
     }}>
       {children}
     </IconManagerContext.Provider>
