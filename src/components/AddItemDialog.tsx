@@ -89,21 +89,20 @@ const AddItemDialog: React.FC = () => {
           </DialogHeader>
           
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            {/* Icon selection at the top */}
+            {/* Product selection at the top */}
             <div className="space-y-2">
               <Label>Choose a Product</Label>
               <ScrollArea className="h-[200px]">
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {availableIcons.map((icon) => (
                     <Button
                       key={icon.value}
                       type="button"
                       variant={selectedIcon === icon.value ? "default" : "outline"}
-                      className="flex flex-col items-center justify-center h-20 py-2"
+                      className="h-12 py-2"
                       onClick={() => handleIconSelect(icon.value)}
                     >
-                      {icon.icon}
-                      <span className="text-xs mt-1 overflow-hidden text-ellipsis max-w-full px-1">{icon.label}</span>
+                      <span className="text-xs overflow-hidden text-ellipsis max-w-full px-1">{icon.label}</span>
                     </Button>
                   ))}
                 </div>

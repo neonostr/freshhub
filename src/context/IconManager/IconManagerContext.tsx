@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -5,7 +6,7 @@ import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended, FoodIconOption } from '@/types/iconTypes';
-import { createIconFromName, TextIcon } from './utils';
+import { createSerializableProducts, reconstructProductsFromStorage } from './utils';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -18,9 +19,6 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     customProducts,
     setCustomProducts
   } = useIconStorage();
-  
-  // Instead of directly using useItems, we'll load items directly when needed
-  // This avoids the dependency on ItemsProvider
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
@@ -165,14 +163,14 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     return !!customProducts[iconValue];
   };
 
-  // Modified function to get all available icons for the custom product selector
+  // Modified function to get all available categories
   const getAllAvailableIcons = () => {
-    // Create a list of text-based icons suitable for selection
-    const iconCategories = [
+    // Create a list of categories
+    const categories = [
       'food', 'fruit', 'vegetable', 'meat', 'drink', 'dairy', 'baked'
     ];
     
-    return iconCategories.map(category => {
+    return categories.map(category => {
       const displayName = category.charAt(0).toUpperCase() + category.slice(1);
       
       return {

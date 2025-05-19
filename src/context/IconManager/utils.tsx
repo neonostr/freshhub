@@ -3,32 +3,6 @@ import React from 'react';
 import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
 
-// TextIcon component for creating simple text-based icons
-export const TextIcon = ({ text, className = "h-5 w-5" }: { text: string; className?: string }) => (
-  <div className={`flex items-center justify-center ${className} bg-primary/10 text-primary rounded-full font-medium text-xs`}>
-    {text.charAt(0).toUpperCase()}
-  </div>
-);
-
-// Create an icon element from a name (now using TextIcon instead of LucideIcons)
-export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
-  // Ensure we have a valid icon name
-  if (!iconName) {
-    console.error("No icon name provided to createIconFromName");
-    return <TextIcon text="?" className={className} />;
-  }
-  
-  console.log(`Creating text icon from name: ${iconName}`);
-  
-  // Generate a text representation based on the icon name
-  const label = iconName
-    .split('-')
-    .map(part => part.charAt(0).toUpperCase())
-    .join('');
-  
-  return <TextIcon text={label} className={className} />;
-};
-
 // Create serializable product data for storage
 export const createSerializableProducts = (
   products: Record<string, IconOptionExtended>
@@ -69,15 +43,15 @@ export const reconstructProductsFromStorage = (
         const iconName = productData.iconName || 'default';
         console.log(`Reconstructing product ${productData.label} with icon: ${iconName}`);
         
-        // Create a text-based icon element
-        const iconElement = createIconFromName(iconName);
+        // Create a placeholder element
+        const placeholderElement = <div className="h-5 w-5" />;
         
         // Create the fully reconstructed product
         reconstructedProducts[key] = {
           value: productData.value,
           label: productData.label,
           shelfLife: productData.shelfLife,
-          icon: iconElement as React.ReactElement,
+          icon: placeholderElement as React.ReactElement,
           iconName: iconName // Store the icon name explicitly
         };
       }

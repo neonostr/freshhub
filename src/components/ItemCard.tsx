@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen, calculateDaysUntilExpiry } from '@/utils/itemUtils';
@@ -9,13 +10,6 @@ import { useIconManager } from '@/context/IconManager';
 import { IconOptionExtended } from '@/types/iconTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHandedness } from '@/context/HandednessContext';
-
-// Simple text icon component for consistent rendering
-const TextIcon = ({ text, className = "h-5 w-5" }: { text: string; className?: string }) => (
-  <div className={`flex items-center justify-center ${className} bg-primary/10 text-primary rounded-full font-medium text-xs`}>
-    {text.charAt(0).toUpperCase()}
-  </div>
-);
 
 interface ItemCardProps {
   item: Item;
@@ -100,30 +94,6 @@ const ItemCard: React.FC<ItemCardProps> = ({
     resetItem(item.id);
   };
   
-  // Memoize the icon rendering to prevent unnecessary recomputation
-  const iconElement = useMemo(() => {
-    // Try to get the icon from our icon manager
-    if (item.icon in allIcons) {
-      // If it's a valid item in allIcons, use the icon from there
-      const iconData = allIcons[item.icon];
-      
-      // For custom products with iconName
-      if ('iconName' in iconData && (iconData as IconOptionExtended).iconName) {
-        const iconName = (iconData as IconOptionExtended).iconName || '';
-        const initials = iconName.split('-').map(part => part.charAt(0).toUpperCase()).join('');
-        return <TextIcon text={initials || item.name.charAt(0)} />;
-      }
-      
-      // If it has a React icon element
-      if (React.isValidElement(iconData.icon)) {
-        return iconData.icon;
-      }
-    }
-    
-    // Fallback to first letter of item name
-    return <TextIcon text={item.name.charAt(0)} />;
-  }, [item.icon, allIcons, item.name]);
-  
   const getFreshnessColor = (level: FreshnessLevel): string => {
     switch (level) {
       case 'fresh': return 'bg-fresh-green text-black';
@@ -201,10 +171,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
         <div className={`h-2 ${getFreshnessColor(freshnessLevel)}`} />
         <CardContent className={`p-4 transition-all duration-300 ease-in-out ${isExpandable ? 'expandable-card' : ''}`}>
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-gray-100 rounded-full flex items-center justify-center w-9 h-9">
-                {iconElement}
-              </div>
+            <div className="flex items-center">
               <h3 className="font-medium text-lg">{item.name}</h3>
             </div>
             

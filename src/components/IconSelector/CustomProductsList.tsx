@@ -15,7 +15,7 @@ interface CustomProductsListProps {
   saveProductChanges: () => void;
   cancelEditingProduct: () => void;
   confirmDelete: (value: string) => void;
-  renderIcon: (icon: React.ReactNode) => React.ReactNode;
+  renderIcon?: (icon: React.ReactNode) => React.ReactNode;
   onAddNewClick: () => void;
   isAdding: boolean;
   updateEditingField: (field: string, value: string | number) => void;
@@ -31,7 +31,6 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
   saveProductChanges,
   cancelEditingProduct,
   confirmDelete,
-  renderIcon,
   onAddNewClick,
   isAdding,
   updateEditingField,
@@ -64,11 +63,7 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
     <ScrollArea className="flex-1">
       <div className="space-y-4">
         {products.map((product) => (
-          <div key={product.value} className="flex items-center gap-2 border p-3 rounded-md">
-            <div className="p-2 bg-muted rounded-md">
-              {renderIcon(product.icon)}
-            </div>
-            
+          <div key={product.value} className="flex items-center gap-2 border p-3 rounded-md">            
             {editingProduct && editingProduct.productId === product.value ? (
               <div className="flex-1 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
@@ -81,7 +76,7 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
                 </div>
                 
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium">Icon:</label>
+                  <label className="text-sm font-medium">Category:</label>
                   <CustomIconSelector
                     icons={availableIcons}
                     selectedIcon={editingIcon}

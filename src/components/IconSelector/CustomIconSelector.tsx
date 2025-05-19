@@ -11,21 +11,6 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
   onSelect,
   className
 }) => {
-  // Text-based icon renderer
-  const renderTextIcon = (iconName: string) => {
-    // Extract initials from icon name
-    const initials = iconName
-      .split('-')
-      .map(part => part.charAt(0).toUpperCase())
-      .join('');
-    
-    return (
-      <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-medium">
-        {initials || "?"}
-      </div>
-    );
-  };
-
   return (
     <ScrollArea className={cn("h-40 w-full", className)}>
       <div className="grid grid-cols-4 gap-2 p-1">
@@ -35,12 +20,12 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
             type="button"
             variant={selectedIcon === icon.icon ? "default" : "outline"}
             size="sm"
-            className="p-2 h-10"
+            className="h-10"
             onClick={() => onSelect(icon.icon)}
             data-icon={icon.icon}
             data-state={selectedIcon === icon.icon ? "active" : "inactive"}
           >
-            {renderTextIcon(icon.icon)}
+            {icon.displayName || icon.name}
           </Button>
         ))}
       </div>
