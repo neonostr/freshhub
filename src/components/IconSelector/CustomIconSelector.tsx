@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import * as TablerIcons from '@tabler/icons-react';
+import * as LucideIcons from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FoodIconOption, IconSelectorProps } from '@/types/iconTypes';
@@ -12,25 +12,23 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
   onSelect,
   className
 }) => {
-  // Helper to render an icon from the Tabler library by name
+  // Helper to render an icon from the Lucide library by name
   const renderIcon = (iconName: string) => {
-    // Convert kebab-case to PascalCase with Icon prefix for Tabler icon names
+    // Convert kebab-case to PascalCase for Lucide icon names
     const pascalCase = iconName
       .split('-')
       .map(part => part.charAt(0).toUpperCase() + part.slice(1))
       .join('');
     
-    const iconComponentName = `Icon${pascalCase}`;
-    
-    // Get the component from TablerIcons using type assertion for safety
-    const IconComponent = (TablerIcons as any)[iconComponentName];
+    // Get the component from LucideIcons
+    const IconComponent = (LucideIcons as any)[pascalCase];
     
     if (IconComponent) {
-      return <IconComponent size={20} stroke={1.5} />;
+      return <IconComponent size={20} />;
     }
     
     // Fallback rendering if icon not found
-    return <TablerIcons.IconQuestionMark size={20} stroke={1.5} />;
+    return <LucideIcons.HelpCircle size={20} />;
   };
 
   return (

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import * as TablerIcons from '@tabler/icons-react';
+import * as LucideIcons from 'lucide-react';
 import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
 
@@ -14,27 +14,24 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   
   console.log(`Creating icon from name: ${iconName}`);
   
-  // Convert kebab-case to PascalCase for Tabler icon names
-  // Tabler icons follow the pattern IconXxx where Xxx is the PascalCase name
+  // Convert kebab-case to PascalCase for Lucide icon names
   const pascalCase = iconName
     .split('-')
     .map(part => part.charAt(0).toUpperCase() + part.slice(1))
     .join('');
   
-  const iconComponentName = `Icon${pascalCase}`;
-  
-  // Get the component from TablerIcons using type assertion for safety
-  const IconComponent = (TablerIcons as any)[iconComponentName];
+  // Get the component from LucideIcons
+  const IconComponent = (LucideIcons as any)[pascalCase];
   
   if (IconComponent) {
-    // For TablerIcons, we need to pass appropriate props
-    return <IconComponent className={className} size={20} stroke={1.5} />;
+    // For LucideIcons, we need to pass appropriate props
+    return <IconComponent className={className} />;
   } else {
-    console.warn(`Icon "${iconName}" (${iconComponentName}) not found in Tabler icons, using fallback`);
+    console.warn(`Icon "${iconName}" (${pascalCase}) not found in Lucide icons, using fallback`);
     
     // Fallback to a generic icon
-    const FallbackIcon = TablerIcons.IconQuestionMark;
-    return <FallbackIcon className={className} size={20} stroke={1.5} />;
+    const FallbackIcon = LucideIcons.HelpCircle;
+    return <FallbackIcon className={className} />;
   }
 };
 

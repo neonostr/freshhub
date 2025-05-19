@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen, calculateDaysUntilExpiry } from '@/utils/itemUtils';
-import { IconCalendar, IconClock, IconRotate, IconTrash } from "@tabler/icons-react";
+import { Calendar, Clock, RotateCcw, Trash2 } from "lucide-react";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
-import * as TablerIcons from '@tabler/icons-react';
+import * as LucideIcons from 'lucide-react';
 import { IconOptionExtended } from '@/types/iconTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHandedness } from '@/context/HandednessContext';
@@ -106,19 +106,17 @@ const ItemCard: React.FC<ItemCardProps> = ({
         // Get icon name from the iconData object
         const iconName = (iconData as IconOptionExtended).iconName;
         
-        // Convert to PascalCase for Tabler component lookup
+        // Convert to PascalCase for Lucide component lookup
         const pascalCase = iconName
           .split('-')
           .map(part => part.charAt(0).toUpperCase() + part.slice(1))
           .join('');
         
-        const iconComponentName = `Icon${pascalCase}`;
-        
-        // Get the component from TablerIcons using type assertion for safety
-        const IconComponent = (TablerIcons as any)[iconComponentName];
+        // Get the component from LucideIcons
+        const IconComponent = (LucideIcons as any)[pascalCase];
         
         if (IconComponent) {
-          return <IconComponent size={20} stroke={1.5} />;
+          return <IconComponent size={20} />;
         }
       }
       
@@ -186,10 +184,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
       {isMobile && (
         <div className={`absolute inset-0 flex items-center ${isRightHanded ? 'justify-end' : 'justify-start'} bg-destructive rounded-lg`}>
           <div className={`flex items-center justify-center w-16 ${isRightHanded ? 'pr-4' : 'pl-4'}`}>
-            <IconTrash 
+            <Trash2 
               className="text-white" 
               size={24} 
-              stroke={1.5}
               style={{ opacity: deleteIndicatorOpacity }}
             />
           </div>
@@ -227,7 +224,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
                   onClick={handleResetTap}
                   className="text-primary p-1 rounded-full hover:bg-gray-100"
                 >
-                  <IconRotate className="h-4 w-4" stroke={1.5} />
+                  <RotateCcw className="h-4 w-4" />
                 </button>
               )}
             </div>
@@ -236,11 +233,11 @@ const ItemCard: React.FC<ItemCardProps> = ({
           {!isCompact && (
             <div className="space-y-2 text-sm text-gray-500 mt-3 card-details">
               <div className="flex items-center">
-                <IconCalendar className="h-4 w-4 mr-2" stroke={1.5} />
+                <Calendar className="h-4 w-4 mr-2" />
                 <span>Opened: {formatOpenedDate(item.openedDate)}</span>
               </div>
               <div className="flex items-center">
-                <IconClock className="h-4 w-4 mr-2" stroke={1.5} />
+                <Clock className="h-4 w-4 mr-2" />
                 <span>Open {formatTimeOpen(item.openedDate)}</span>
               </div>
             </div>
