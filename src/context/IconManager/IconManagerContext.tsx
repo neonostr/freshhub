@@ -6,6 +6,8 @@ import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended } from '@/types/iconTypes';
+import { createIconFromName } from './utils';
+import * as TablerIcons from '@tabler/icons-react';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -165,6 +167,37 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     return !!customProducts[iconValue];
   };
 
+  // Get all available Tabler icons that are suitable for food items
+  // This helps users have 200+ icons to choose from for custom products
+  const getAllAvailableIcons = () => {
+    // Get all icons from TablerIcons that could be related to food or household items
+    const allTablerIcons = Object.keys(TablerIcons)
+      .filter(key => key.startsWith('Icon'))
+      .map(key => {
+        const iconName = key.replace('Icon', '');
+        // Convert PascalCase to kebab-case
+        const kebabCase = iconName
+          .replace(/([a-z])([A-Z])/g, '$1-$2')
+          .toLowerCase();
+        return {
+          name: kebabCase,
+          icon: kebabCase,
+          displayName: iconName
+        };
+      })
+      .filter(icon => 
+        // Filter icons that are likely to be food or household related
+        !icon.name.includes('brand') && 
+        !icon.name.includes('device') && 
+        !icon.name.includes('file') &&
+        !icon.name.includes('arrow') &&
+        !icon.name.includes('cloud') &&
+        !icon.name.includes('code')
+      );
+    
+    return allTablerIcons;
+  };
+
   return (
     <IconManagerContext.Provider value={{ 
       availableIcons, 
@@ -176,7 +209,8 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
       updateProductName,
       deleteCustomProduct,
       isCustomProduct,
-      customProducts
+      customProducts,
+      getAllAvailableIcons // Add this new function to the context
     }}>
       {children}
     </IconManagerContext.Provider>

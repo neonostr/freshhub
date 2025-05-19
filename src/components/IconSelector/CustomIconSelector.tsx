@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import * as LucideIcons from 'lucide-react';
+import * as TablerIcons from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FoodIconOption, IconSelectorProps } from '@/types/iconTypes';
@@ -12,38 +12,25 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
   onSelect,
   className
 }) => {
-  // Helper to render an icon from the Lucide library by name
+  // Helper to render an icon from the Tabler library by name
   const renderIcon = (iconName: string) => {
-    // Convert kebab-case to PascalCase for Lucide icon names
-    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
-      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+    // Convert kebab-case to PascalCase with Icon prefix for Tabler icon names
+    const pascalCase = iconName
+      .split('-')
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .join('');
     
-    // Specific mappings for food items that don't have dedicated icons
-    const iconMappings: Record<string, string> = {
-      'bread': 'Cookie', // Better than Bed for bread
-      'bagels': 'Circle', // Circle shape for bagels
-      'tortillas': 'CircleDot', // Flat round shape
-      'pretzels': 'CircleDashed', // Twisted shape suggestion
-      'bowl': 'CircleOff',
-      'pumpkin': 'CircleDot',
-      'watermelon': 'Cherry', // Use Cherry instead for watermelon
-      'water-filter': 'Filter', // Use Filter for water filter
-    };
+    const iconComponentName = `Icon${pascalCase}`;
     
-    // Check if we have a special mapping for this icon
-    const mappedName = iconMappings[iconName] || pascalCaseName;
-    
-    // Cast to unknown first, then to the specific type we need
-    const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<any>>)[mappedName];
+    // Get the component from TablerIcons
+    const IconComponent = (TablerIcons as Record<string, React.ComponentType<any>>)[iconComponentName];
     
     if (IconComponent) {
-      return React.createElement(IconComponent, { size: 20 });
+      return <IconComponent size={20} stroke={1.5} />;
     }
     
     // Fallback rendering if icon not found
-    return React.createElement('div', {
-      className: "h-5 w-5 flex items-center justify-center"
-    }, '?');
+    return <TablerIcons.IconQuestionMark size={20} stroke={1.5} />;
   };
 
   return (

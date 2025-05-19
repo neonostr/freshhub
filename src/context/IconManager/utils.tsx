@@ -1,6 +1,6 @@
 
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
+import * as TablerIcons from '@tabler/icons-react';
 import { IconOption } from '@/data/productData';
 import { IconOptionExtended } from '@/types/iconTypes';
 
@@ -14,49 +14,28 @@ export const createIconFromName = (iconName: string, className = "h-5 w-5") => {
   
   console.log(`Creating icon from name: ${iconName}`);
   
-  // Convert kebab-case to PascalCase for Lucide icon names
-  const pascalCaseName = iconName.charAt(0).toUpperCase() + 
-    iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+  // Convert kebab-case to PascalCase for Tabler icon names
+  // Tabler icons follow the pattern IconXxx where Xxx is the PascalCase name
+  const pascalCase = iconName
+    .split('-')
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
   
-  // Define better mappings for food items that need specialized icons
-  const iconMappings: Record<string, string> = {
-    'bread': 'Cookie', // Better representation for bread
-    'bagels': 'Circle', // Circle shape for bagels
-    'tortillas': 'CircleDot', // Flat circular shape
-    'pretzels': 'CircleDashed', // Twisted shape suggestion
-    'bowl': 'CircleOff',
-    'pumpkin': 'CircleDot',
-    'watermelon': 'Cherry', // Better representation for watermelon
-    'water-filter': 'Filter', // Use Filter icon for water filter
-  };
+  const iconComponentName = `Icon${pascalCase}`;
   
-  // Check if we have a special mapping for this icon
-  const mappedName = iconMappings[iconName] || pascalCaseName;
-  
-  // Try to use the mapped or pascal-cased name to get the icon
-  const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<any>>)[mappedName];
+  // Get the component from TablerIcons
+  const IconComponent = (TablerIcons as Record<string, React.ComponentType<any>>)[iconComponentName];
   
   if (IconComponent) {
-    return React.createElement(IconComponent, { className });
+    // For TablerIcons, we need to pass appropriate props
+    return <IconComponent className={className} size={20} stroke={1.5} />;
   } else {
-    console.warn(`Icon "${iconName}" (${mappedName}) not found in Lucide icons, trying alternate parsing`);
+    console.warn(`Icon "${iconName}" (${iconComponentName}) not found in Tabler icons`);
     
-    // Try to directly access by the name (some icons might have different naming patterns)
-    const directIcon = Object.entries(LucideIcons).find(([key]) => 
-      key.toLowerCase() === iconName.toLowerCase() || 
-      key.toLowerCase() === pascalCaseName.toLowerCase()
-    );
-    
-    if (directIcon && directIcon[1]) {
-      const DirectIconComponent = directIcon[1] as React.ComponentType<any>;
-      return React.createElement(DirectIconComponent, { className });
-    }
+    // Fallback to a generic icon
+    const FallbackIcon = TablerIcons.IconQuestionMark;
+    return <FallbackIcon className={className} size={20} stroke={1.5} />;
   }
-  
-  console.warn(`Icon "${iconName}" could not be found in Lucide icons`);
-  return React.createElement('div', {
-    className: `flex items-center justify-center ${className}`
-  }, '?');
 };
 
 // Create serializable product data for storage

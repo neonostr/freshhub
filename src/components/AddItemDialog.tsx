@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus } from "lucide-react";
+import { IconPlus } from "@tabler/icons-react";
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -80,7 +80,7 @@ const AddItemDialog: React.FC = () => {
               left: handedness === 'left' ? "1.5rem" : "auto"
             }}
           >
-            <Plus className="h-6 w-6" />
+            <IconPlus className="h-6 w-6" stroke={1.5} />
           </Button>
         </DialogTrigger>
         <DialogContent>
