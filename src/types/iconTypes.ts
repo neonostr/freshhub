@@ -4,7 +4,6 @@ import React from 'react';
 export interface FoodIconOption {
   name: string;
   icon: string;
-  displayName?: string;
 }
 
 export interface IconSelectorProps {

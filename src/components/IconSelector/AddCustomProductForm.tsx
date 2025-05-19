@@ -6,6 +6,7 @@ import { toast } from '@/hooks/use-toast';
 import CustomIconSelector from './CustomIconSelector';
 import { IconOption } from '@/data/productData';
 import { FoodIconOption } from '@/types/iconTypes';
+import * as LucideIcons from 'lucide-react';
 
 interface AddCustomProductFormProps {
   availableIcons: FoodIconOption[];
@@ -29,7 +30,7 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
   const [productName, setProductName] = useState(initialValues?.name || '');
   const [shelfLife, setShelfLife] = useState(initialValues?.shelfLife?.toString() || '7');
   // Initialize with the correct initial icon name
-  const [selectedIcon, setSelectedIcon] = useState(initialValues?.iconName || availableIcons[0]?.icon || 'food');
+  const [selectedIcon, setSelectedIcon] = useState(initialValues?.iconName || availableIcons[0]?.icon || 'apple');
 
   // Set initial selected icon value
   useEffect(() => {
@@ -67,34 +68,45 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
       return;
     }
     
-    // Make sure we have a valid category
+    // Make sure we have a valid icon name
     if (!selectedIcon) {
       toast({
-        title: "Category required",
-        description: "Please select a category for the product",
+        title: "Icon required",
+        description: "Please select an icon for the product",
         variant: "destructive",
       });
       return;
     }
     
-    console.log('Selected category for submission:', selectedIcon);
+    console.log('Selected icon for submission:', selectedIcon);
     
     // Use existing ID if editing, or generate a new one
     const productId = isEditing ? initialValues!.name : generateUniqueId();
     
-    // Create a placeholder element for compatibility
-    const placeholderElement = <div className="h-5 w-5" />;
+    // Create React element for the icon from the selected icon name
+    const iconName = selectedIcon;
+    const pascalCaseName = iconName.charAt(0).toUpperCase() + 
+      iconName.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+    
+    const IconComponent = (LucideIcons as any)[pascalCaseName];
+    
+    let iconElement;
+    if (IconComponent) {
+      iconElement = React.createElement(IconComponent, { className: "h-5 w-5" });
+    } else {
+      iconElement = <div className="h-5 w-5 flex items-center justify-center">?</div>;
+    }
     
     // Create a new custom product with the selected icon
     const newProduct: IconOption = {
       value: productId,
       label: productName.trim(),
-      icon: placeholderElement,
+      icon: iconElement,
       shelfLife: numValue
     };
     
     // Pass both the product and the icon name
-    onAdd(newProduct, selectedIcon);
+    onAdd(newProduct, iconName);
   };
 
   return (
@@ -115,12 +127,12 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
         </div>
         
         <div>
-          <Label htmlFor="new-product-category">Category</Label>
+          <Label htmlFor="new-product-icon">Icon</Label>
           <CustomIconSelector
             icons={availableIcons}
             selectedIcon={selectedIcon}
             onSelect={(icon) => {
-              console.log('Category selected:', icon);
+              console.log('Icon selected:', icon);
               setSelectedIcon(icon);
             }}
             className="h-40" // Updated to match 4 rows of icons

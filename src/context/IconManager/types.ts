@@ -1,6 +1,6 @@
 
 import { IconOption } from '@/data/productData';
-import { IconOptionExtended, FoodIconOption } from '@/types/iconTypes';
+import { IconOptionExtended } from '@/types/iconTypes';
 import { ReactNode } from 'react';
 
 export interface IconManagerContextType {
@@ -14,7 +14,6 @@ export interface IconManagerContextType {
   deleteCustomProduct: (iconValue: string) => void;
   isCustomProduct: (iconValue: string) => boolean;
   customProducts: Record<string, IconOptionExtended>;
-  getAllAvailableIcons: () => FoodIconOption[];  // Add this function to the interface
 }
 
 export interface IconManagerProviderProps {

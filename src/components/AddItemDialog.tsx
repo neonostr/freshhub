@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { IconPlus } from "@tabler/icons-react";
+import { Plus } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -80,7 +80,7 @@ const AddItemDialog: React.FC = () => {
               left: handedness === 'left' ? "1.5rem" : "auto"
             }}
           >
-            <IconPlus className="h-6 w-6" stroke={1.5} />
+            <Plus className="h-6 w-6" />
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -89,20 +89,21 @@ const AddItemDialog: React.FC = () => {
           </DialogHeader>
           
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            {/* Product selection at the top */}
+            {/* Icon selection at the top */}
             <div className="space-y-2">
               <Label>Choose a Product</Label>
               <ScrollArea className="h-[200px]">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {availableIcons.map((icon) => (
                     <Button
                       key={icon.value}
                       type="button"
                       variant={selectedIcon === icon.value ? "default" : "outline"}
-                      className="h-12 py-2"
+                      className="flex flex-col items-center justify-center h-20 py-2"
                       onClick={() => handleIconSelect(icon.value)}
                     >
-                      <span className="text-xs overflow-hidden text-ellipsis max-w-full px-1">{icon.label}</span>
+                      {icon.icon}
+                      <span className="text-xs mt-1 overflow-hidden text-ellipsis max-w-full px-1">{icon.label}</span>
                     </Button>
                   ))}
                 </div>

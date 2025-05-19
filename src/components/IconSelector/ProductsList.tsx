@@ -8,13 +8,14 @@ interface ProductsListProps {
   icons: IconOption[];
   isIconSelected: (value: string) => boolean;
   toggleIcon: (value: string) => void;
-  renderIcon?: (icon: React.ReactNode) => React.ReactNode;
+  renderIcon: (icon: React.ReactNode) => React.ReactNode;
 }
 
 const ProductsList: React.FC<ProductsListProps> = ({
   icons,
   isIconSelected,
   toggleIcon,
+  renderIcon
 }) => {
   return (
     <>
@@ -30,7 +31,7 @@ const ProductsList: React.FC<ProductsListProps> = ({
               key={icon.value}
               value={icon.value}
               label={icon.label}
-              icon={icon.icon} // Keep for compatibility
+              icon={icon.icon}
               isSelected={isIconSelected(icon.value)}
               onClick={() => {
                 // Prevent deselecting if it's the last selected icon
@@ -45,6 +46,7 @@ const ProductsList: React.FC<ProductsListProps> = ({
                   toggleIcon(icon.value);
                 }
               }}
+              renderIcon={renderIcon}
             />
           ))}
         </div>
