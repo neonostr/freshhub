@@ -62,46 +62,38 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     // Handle product deletion
     const handleCustomProductDeleted = (event: CustomEvent) => {
       const { productId } = event.detail;
+      console.log(`[ItemsContext] Handling custom product deletion: ${productId}`);
       setItems(prev => prev.filter(item => item.icon !== productId));
     };
     
-    // Handle product updates with improved logging
+    // Handle product updates including name changes
     const handleCustomProductUpdated = (event: CustomEvent) => {
       const { productId, newName, action } = event.detail;
       
-      if (action === 'updated' && newName) {
-        console.log('Product updated, applying name change to items:', productId, newName);
-        
-        // Force a direct update of all items using this product to have the new name
-        setItems(prev => {
-          const updatedItems = prev.map(item => 
-            item.icon === productId 
-              ? { ...item, name: newName } 
-              : item
-          );
-          
-          const changedItemsCount = updatedItems.filter((item, index) => 
-            item.name !== prev[index].name
-          ).length;
-          
-          if (changedItemsCount > 0) {
-            console.log(`Updated ${changedItemsCount} items with new name "${newName}"`);
-            // Explicitly save the updated items to ensure persistence
-            saveItems(updatedItems);
-          } else {
-            console.log('No items needed name updates');
-          }
-          
-          return updatedItems;
-        });
-      } else {
-        // Force a re-render to ensure UI is updated with the latest product info
-        setItems(prev => [...prev]);
+      console.log(`[ItemsContext] Product update event received:`, {
+        productId,
+        newName,
+        action
+      });
+      
+      if ((action === 'updated' || action === 'renamed') && newName) {
+        console.log(`[ItemsContext] Updating items for product: ${productId} with new name: ${newName}`);
+        updateItemsWithProductChanges(productId, newName);
       }
+    };
+    
+    // Handle direct items updates
+    const handleItemsUpdated = (event: CustomEvent) => {
+      const { updatedItems } = event.detail;
+      console.log(`[ItemsContext] Received direct items update with ${updatedItems.length} items`);
+      
+      // Update state directly with the new items
+      setItems(updatedItems);
     };
     
     // Listen for shelf life updates
     const handleShelfLifeUpdated = () => {
+      console.log(`[ItemsContext] Shelf life updated, forcing re-render`);
       // Force a re-render to update freshness calculations
       setItems(prev => [...prev]);
     };
@@ -109,12 +101,13 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     // Add event listeners
     window.addEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
     window.addEventListener('custom-product-updated', handleCustomProductUpdated as EventListener);
+    window.addEventListener('items-updated', handleItemsUpdated as EventListener);
     window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
     
     // Also listen for storage events to handle PWA sync
     window.addEventListener('storage', (event) => {
       if (event.key === 'freshItems') {
-        console.log('Items storage changed externally, reloading items');
+        console.log('[ItemsContext] Items storage changed externally, reloading items');
         setItems(loadItems());
       }
     });
@@ -123,6 +116,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       window.removeEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
       window.removeEventListener('custom-product-updated', handleCustomProductUpdated as EventListener);
+      window.removeEventListener('items-updated', handleItemsUpdated as EventListener);
       window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
     };
   }, []);
@@ -151,23 +145,24 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   
   // Function to update items when a custom product changes
   const updateItemsWithProductChanges = (productId: string, newName: string) => {
-    const itemsToUpdate = items.filter(item => item.icon === productId);
-    
-    if (itemsToUpdate.length > 0) {
-      console.log(`Manually updating ${itemsToUpdate.length} items with product ID ${productId} to name "${newName}"`);
+    setItems(prev => {
+      const itemsToUpdate = prev.filter(item => item.icon === productId);
       
-      setItems(prev => {
+      if (itemsToUpdate.length > 0) {
+        console.log(`[ItemsContext] Updating ${itemsToUpdate.length} items with product ID ${productId} to name "${newName}"`);
+        
         const updated = prev.map(item => 
           item.icon === productId 
             ? { ...item, name: newName } 
             : item
         );
         
-        // Also save to storage to ensure persistence
+        // Save to storage to ensure persistence across sessions
         saveItems(updated);
         return updated;
-      });
-    }
+      }
+      return prev;
+    });
   };
 
   return (

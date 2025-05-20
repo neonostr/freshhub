@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -101,6 +102,7 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
   
   const updateProductName = (iconValue: string, newName: string) => {
     if (customProducts[iconValue]) {
+      // 1. Update the product in our state
       setCustomProducts(prev => ({
         ...prev,
         [iconValue]: {
@@ -109,30 +111,37 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
         }
       }));
       
-      // Update tracked items with this product - load directly from storage for consistency
+      // 2. Update all items using this product with the new name - load directly from storage
       const items = loadItems();
+      let itemsUpdated = false;
+      
       const updatedItems = items.map(item => {
         if (item.icon === iconValue) {
+          itemsUpdated = true;
           return { ...item, name: newName };
         }
         return item;
       });
       
-      // Only save and dispatch event if changes were actually made
-      if (JSON.stringify(items) !== JSON.stringify(updatedItems)) {
+      // Only save if items were actually modified
+      if (itemsUpdated) {
+        console.log(`[IconManagerContext] Updating ${updatedItems.filter(i => i.icon === iconValue).length} items with new product name "${newName}"`);
         saveItems(updatedItems);
         
-        // Dispatch a more specific event with the new name included
-        window.dispatchEvent(new CustomEvent('custom-product-updated', {
-          detail: { 
-            productId: iconValue, 
-            newName, 
-            action: 'updated' 
-          }
+        // Force a synchronous update to ensure UI is updated immediately
+        window.dispatchEvent(new CustomEvent('items-updated', {
+          detail: { updatedItems }
         }));
-        
-        console.log(`Updated product ${iconValue} name to "${newName}" and updated ${updatedItems.filter(item => item.icon === iconValue).length} items`);
       }
+      
+      // 3. Dispatch a more specific event about the product name change
+      window.dispatchEvent(new CustomEvent('custom-product-updated', {
+        detail: { 
+          productId: iconValue, 
+          newName, 
+          action: 'renamed' 
+        }
+      }));
     }
   };
   
