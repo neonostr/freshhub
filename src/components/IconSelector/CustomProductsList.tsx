@@ -56,9 +56,6 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
       <div className="space-y-4">
         {products.map((product) => (
           <div key={product.value} className="flex items-center gap-2 border p-3 rounded-md">
-            <div className="p-2 bg-muted rounded-md w-8 h-8 flex items-center justify-center font-medium text-sm">
-              {product.label.charAt(0).toUpperCase()}
-            </div>
             
             {editingProduct && editingProduct.productId === product.value ? (
               <div className="flex-1 flex flex-col gap-3">
