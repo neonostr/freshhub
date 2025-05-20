@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Item, FreshnessLevel } from '@/types/item';
 import { calculateFreshnessLevel, formatOpenedDate, formatTimeOpen, calculateDaysUntilExpiry } from '@/utils/itemUtils';
@@ -170,12 +169,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
         <div className={`h-2 ${getFreshnessColor(freshnessLevel)}`} />
         <CardContent className={`p-4 transition-all duration-300 ease-in-out ${isExpandable ? 'expandable-card' : ''}`}>
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-gray-100 rounded-full flex items-center justify-center w-9 h-9 font-bold">
-                {item.name.charAt(0).toUpperCase()}
-              </div>
-              <h3 className="font-medium text-lg">{item.name}</h3>
-            </div>
+            <h3 className="font-medium text-lg">{item.name}</h3>
             <div className="flex items-center gap-2">
               <span className={`text-xs px-2 py-1 rounded-full ${getFreshnessColor(freshnessLevel)}`}>
                 {getDaysLeftDisplay()}

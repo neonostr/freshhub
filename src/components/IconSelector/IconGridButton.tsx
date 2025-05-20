@@ -18,19 +18,15 @@ const IconGridButton: React.FC<IconGridButtonProps> = ({
   onClick,
   className
 }) => {
-  // Get first letter for display
-  const firstLetter = label.charAt(0).toUpperCase();
-  
   return (
     <Button
       key={value}
       type="button"
       variant={isSelected ? "default" : "outline"}
-      className={cn("flex flex-col items-center justify-center h-20 py-2", className)}
+      className={cn("flex items-center justify-center h-20 py-2", className)}
       onClick={onClick}
     >
-      <div className="font-bold text-lg mb-1">{firstLetter}</div>
-      <span className="text-xs mt-1 text-center truncate w-full px-1">{label}</span>
+      <span className="text-sm text-center truncate w-full px-1">{label}</span>
     </Button>
   );
 };

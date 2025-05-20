@@ -25,7 +25,7 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
             data-icon={icon.value}
             data-state={selectedIcon === icon.value ? "active" : "inactive"}
           >
-            <span className="text-sm font-medium">{icon.name.charAt(0).toUpperCase()}</span>
+            <span className="text-sm text-center truncate w-full">{icon.name}</span>
           </Button>
         ))}
       </div>

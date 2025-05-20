@@ -193,7 +193,8 @@ const IconManagerDialog: React.FC = () => {
   // Extract basic product types from ALL_ICONS for custom products
   const foodProductTypes = Object.values(ALL_ICONS)
     .map(product => ({
-      name: product.label
+      name: product.label,
+      value: product.value
     }))
     .slice(0, 20);
 

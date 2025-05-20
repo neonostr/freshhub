@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -99,11 +98,10 @@ const AddItemDialog: React.FC = () => {
                       key={icon.value}
                       type="button"
                       variant={selectedIcon === icon.value ? "default" : "outline"}
-                      className="flex flex-col items-center justify-center h-20 py-2"
+                      className="flex items-center justify-center h-20 py-2"
                       onClick={() => handleIconSelect(icon.value)}
                     >
-                      <div className="font-bold text-lg mb-1">{icon.label.charAt(0).toUpperCase()}</div>
-                      <span className="text-xs mt-1 overflow-hidden text-ellipsis max-w-full px-1">{icon.label}</span>
+                      <span className="text-sm text-center truncate max-w-full px-1">{icon.label}</span>
                     </Button>
                   ))}
                 </div>
