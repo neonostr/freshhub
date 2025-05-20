@@ -22,6 +22,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
   const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
 
+  // Initial loading of items and first-time user check
   useEffect(() => {
     const loadedItems = loadItems();
     setItems(loadedItems);
@@ -38,6 +39,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  // Save items when they change and show tutorial for first-time users
   useEffect(() => {
     if (items.length > 0) {
       saveItems(items);
@@ -55,25 +57,43 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     setIsFirstTimeUser(false);
   };
   
-  // Listen for custom product deletion events
+  // Listen for product-related events
   useEffect(() => {
+    // Handle product deletion
     const handleCustomProductDeleted = (event: CustomEvent) => {
       const { productId } = event.detail;
       setItems(prev => prev.filter(item => item.icon !== productId));
     };
     
-    // Listen for custom product updates
+    // Handle product updates with improved logging
     const handleCustomProductUpdated = (event: CustomEvent) => {
       const { productId, newName, action } = event.detail;
       
       if (action === 'updated' && newName) {
         console.log('Product updated, applying name change to items:', productId, newName);
-        // Update all items using this product to have the new name
-        setItems(prev => prev.map(item => 
-          item.icon === productId 
-            ? { ...item, name: newName } 
-            : item
-        ));
+        
+        // Force a direct update of all items using this product to have the new name
+        setItems(prev => {
+          const updatedItems = prev.map(item => 
+            item.icon === productId 
+              ? { ...item, name: newName } 
+              : item
+          );
+          
+          const changedItemsCount = updatedItems.filter((item, index) => 
+            item.name !== prev[index].name
+          ).length;
+          
+          if (changedItemsCount > 0) {
+            console.log(`Updated ${changedItemsCount} items with new name "${newName}"`);
+            // Explicitly save the updated items to ensure persistence
+            saveItems(updatedItems);
+          } else {
+            console.log('No items needed name updates');
+          }
+          
+          return updatedItems;
+        });
       } else {
         // Force a re-render to ensure UI is updated with the latest product info
         setItems(prev => [...prev]);
@@ -90,6 +110,14 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     window.addEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
     window.addEventListener('custom-product-updated', handleCustomProductUpdated as EventListener);
     window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
+    
+    // Also listen for storage events to handle PWA sync
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'freshItems') {
+        console.log('Items storage changed externally, reloading items');
+        setItems(loadItems());
+      }
+    });
     
     // Cleanup
     return () => {
@@ -126,11 +154,19 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     const itemsToUpdate = items.filter(item => item.icon === productId);
     
     if (itemsToUpdate.length > 0) {
-      setItems(prev => prev.map(item => 
-        item.icon === productId 
-          ? { ...item, name: newName } // Update name to match the product's new name
-          : item
-      ));
+      console.log(`Manually updating ${itemsToUpdate.length} items with product ID ${productId} to name "${newName}"`);
+      
+      setItems(prev => {
+        const updated = prev.map(item => 
+          item.icon === productId 
+            ? { ...item, name: newName } 
+            : item
+        );
+        
+        // Also save to storage to ensure persistence
+        saveItems(updated);
+        return updated;
+      });
     }
   };
 

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -110,7 +109,7 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
         }
       }));
       
-      // Update tracked items with this product
+      // Update tracked items with this product - load directly from storage for consistency
       const items = loadItems();
       const updatedItems = items.map(item => {
         if (item.icon === iconValue) {
@@ -119,12 +118,20 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
         return item;
       });
       
+      // Only save and dispatch event if changes were actually made
       if (JSON.stringify(items) !== JSON.stringify(updatedItems)) {
         saveItems(updatedItems);
-        // Notify about changes immediately to trigger UI updates
+        
+        // Dispatch a more specific event with the new name included
         window.dispatchEvent(new CustomEvent('custom-product-updated', {
-          detail: { productId: iconValue, newName, action: 'updated' }
+          detail: { 
+            productId: iconValue, 
+            newName, 
+            action: 'updated' 
+          }
         }));
+        
+        console.log(`Updated product ${iconValue} name to "${newName}" and updated ${updatedItems.filter(item => item.icon === iconValue).length} items`);
       }
     }
   };
