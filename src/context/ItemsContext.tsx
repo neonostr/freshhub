@@ -78,17 +78,33 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       
       if ((action === 'updated' || action === 'renamed') && newName) {
         console.log(`[ItemsContext] Updating items for product: ${productId} with new name: ${newName}`);
-        updateItemsWithProductChanges(productId, newName);
+        setItems(prev => {
+          const updated = prev.map(item => 
+            item.icon === productId 
+              ? { ...item, name: newName } 
+              : item
+          );
+          
+          // Save changes to storage to ensure persistence
+          if (JSON.stringify(updated) !== JSON.stringify(prev)) {
+            console.log(`[ItemsContext] Saving updated items to storage after rename`);
+            saveItems(updated);
+          }
+          
+          return updated;
+        });
       }
     };
     
     // Handle direct items updates
     const handleItemsUpdated = (event: CustomEvent) => {
       const { updatedItems } = event.detail;
-      console.log(`[ItemsContext] Received direct items update with ${updatedItems.length} items`);
+      console.log(`[ItemsContext] Received direct items update with ${updatedItems?.length} items`);
       
-      // Update state directly with the new items
-      setItems(updatedItems);
+      if (updatedItems && Array.isArray(updatedItems)) {
+        // Update state directly with the new items
+        setItems(updatedItems);
+      }
     };
     
     // Listen for shelf life updates
