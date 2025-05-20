@@ -6,22 +6,21 @@ import { cn } from '@/lib/utils';
 interface IconGridButtonProps {
   value: string;
   label: string;
-  icon: React.ReactNode;
   isSelected?: boolean;
   onClick: () => void;
   className?: string;
-  renderIcon: (icon: React.ReactNode) => React.ReactNode;
 }
 
 const IconGridButton: React.FC<IconGridButtonProps> = ({
   value,
   label,
-  icon,
   isSelected = false,
   onClick,
-  className,
-  renderIcon
+  className
 }) => {
+  // Get first letter for display
+  const firstLetter = label.charAt(0).toUpperCase();
+  
   return (
     <Button
       key={value}
@@ -30,9 +29,7 @@ const IconGridButton: React.FC<IconGridButtonProps> = ({
       className={cn("flex flex-col items-center justify-center h-20 py-2", className)}
       onClick={onClick}
     >
-      <div className="food-icon-wrapper">
-        {renderIcon(icon)}
-      </div>
+      <div className="font-bold text-lg mb-1">{firstLetter}</div>
       <span className="text-xs mt-1 text-center truncate w-full px-1">{label}</span>
     </Button>
   );

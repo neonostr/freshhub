@@ -6,6 +6,7 @@ import { saveItems, loadItems } from '@/utils/itemUtils';
 import { IconManagerContextType, IconManagerProviderProps } from './types';
 import { useIconStorage } from './useIconStorage';
 import { IconOptionExtended } from '@/types/iconTypes';
+import { createSerializableProducts, reconstructProductsFromStorage } from './utils';
 
 const IconManagerContext = createContext<IconManagerContextType | undefined>(undefined);
 
@@ -18,9 +19,6 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     customProducts,
     setCustomProducts
   } = useIconStorage();
-  
-  // Instead of directly using useItems, we'll load items directly when needed
-  // This avoids the dependency on ItemsProvider
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
@@ -80,13 +78,12 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     }));
   };
   
-  const addCustomProduct = (product: IconOptionExtended, iconName: string) => {
-    // Include the iconName in the stored product
+  const addCustomProduct = (product: IconOptionExtended) => {
+    // Add the product to the custom products store
     setCustomProducts(prev => ({
       ...prev,
       [product.value]: {
-        ...product,
-        iconName: iconName // Store the icon name for reference
+        ...product
       }
     }));
     

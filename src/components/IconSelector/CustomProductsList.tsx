@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Plus, Edit, Trash2, Check, X } from 'lucide-react';
 import { IconOption } from '@/data/productData';
 import { EditableProductProps } from '@/types/iconTypes';
-import CustomIconSelector from './CustomIconSelector';
 
 interface CustomProductsListProps {
   products: IconOption[];
@@ -15,13 +14,9 @@ interface CustomProductsListProps {
   saveProductChanges: () => void;
   cancelEditingProduct: () => void;
   confirmDelete: (value: string) => void;
-  renderIcon: (icon: React.ReactNode) => React.ReactNode;
   onAddNewClick: () => void;
   isAdding: boolean;
   updateEditingField: (field: string, value: string | number) => void;
-  availableIcons: { name: string, icon: string }[];
-  editingIcon: string;
-  setEditingIcon: (iconName: string) => void;
 }
 
 const CustomProductsList: React.FC<CustomProductsListProps> = ({
@@ -31,13 +26,9 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
   saveProductChanges,
   cancelEditingProduct,
   confirmDelete,
-  renderIcon,
   onAddNewClick,
   isAdding,
-  updateEditingField,
-  availableIcons,
-  editingIcon,
-  setEditingIcon
+  updateEditingField
 }) => {
   if (products.length === 0) {
     return (
@@ -65,8 +56,8 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
       <div className="space-y-4">
         {products.map((product) => (
           <div key={product.value} className="flex items-center gap-2 border p-3 rounded-md">
-            <div className="p-2 bg-muted rounded-md">
-              {renderIcon(product.icon)}
+            <div className="p-2 bg-muted rounded-md w-8 h-8 flex items-center justify-center font-medium text-sm">
+              {product.label.charAt(0).toUpperCase()}
             </div>
             
             {editingProduct && editingProduct.productId === product.value ? (
@@ -77,16 +68,6 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
                     value={editingProduct.name}
                     onChange={(e) => updateEditingField('name', e.target.value)}
                     className="flex-1"
-                  />
-                </div>
-                
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium">Icon:</label>
-                  <CustomIconSelector
-                    icons={availableIcons}
-                    selectedIcon={editingIcon}
-                    onSelect={setEditingIcon}
-                    className="h-24 border rounded-md"
                   />
                 </div>
                 

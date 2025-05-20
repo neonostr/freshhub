@@ -3,7 +3,6 @@ import React from 'react';
 
 export interface FoodIconOption {
   name: string;
-  icon: string;
 }
 
 export interface IconSelectorProps {
@@ -16,7 +15,6 @@ export interface IconSelectorProps {
 export interface EditableProductProps {
   productId: string;
   name: string;
-  icon: string;
   shelfLife: number;
 }
 
@@ -24,7 +22,5 @@ export interface EditableProductProps {
 export interface IconOptionExtended {
   value: string;
   label: string;
-  icon: React.ReactElement; // Keep as ReactElement for consistency with IconOption
   shelfLife: number;
-  iconName?: string; // Optional iconName property
 }

@@ -9,7 +9,7 @@ export interface IconManagerContextType {
   toggleIcon: (iconValue: string) => void;
   isIconSelected: (iconValue: string) => boolean;
   updateIconShelfLife: (iconValue: string, days: number) => void;
-  addCustomProduct: (product: IconOptionExtended, iconName: string) => void;
+  addCustomProduct: (product: IconOptionExtended) => void;
   updateProductName: (iconValue: string, newName: string) => void;
   deleteCustomProduct: (iconValue: string) => void;
   isCustomProduct: (iconValue: string) => boolean;

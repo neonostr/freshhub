@@ -13,7 +13,6 @@ interface ShelfLifeListProps {
   handleShelfLifeChange: (value: string, newValue: string) => void;
   handleShelfLifeBlur: (value: string) => void;
   getDisplayValue: (value: string) => string;
-  renderIcon: (icon: React.ReactNode) => React.ReactNode;
 }
 
 const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
@@ -23,8 +22,7 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
   handleShelfLifeFocus,
   handleShelfLifeChange,
   handleShelfLifeBlur,
-  getDisplayValue,
-  renderIcon
+  getDisplayValue
 }) => {
   return (
     <>
@@ -37,8 +35,8 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
           {icons.map((icon) => (
             <div key={icon.value} className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="p-2 bg-muted rounded-md">
-                  {renderIcon(icon.icon)}
+                <div className="p-2 bg-muted rounded-md w-10 h-10 flex items-center justify-center font-medium">
+                  {icon.label.charAt(0).toUpperCase()}
                 </div>
                 <Label>
                   {icon.label}
