@@ -35,9 +35,6 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
           {icons.map((icon) => (
             <div key={icon.value} className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="p-2 bg-muted rounded-md w-10 h-10 flex items-center justify-center font-medium">
-                  {icon.label.charAt(0).toUpperCase()}
-                </div>
                 <Label>
                   {icon.label}
                 </Label>
