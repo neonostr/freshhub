@@ -102,7 +102,6 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
   
   const updateProductName = (iconValue: string, newName: string) => {
     if (customProducts[iconValue]) {
-      // 1. Update the product in our state
       setCustomProducts(prev => ({
         ...prev,
         [iconValue]: {
@@ -111,37 +110,22 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
         }
       }));
       
-      // 2. Update all items using this product with the new name - load directly from storage
+      // Update tracked items with this product
       const items = loadItems();
-      let itemsUpdated = false;
-      
       const updatedItems = items.map(item => {
         if (item.icon === iconValue) {
-          itemsUpdated = true;
           return { ...item, name: newName };
         }
         return item;
       });
       
-      // Only save if items were actually modified
-      if (itemsUpdated) {
-        console.log(`[IconManagerContext] Updating ${updatedItems.filter(i => i.icon === iconValue).length} items with new product name "${newName}"`);
+      if (JSON.stringify(items) !== JSON.stringify(updatedItems)) {
         saveItems(updatedItems);
-        
-        // Force a synchronous update to ensure UI is updated immediately
-        window.dispatchEvent(new CustomEvent('items-updated', {
-          detail: { updatedItems }
+        // Notify about changes immediately to trigger UI updates
+        window.dispatchEvent(new CustomEvent('custom-product-updated', {
+          detail: { productId: iconValue, newName, action: 'updated' }
         }));
       }
-      
-      // 3. Dispatch a more specific event about the product name change
-      window.dispatchEvent(new CustomEvent('custom-product-updated', {
-        detail: { 
-          productId: iconValue, 
-          newName, 
-          action: 'renamed' 
-        }
-      }));
     }
   };
   
