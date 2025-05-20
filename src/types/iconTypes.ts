@@ -3,6 +3,7 @@ import React from 'react';
 
 export interface FoodIconOption {
   name: string;
+  value: string; // Adding value property instead of icon
 }
 
 export interface IconSelectorProps {

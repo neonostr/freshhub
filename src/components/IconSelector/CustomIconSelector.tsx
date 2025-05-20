@@ -16,14 +16,14 @@ const CustomIconSelector: React.FC<IconSelectorProps> = ({
       <div className="grid grid-cols-4 gap-2 p-1">
         {icons.map((icon) => (
           <Button
-            key={icon.icon}
+            key={icon.value}
             type="button"
-            variant={selectedIcon === icon.icon ? "default" : "outline"}
+            variant={selectedIcon === icon.value ? "default" : "outline"}
             size="sm"
             className="p-2 h-10 flex items-center justify-center"
-            onClick={() => onSelect(icon.icon)}
-            data-icon={icon.icon}
-            data-state={selectedIcon === icon.icon ? "active" : "inactive"}
+            onClick={() => onSelect(icon.value)}
+            data-icon={icon.value}
+            data-state={selectedIcon === icon.value ? "active" : "inactive"}
           >
             <span className="text-sm font-medium">{icon.name.charAt(0).toUpperCase()}</span>
           </Button>
