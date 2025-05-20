@@ -67,6 +67,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       const { productId, newName, action } = event.detail;
       
       if (action === 'updated' && newName) {
+        console.log('Product updated, applying name change to items:', productId, newName);
         // Update all items using this product to have the new name
         setItems(prev => prev.map(item => 
           item.icon === productId 
