@@ -232,6 +232,7 @@ const IconManagerDialog: React.FC = () => {
               </TabsList>
               
               <div className="flex-1 overflow-hidden mt-4">
+                {/* Product selection tab */}
                 <TabsContent value="selection" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
                   <ProductsList 
                     icons={sortedIcons as IconOption[]} 
@@ -240,6 +241,7 @@ const IconManagerDialog: React.FC = () => {
                   />
                 </TabsContent>
                 
+                {/* Shelf life tab */}
                 <TabsContent value="shelfLife" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
                   <ShelfLifeList 
                     icons={Object.values(allIcons).filter(icon => isIconSelected(icon.value)).sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]} 
@@ -252,6 +254,7 @@ const IconManagerDialog: React.FC = () => {
                   />
                 </TabsContent>
                 
+                {/* Custom products tab */}
                 <TabsContent value="custom" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden overflow-hidden">
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-sm text-muted-foreground">
@@ -306,6 +309,7 @@ const IconManagerDialog: React.FC = () => {
                   </div>
                 </TabsContent>
                 
+                {/* Settings tab with updated About section */}
                 <TabsContent value="settings" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
                   <div className="space-y-6 overflow-y-auto p-1">
                     
@@ -319,7 +323,7 @@ const IconManagerDialog: React.FC = () => {
                           <li><strong>100% Private:</strong> Your data never leaves your device</li>
                           <li><strong>Works Offline:</strong> No internet connection required</li>
                           <li><strong>No Tracking:</strong> No analytics or data collection</li>
-                          <li><strong>Free:</strong> No paid features or subscriptions</li>
+                          <li><strong>Premium Features:</strong> Unlock custom products and track unlimited items with a premium subscription</li>
                         </ul>
                       </div>
                     </div>

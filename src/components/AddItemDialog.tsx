@@ -11,14 +11,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useHandedness } from '@/context/HandednessContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import PremiumUpgradeDialog from './PremiumUpgradeDialog';
-import { useToast } from "@/hooks/use-toast";
 
 const AddItemDialog: React.FC = () => {
   const { items, addItem } = useItems();
   const { availableIcons, allIcons } = useIconManager();
   const { handedness } = useHandedness();
   const { checkCanAddItems } = useSubscription();
-  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState('');
@@ -53,11 +51,6 @@ const AddItemDialog: React.FC = () => {
       }
     } catch (error) {
       console.error("AddItemDialog: Error handling dialog open change:", error);
-      toast({
-        title: "Error",
-        description: "An error occurred while opening the dialog",
-        variant: "destructive"
-      });
     }
   };
 
@@ -74,11 +67,6 @@ const AddItemDialog: React.FC = () => {
       
       if (!selectedIcon) {
         console.error("AddItemDialog: No icon selected");
-        toast({
-          title: "Error",
-          description: "Please select a product",
-          variant: "destructive"
-        });
         setIsSubmitting(false);
         return;
       }
@@ -87,11 +75,6 @@ const AddItemDialog: React.FC = () => {
       const selectedProduct = allIcons[selectedIcon];
       if (!selectedProduct) {
         console.error("AddItemDialog: Selected product not found", selectedIcon);
-        toast({
-          title: "Error",
-          description: "Selected product not found",
-          variant: "destructive"
-        });
         setIsSubmitting(false);
         return;
       }
@@ -105,11 +88,6 @@ const AddItemDialog: React.FC = () => {
         parsedCustomDuration = parseInt(customDuration, 10);
         if (isNaN(parsedCustomDuration) || parsedCustomDuration <= 0) {
           console.error("AddItemDialog: Invalid custom duration", customDuration);
-          toast({
-            title: "Error",
-            description: "Please enter a valid shelf life (positive number)",
-            variant: "destructive"
-          });
           setIsSubmitting(false);
           return;
         }
@@ -129,19 +107,8 @@ const AddItemDialog: React.FC = () => {
       setCustomDuration('');
       setIsSubmitting(false);
       setOpen(false);
-      
-      // Show success toast
-      toast({
-        title: "Success",
-        description: `Added ${productName}`,
-      });
     } catch (error) {
       console.error("AddItemDialog: Error adding item:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add item",
-        variant: "destructive"
-      });
       setIsSubmitting(false);
     }
   };
