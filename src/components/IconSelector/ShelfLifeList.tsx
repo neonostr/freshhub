@@ -30,10 +30,10 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
         Customize the shelf life (in days) for each selected product.
       </p>
       
-      <ScrollArea className="flex-1">
-        <div className="space-y-4">
+      <ScrollArea className="flex-1 pr-4">
+        <div className="space-y-4 pr-2">
           {icons.map((icon) => (
-            <div key={icon.value} className="flex items-center justify-between">
+            <div key={icon.value} className="flex items-center justify-between border border-gray-200 rounded-md p-3 bg-white">
               <div className="font-medium text-base">
                 {icon.label}
               </div>
@@ -49,7 +49,7 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
                     onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
                     onFocus={() => handleShelfLifeFocus(icon.value)}
                     onBlur={() => handleShelfLifeBlur(icon.value)}
-                    className="w-20 text-center pr-8"
+                    className="w-20 text-center pr-8 h-10"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none pr-3">
                     <span className="text-gray-500">
@@ -60,7 +60,7 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
                     </span>
                   </div>
                 </div>
-                <span className="text-sm">days</span>
+                <span className="text-sm font-medium text-gray-600">days</span>
               </div>
             </div>
           ))}

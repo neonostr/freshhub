@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry, calculateMaxFreshnessDays } from '@/utils/itemUtils';
@@ -10,6 +10,7 @@ import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from
 import { Item } from '@/types/item';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHandedness, type Handedness } from '@/context/HandednessContext';
+import { useHeaderVisibilityStore } from '@/pages/Index';
 
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
@@ -24,8 +25,11 @@ const ItemsList: React.FC = () => {
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(false);
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
+  const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
+  const listContainerRef = useRef<HTMLDivElement>(null);
   
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -80,6 +84,32 @@ const ItemsList: React.FC = () => {
     };
   }, []);
 
+  // Check if scrolling should be enabled based on content vs container height
+  useEffect(() => {
+    const checkScrollNeeded = () => {
+      if (listContainerRef.current) {
+        const container = listContainerRef.current;
+        const contentHeight = container.scrollHeight;
+        const containerHeight = container.clientHeight;
+        const windowHeight = window.innerHeight;
+        
+        // Consider some buffer (20px) to avoid borderline cases
+        const shouldScroll = contentHeight > containerHeight || contentHeight > windowHeight - 150;
+        console.log(`Content height: ${contentHeight}, Container height: ${containerHeight}, Window height: ${windowHeight}, Should scroll: ${shouldScroll}`);
+        setScrollEnabled(shouldScroll);
+      }
+    };
+    
+    // Check on mount, when items change, or on window resize
+    checkScrollNeeded();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkScrollNeeded);
+    
+    // Remove listener on cleanup
+    return () => window.removeEventListener('resize', checkScrollNeeded);
+  }, [items, isCompactMode, hideHeader, forceUpdate]);
+
   // Filter items based on the current freshness filter
   const filteredItems = items.filter(item => {
     const daysUntilExpiry = calculateDaysUntilExpiry(item);
@@ -108,14 +138,11 @@ const ItemsList: React.FC = () => {
     setIsCompactMode(prev => !prev);
     setExpandedItemIds([]); // Reset expanded items when toggling mode
 
-    // If enabled, hide the header
-    const header = document.getElementById('app-header');
-    if (header) {
-      if (!isCompactMode) {
-        header.style.display = 'none';
-      } else {
-        header.style.display = 'block';
-      }
+    // Update header visibility when toggling compact mode
+    if (!isCompactMode) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
     }
   };
 
@@ -155,8 +182,17 @@ const ItemsList: React.FC = () => {
     return "desktop-compact-grid";
   };
 
+  // Calculate classes for the outer container based on scroll need
+  const containerClass = scrollEnabled 
+    ? "space-y-6 relative pb-16 overflow-y-auto" 
+    : "space-y-6 relative pb-16 overflow-y-hidden";
+
   return (
-    <div className="space-y-6 relative pb-16">
+    <div 
+      ref={listContainerRef} 
+      className={containerClass} 
+      style={scrollEnabled ? {} : { height: 'auto' }}
+    >
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard

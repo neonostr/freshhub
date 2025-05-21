@@ -45,15 +45,10 @@ const SwipeTutorial: React.FC = () => {
         <h3 className="font-semibold text-xl mb-4 text-center">Swipe to Delete</h3>
         
         <div className="relative overflow-hidden rounded-lg mb-6">
-          <div className="absolute inset-0 flex items-center justify-end bg-destructive rounded-lg">
-            <div className="flex items-center justify-center w-16 pr-4">
-              <Trash2 className="text-white" size={24} />
-            </div>
-          </div>
-          
+          {/* Always render the card first, then the delete background behind it */}
           <div 
             id="swipe-demo-card" 
-            className="bg-white p-4 rounded-lg border shadow-sm transition-transform duration-500"
+            className="bg-white p-4 rounded-lg border shadow-sm transition-transform duration-500 relative z-10"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -65,6 +60,13 @@ const SwipeTutorial: React.FC = () => {
               <div>
                 <span className="text-xs px-2 py-1 rounded-full bg-fresh-green text-white">Fresh</span>
               </div>
+            </div>
+          </div>
+
+          {/* Delete background that shows through as card moves */}
+          <div className="absolute inset-0 flex items-center justify-end bg-destructive rounded-lg" style={{ zIndex: 5 }}>
+            <div className="flex items-center justify-center w-16 pr-4">
+              <Trash2 className="text-white" size={24} />
             </div>
           </div>
         </div>
