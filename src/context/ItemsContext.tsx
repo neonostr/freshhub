@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
+import { toast } from 'sonner';
 
 interface ItemsContextType {
   items: Item[];
@@ -21,115 +22,286 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
   const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
+  // Load items from storage on initial render
   useEffect(() => {
-    const loadedItems = loadItems();
-    setItems(loadedItems);
-    
-    // Check if first time user
-    const hasSeenTutorial = localStorage.getItem('hasSeenSwipeTutorial');
-    if (!hasSeenTutorial) {
-      setIsFirstTimeUser(true);
+    try {
+      console.log("ItemsContext: Loading items from local storage");
+      const loadedItems = loadItems();
+      console.log(`ItemsContext: Loaded ${loadedItems.length} items`);
+      setItems(loadedItems);
       
-      // Only show tutorial when we have at least one item and we're on mobile
-      if (loadedItems.length > 0 && window.innerWidth <= 768) {
-        setShouldShowTutorial(true);
+      // Check if first time user
+      const hasSeenTutorial = localStorage.getItem('hasSeenSwipeTutorial');
+      console.log(`ItemsContext: User has seen tutorial: ${!!hasSeenTutorial}`);
+      if (!hasSeenTutorial) {
+        setIsFirstTimeUser(true);
+        
+        // Only show tutorial when we have at least one item and we're on mobile
+        if (loadedItems.length > 0 && window.innerWidth <= 768) {
+          console.log("ItemsContext: Showing tutorial for mobile first-time user");
+          setShouldShowTutorial(true);
+        }
       }
+      
+      setIsInitialized(true);
+    } catch (error) {
+      console.error("ItemsContext: Error initializing:", error);
+      toast.error("Failed to load your items");
     }
   }, []);
 
+  // Save items to storage when they change
   useEffect(() => {
-    if (items.length > 0) {
-      saveItems(items);
-      
-      // For first time users, show tutorial when they add their first item
-      if (isFirstTimeUser && items.length === 1 && window.innerWidth <= 768) {
-        setShouldShowTutorial(true);
+    // Only save if we've already initialized (to prevent wiping storage on first render)
+    if (isInitialized && items.length > 0) {
+      try {
+        console.log(`ItemsContext: Saving ${items.length} items to local storage`);
+        saveItems(items);
+        
+        // For first time users, show tutorial when they add their first item
+        if (isFirstTimeUser && items.length === 1 && window.innerWidth <= 768) {
+          console.log("ItemsContext: Showing tutorial for first item added");
+          setShouldShowTutorial(true);
+        }
+      } catch (error) {
+        console.error("ItemsContext: Error saving items:", error);
+        toast.error("Failed to save your items");
       }
     }
-  }, [items, isFirstTimeUser]);
+  }, [items, isFirstTimeUser, isInitialized]);
   
   const dismissTutorial = () => {
-    setShouldShowTutorial(false);
-    localStorage.setItem('hasSeenSwipeTutorial', 'true');
-    setIsFirstTimeUser(false);
+    try {
+      console.log("ItemsContext: Dismissing tutorial");
+      setShouldShowTutorial(false);
+      localStorage.setItem('hasSeenSwipeTutorial', 'true');
+      setIsFirstTimeUser(false);
+    } catch (error) {
+      console.error("ItemsContext: Error dismissing tutorial:", error);
+    }
   };
   
   // Listen for custom product deletion events
   useEffect(() => {
     const handleCustomProductDeleted = (event: CustomEvent) => {
-      const { productId } = event.detail;
-      setItems(prev => prev.filter(item => item.icon !== productId));
+      try {
+        const { productId } = event.detail;
+        console.log(`ItemsContext: Received custom-product-deleted event for ${productId}`);
+        setItems(prev => {
+          const filtered = prev.filter(item => item.icon !== productId);
+          console.log(`ItemsContext: Removed ${prev.length - filtered.length} items using product ${productId}`);
+          return filtered;
+        });
+      } catch (error) {
+        console.error("ItemsContext: Error handling product deletion:", error);
+      }
     };
     
     // Listen for custom product updates
     const handleCustomProductUpdated = (event: CustomEvent) => {
-      const { productId, newName, action } = event.detail;
-      
-      if (action === 'updated' && newName) {
-        // Update all items using this product to have the new name
-        setItems(prev => prev.map(item => 
-          item.icon === productId 
-            ? { ...item, name: newName } 
-            : item
-        ));
-      } else {
-        // Force a re-render to ensure UI is updated with the latest product info
-        setItems(prev => [...prev]);
+      try {
+        const { productId, newName, action } = event.detail;
+        console.log(`ItemsContext: Received custom-product-updated event for ${productId}`, event.detail);
+        
+        if (action === 'updated' && newName) {
+          console.log(`ItemsContext: Updating items with product ${productId} to name "${newName}"`);
+          // Update all items using this product to have the new name
+          setItems(prev => {
+            const updated = prev.map(item => 
+              item.icon === productId 
+                ? { ...item, name: newName } 
+                : item
+            );
+            
+            // Log how many items were updated
+            const updatedCount = updated.filter((item, idx) => 
+              item.name !== prev[idx].name
+            ).length;
+            
+            console.log(`ItemsContext: Updated ${updatedCount} items with new name "${newName}"`);
+            return updated;
+          });
+        } else {
+          // Force a re-render to ensure UI is updated with the latest product info
+          console.log(`ItemsContext: Forcing re-render for product update, action = ${action}`);
+          setItems(prev => [...prev]);
+        }
+      } catch (error) {
+        console.error("ItemsContext: Error handling product update:", error);
       }
     };
     
     // Listen for shelf life updates
     const handleShelfLifeUpdated = () => {
-      // Force a re-render to update freshness calculations
-      setItems(prev => [...prev]);
+      try {
+        console.log("ItemsContext: Received shelf-life-updated event");
+        // Force a re-render to update freshness calculations
+        setItems(prev => [...prev]);
+      } catch (error) {
+        console.error("ItemsContext: Error handling shelf life update:", error);
+      }
+    };
+
+    // Listen for storage events from other tabs/windows
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'freshItems' && event.newValue) {
+        try {
+          console.log("ItemsContext: Storage event detected for freshItems");
+          const newItems = JSON.parse(event.newValue);
+          setItems(newItems);
+        } catch (error) {
+          console.error("ItemsContext: Error parsing items from storage event:", error);
+        }
+      }
     };
     
     // Add event listeners
+    console.log("ItemsContext: Adding event listeners");
     window.addEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
     window.addEventListener('custom-product-updated', handleCustomProductUpdated as EventListener);
     window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
+    window.addEventListener('storage', handleStorageChange);
     
     // Cleanup
     return () => {
+      console.log("ItemsContext: Removing event listeners");
       window.removeEventListener('custom-product-deleted', handleCustomProductDeleted as EventListener);
       window.removeEventListener('custom-product-updated', handleCustomProductUpdated as EventListener);
       window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
   const addItem = (item: Omit<Item, 'id' | 'openedDate'>) => {
-    const newItem: Item = {
-      ...item,
-      id: Math.random().toString(36).substring(2, 15),
-      openedDate: new Date().toISOString(),
-    };
-    
-    setItems(prev => [...prev, newItem]);
+    try {
+      console.log(`ItemsContext: Adding new item "${item.name}" with icon "${item.icon}"`);
+      
+      // Generate a more reliable ID (timestamp + random)
+      const id = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+      
+      const newItem: Item = {
+        ...item,
+        id,
+        openedDate: new Date().toISOString(),
+      };
+      
+      console.log("ItemsContext: Created new item:", newItem);
+      
+      setItems(prev => {
+        const newItems = [...prev, newItem];
+        // Immediately save to storage to prevent data loss
+        try {
+          saveItems(newItems);
+          console.log(`ItemsContext: Saved ${newItems.length} items to storage`);
+        } catch (saveError) {
+          console.error("ItemsContext: Error saving items after add:", saveError);
+          toast.error("Failed to save the new item");
+        }
+        return newItems;
+      });
+    } catch (error) {
+      console.error("ItemsContext: Error adding item:", error);
+      toast.error("Failed to add item");
+      throw error; // Re-throw to allow components to handle the error
+    }
   };
 
   const deleteItem = (id: string) => {
-    setItems(prev => prev.filter(item => item.id !== id));
+    try {
+      console.log(`ItemsContext: Deleting item with ID "${id}"`);
+      setItems(prev => {
+        const filtered = prev.filter(item => item.id !== id);
+        console.log(`ItemsContext: Removed ${prev.length - filtered.length} items`);
+        
+        // If we actually removed something, save to storage
+        if (prev.length !== filtered.length) {
+          try {
+            saveItems(filtered);
+            console.log(`ItemsContext: Saved ${filtered.length} items after deletion`);
+          } catch (saveError) {
+            console.error("ItemsContext: Error saving items after delete:", saveError);
+          }
+        } else {
+          console.warn(`ItemsContext: Item with ID "${id}" not found for deletion`);
+        }
+        
+        return filtered;
+      });
+    } catch (error) {
+      console.error(`ItemsContext: Error deleting item ${id}:`, error);
+      toast.error("Failed to delete item");
+    }
   };
 
   const resetItem = (id: string) => {
-    setItems(prev => prev.map(item => 
-      item.id === id 
-        ? { ...item, openedDate: new Date().toISOString() } 
-        : item
-    ));
+    try {
+      console.log(`ItemsContext: Resetting item with ID "${id}"`);
+      setItems(prev => {
+        const updated = prev.map(item => 
+          item.id === id 
+            ? { ...item, openedDate: new Date().toISOString() } 
+            : item
+        );
+        
+        // Check if we actually updated something
+        const wasUpdated = updated.some((item, idx) => 
+          item.openedDate !== prev[idx].openedDate
+        );
+        
+        if (wasUpdated) {
+          console.log(`ItemsContext: Reset item ${id} successfully`);
+          try {
+            saveItems(updated);
+            console.log(`ItemsContext: Saved ${updated.length} items after reset`);
+          } catch (saveError) {
+            console.error("ItemsContext: Error saving items after reset:", saveError);
+          }
+        } else {
+          console.warn(`ItemsContext: Item with ID "${id}" not found for reset`);
+        }
+        
+        return updated;
+      });
+    } catch (error) {
+      console.error(`ItemsContext: Error resetting item ${id}:`, error);
+      toast.error("Failed to reset item");
+    }
   };
   
   // Function to update items when a custom product changes
   const updateItemsWithProductChanges = (productId: string, newName: string) => {
-    const itemsToUpdate = items.filter(item => item.icon === productId);
-    
-    if (itemsToUpdate.length > 0) {
-      setItems(prev => prev.map(item => 
-        item.icon === productId 
-          ? { ...item, name: newName } // Update name to match the product's new name
-          : item
-      ));
+    try {
+      console.log(`ItemsContext: Updating items for product ${productId} with name ${newName}`);
+      
+      setItems(prev => {
+        const itemsToUpdate = prev.filter(item => item.icon === productId);
+        console.log(`ItemsContext: Found ${itemsToUpdate.length} items to update`);
+        
+        if (itemsToUpdate.length > 0) {
+          const updated = prev.map(item => 
+            item.icon === productId 
+              ? { ...item, name: newName } 
+              : item
+          );
+          
+          // Save the updated items immediately to ensure consistency
+          try {
+            saveItems(updated);
+            console.log(`ItemsContext: Saved ${updated.length} items after product rename`);
+          } catch (saveError) {
+            console.error("ItemsContext: Error saving items after product rename:", saveError);
+          }
+          
+          return updated;
+        }
+        
+        return prev;
+      });
+    } catch (error) {
+      console.error(`ItemsContext: Error updating items for product ${productId}:`, error);
+      toast.error("Failed to update items with product changes");
     }
   };
 
