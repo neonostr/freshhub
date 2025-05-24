@@ -26,6 +26,12 @@ const ItemsList: React.FC = () => {
     return saved ? parseInt(saved) : 365;
   });
   
+  // Track if filter is set to "show all" (at maximum)
+  const [isShowingAll, setIsShowingAll] = useState<boolean>(() => {
+    const saved = localStorage.getItem('currentFilterDays');
+    return !saved || parseInt(saved) >= 365;
+  });
+  
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
@@ -42,7 +48,9 @@ const ItemsList: React.FC = () => {
   // Save filter value to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('currentFilterDays', filterDays.toString());
-  }, [filterDays]);
+    // Update the "show all" state
+    setIsShowingAll(filterDays >= maxFreshnessDays);
+  }, [filterDays, maxFreshnessDays]);
 
   // Calculate max freshness days and update when items change or shelf life updates occur
   useEffect(() => {
@@ -51,15 +59,21 @@ const ItemsList: React.FC = () => {
       
       // Only update if the value has actually changed to prevent slider issues
       if (maxDays !== maxFreshnessDays) {
+        const previousMaxDays = maxFreshnessDays;
         setMaxFreshnessDays(maxDays);
         
-        // If the filterDays is beyond our new max, adjust it
-        if (filterDays > maxDays) {
+        // If we were showing all items before AND the max increased, update filter to continue showing all
+        if (isShowingAll && maxDays > previousMaxDays) {
+          console.log(`Max freshness days increased from ${previousMaxDays} to ${maxDays}, updating filter to continue showing all`);
+          setFilterDays(maxDays);
+        }
+        // If the filterDays is beyond our new max (and we weren't in "show all" mode), adjust it
+        else if (!isShowingAll && filterDays > maxDays) {
           setFilterDays(maxDays);
         }
       }
     }
-  }, [items, forceUpdate]);
+  }, [items, forceUpdate, isShowingAll, filterDays, maxFreshnessDays]);
 
   // Listen for shelf life changes, product updates, and filter reset events
   useEffect(() => {
