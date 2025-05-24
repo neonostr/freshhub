@@ -110,14 +110,6 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={() => startEditingProduct(product)}
-                  className="h-10 w-10 p-0" // Increased size for easier touch
-                >
-                  <Edit className="h-5 w-5" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
                   onClick={() => confirmDelete(product.value)}
                   className="h-10 w-10 p-0 text-destructive" // Increased size for easier touch
                 >
