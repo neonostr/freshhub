@@ -108,7 +108,7 @@ const AddItemDialog: React.FC = () => {
       
       // Parse custom duration if provided
       let parsedCustomDuration: number | undefined = undefined;
-      if (customDuration) {
+      if (customDuration && customDuration.trim() !== '') {
         parsedCustomDuration = parseInt(customDuration, 10);
         if (isNaN(parsedCustomDuration) || parsedCustomDuration <= 0) {
           console.error("AddItemDialog: Invalid custom duration", customDuration);
@@ -116,12 +116,15 @@ const AddItemDialog: React.FC = () => {
           return;
         }
         console.log(`AddItemDialog: Using custom duration: ${parsedCustomDuration} days`);
+      } else {
+        console.log("AddItemDialog: No custom duration provided, using default shelf life");
       }
       
-      // Add a small delay to ensure state is properly managed
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      console.log("AddItemDialog: About to call addItem");
+      console.log("AddItemDialog: About to call addItem with:", {
+        name: productName,
+        icon: selectedIcon,
+        customDuration: parsedCustomDuration
+      });
       
       // Add the item with the selected icon and optional custom duration
       await addItem({
@@ -131,6 +134,9 @@ const AddItemDialog: React.FC = () => {
       });
       
       console.log("AddItemDialog: addItem completed successfully");
+      
+      // Add a longer delay to ensure all state updates are complete
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       // Reset form state and close dialog
       console.log("AddItemDialog: Item added successfully, resetting form");
@@ -216,7 +222,10 @@ const AddItemDialog: React.FC = () => {
                 min="1"
                 placeholder={`Default: ${allIcons[selectedIcon]?.shelfLife || 7} days`}
                 value={customDuration}
-                onChange={(e) => setCustomDuration(e.target.value)}
+                onChange={(e) => {
+                  console.log("AddItemDialog: Custom duration changed to:", e.target.value);
+                  setCustomDuration(e.target.value);
+                }}
               />
             </div>
             
