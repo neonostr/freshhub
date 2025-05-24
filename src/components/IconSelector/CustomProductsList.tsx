@@ -3,7 +3,7 @@ import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit, Check, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Check, X } from 'lucide-react';
 import { IconOption } from '@/data/productData';
 import { EditableProductProps } from '@/types/iconTypes';
 
@@ -111,9 +111,17 @@ const CustomProductsList: React.FC<CustomProductsListProps> = ({
                   variant="ghost" 
                   size="sm" 
                   onClick={() => startEditingProduct(product)}
-                  className="h-10 w-10 p-0"
+                  className="h-10 w-10 p-0" // Increased size for easier touch
                 >
                   <Edit className="h-5 w-5" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => confirmDelete(product.value)}
+                  className="h-10 w-10 p-0 text-destructive" // Increased size for easier touch
+                >
+                  <Trash2 className="h-5 w-5" />
                 </Button>
               </div>
             )}
