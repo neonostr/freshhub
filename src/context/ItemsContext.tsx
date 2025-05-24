@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
@@ -207,14 +208,19 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     return new Promise((resolve, reject) => {
       try {
         console.log(`ItemsContext: Adding new item "${item.name}" with icon "${item.icon}"`);
+        console.log("ItemsContext: Item data received:", item);
         
         // Generate a more reliable ID (timestamp + random)
         const id = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
         
+        // Create the new item, properly handling customDuration
         const newItem: Item = {
-          ...item,
           id,
+          name: item.name,
+          icon: item.icon,
           openedDate: new Date().toISOString(),
+          // Only include customDuration if it's actually a number
+          ...(typeof item.customDuration === 'number' ? { customDuration: item.customDuration } : {})
         };
         
         console.log("ItemsContext: Created new item:", newItem);
