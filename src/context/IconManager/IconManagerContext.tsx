@@ -118,10 +118,24 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     try {
       console.log(`IconManager: Updating shelf life for ${iconValue} to ${days} days`);
       
-      setCustomShelfLife(prev => ({
-        ...prev,
-        [iconValue]: days
-      }));
+      // Check if this is a custom product
+      if (customProducts[iconValue]) {
+        console.log(`IconManager: Updating custom product ${iconValue} shelf life`);
+        // Update the custom product's shelf life
+        setCustomProducts(prev => ({
+          ...prev,
+          [iconValue]: {
+            ...prev[iconValue],
+            shelfLife: days
+          }
+        }));
+      } else {
+        // For built-in products, update custom shelf life
+        setCustomShelfLife(prev => ({
+          ...prev,
+          [iconValue]: days
+        }));
+      }
       
       toast.success(`Updated shelf life to ${days} days`);
     } catch (error) {
