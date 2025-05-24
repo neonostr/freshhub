@@ -39,27 +39,20 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
               </div>
               
               <div className="flex items-center gap-2">
-                <div className="relative">
-                  <Input
-                    type="number"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    min="1"
-                    value={getDisplayValue(icon.value)}
-                    onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
-                    onFocus={() => handleShelfLifeFocus(icon.value)}
-                    onBlur={() => handleShelfLifeBlur(icon.value)}
-                    className="w-20 text-center pr-8 h-10"
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none pr-3">
-                    <span className="text-gray-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="m6 9 6-6 6 6"/>
-                        <path d="m6 15 6 6 6-6"/>
-                      </svg>
-                    </span>
-                  </div>
-                </div>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  min="1"
+                  value={getDisplayValue(icon.value)}
+                  onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
+                  onFocus={() => handleShelfLifeFocus(icon.value)}
+                  onBlur={() => handleShelfLifeBlur(icon.value)}
+                  className="w-20 text-center h-10 [&::-webkit-outer-spin-button]:appearance-auto [&::-webkit-inner-spin-button]:appearance-auto md:[&::-webkit-outer-spin-button]:appearance-auto md:[&::-webkit-inner-spin-button]:appearance-auto sm:[&::-webkit-outer-spin-button]:appearance-none sm:[&::-webkit-inner-spin-button]:appearance-none"
+                  style={{
+                    MozAppearance: window.innerWidth >= 768 ? 'auto' : 'textfield'
+                  }}
+                />
                 <span className="text-sm font-medium text-gray-600">days</span>
               </div>
             </div>
