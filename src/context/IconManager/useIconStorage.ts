@@ -73,53 +73,44 @@ export const useIconStorage = () => {
     }
   }, [selectedIconValues]);
   
-  // Persist custom shelf life to localStorage
+  // Persist custom shelf life to localStorage with debouncing to prevent cascading events
   useEffect(() => {
-    try {
-      console.log(`IconStorage: Saving custom shelf life for ${Object.keys(customShelfLife).length} products`);
-      localStorage.setItem('freshTrackerCustomShelfLife', JSON.stringify(customShelfLife));
-      
-      // Trigger shelf-life-updated event to update UI components
-      const event = new CustomEvent('shelf-life-updated');
-      window.dispatchEvent(event);
-      
-      // Also dispatch a storage event for PWA listeners
-      window.dispatchEvent(new StorageEvent('storage', { 
-        key: 'freshTrackerCustomShelfLife',
-        newValue: JSON.stringify(customShelfLife),
-        storageArea: localStorage
-      }));
-      
-    } catch (err) {
-      console.error("IconStorage: Error saving customShelfLife to localStorage:", err);
-    }
+    const timeoutId = setTimeout(() => {
+      try {
+        console.log(`IconStorage: Saving custom shelf life for ${Object.keys(customShelfLife).length} products`);
+        localStorage.setItem('freshTrackerCustomShelfLife', JSON.stringify(customShelfLife));
+        
+        // Only trigger one event after debouncing
+        const event = new CustomEvent('shelf-life-updated');
+        window.dispatchEvent(event);
+        
+      } catch (err) {
+        console.error("IconStorage: Error saving customShelfLife to localStorage:", err);
+      }
+    }, 100); // Debounce for 100ms
+    
+    return () => clearTimeout(timeoutId);
   }, [customShelfLife]);
   
   // Persist custom products to localStorage with proper debouncing
   useEffect(() => {
-    try {
-      // Serialize products for storage
-      console.log(`IconStorage: Saving ${Object.keys(customProducts).length} custom products to storage`);
-      const serializableProducts = createSerializableProducts(customProducts);
-      localStorage.setItem('freshTrackerCustomProducts', JSON.stringify(serializableProducts));
-      
-      // Notify the UI about the change
-      const timer = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
+      try {
+        // Serialize products for storage
+        console.log(`IconStorage: Saving ${Object.keys(customProducts).length} custom products to storage`);
+        const serializableProducts = createSerializableProducts(customProducts);
+        localStorage.setItem('freshTrackerCustomProducts', JSON.stringify(serializableProducts));
+        
+        // Notify the UI about the change after debouncing
         console.log("IconStorage: Dispatching custom-products-storage-updated event");
         window.dispatchEvent(new CustomEvent('custom-products-storage-updated'));
         
-        // Also dispatch a storage event for PWA listeners
-        window.dispatchEvent(new StorageEvent('storage', { 
-          key: 'freshTrackerCustomProducts',
-          newValue: JSON.stringify(serializableProducts),
-          storageArea: localStorage
-        }));
-      }, 50);
-      
-      return () => clearTimeout(timer);
-    } catch (err) {
-      console.error("IconStorage: Error saving customProducts to localStorage:", err);
-    }
+      } catch (err) {
+        console.error("IconStorage: Error saving customProducts to localStorage:", err);
+      }
+    }, 100); // Debounce for 100ms
+    
+    return () => clearTimeout(timeoutId);
   }, [customProducts]);
   
   return {

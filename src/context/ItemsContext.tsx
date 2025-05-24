@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
 import { toast } from 'sonner';
@@ -22,6 +22,10 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
   const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  
+  // Use refs to prevent multiple simultaneous operations
+  const addingItemRef = useRef(false);
+  const eventHandlingRef = useRef(false);
 
   // Load items from storage on initial render
   useEffect(() => {
@@ -80,65 +84,86 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   
-  // Listen for custom product deletion events
+  // Listen for custom product deletion events with debouncing
   useEffect(() => {
     const handleCustomProductDeleted = (event: CustomEvent) => {
-      try {
-        const { productId } = event.detail;
-        console.log(`ItemsContext: Received custom-product-deleted event for ${productId}`);
-        setItems(prev => {
-          const filtered = prev.filter(item => item.icon !== productId);
-          console.log(`ItemsContext: Removed ${prev.length - filtered.length} items using product ${productId}`);
-          return filtered;
-        });
-      } catch (error) {
-        console.error("ItemsContext: Error handling product deletion:", error);
-      }
-    };
-    
-    // Listen for custom product updates
-    const handleCustomProductUpdated = (event: CustomEvent) => {
-      try {
-        const { productId, newName, action } = event.detail;
-        console.log(`ItemsContext: Received custom-product-updated event for ${productId}`, event.detail);
-        
-        if (action === 'updated' && newName) {
-          console.log(`ItemsContext: Updating items with product ${productId} to name "${newName}"`);
-          // Update all items using this product to have the new name
+      if (eventHandlingRef.current) return;
+      eventHandlingRef.current = true;
+      
+      setTimeout(() => {
+        try {
+          const { productId } = event.detail;
+          console.log(`ItemsContext: Received custom-product-deleted event for ${productId}`);
           setItems(prev => {
-            const updated = prev.map(item => 
-              item.icon === productId 
-                ? { ...item, name: newName } 
-                : item
-            );
-            
-            // Log how many items were updated
-            const updatedCount = updated.filter((item, idx) => 
-              item.name !== prev[idx].name
-            ).length;
-            
-            console.log(`ItemsContext: Updated ${updatedCount} items with new name "${newName}"`);
-            return updated;
+            const filtered = prev.filter(item => item.icon !== productId);
+            console.log(`ItemsContext: Removed ${prev.length - filtered.length} items using product ${productId}`);
+            return filtered;
           });
-        } else {
-          // Force a re-render to ensure UI is updated with the latest product info
-          console.log(`ItemsContext: Forcing re-render for product update, action = ${action}`);
-          setItems(prev => [...prev]);
+        } catch (error) {
+          console.error("ItemsContext: Error handling product deletion:", error);
+        } finally {
+          eventHandlingRef.current = false;
         }
-      } catch (error) {
-        console.error("ItemsContext: Error handling product update:", error);
-      }
+      }, 50);
     };
     
-    // Listen for shelf life updates
+    // Listen for custom product updates with debouncing
+    const handleCustomProductUpdated = (event: CustomEvent) => {
+      if (eventHandlingRef.current) return;
+      eventHandlingRef.current = true;
+      
+      setTimeout(() => {
+        try {
+          const { productId, newName, action } = event.detail;
+          console.log(`ItemsContext: Received custom-product-updated event for ${productId}`, event.detail);
+          
+          if (action === 'updated' && newName) {
+            console.log(`ItemsContext: Updating items with product ${productId} to name "${newName}"`);
+            // Update all items using this product to have the new name
+            setItems(prev => {
+              const updated = prev.map(item => 
+                item.icon === productId 
+                  ? { ...item, name: newName } 
+                  : item
+              );
+              
+              // Log how many items were updated
+              const updatedCount = updated.filter((item, idx) => 
+                item.name !== prev[idx].name
+              ).length;
+              
+              console.log(`ItemsContext: Updated ${updatedCount} items with new name "${newName}"`);
+              return updated;
+            });
+          } else {
+            // Force a re-render to ensure UI is updated with the latest product info
+            console.log(`ItemsContext: Forcing re-render for product update, action = ${action}`);
+            setItems(prev => [...prev]);
+          }
+        } catch (error) {
+          console.error("ItemsContext: Error handling product update:", error);
+        } finally {
+          eventHandlingRef.current = false;
+        }
+      }, 50);
+    };
+    
+    // Listen for shelf life updates with debouncing
     const handleShelfLifeUpdated = () => {
-      try {
-        console.log("ItemsContext: Received shelf-life-updated event");
-        // Force a re-render to update freshness calculations
-        setItems(prev => [...prev]);
-      } catch (error) {
-        console.error("ItemsContext: Error handling shelf life update:", error);
-      }
+      if (eventHandlingRef.current) return;
+      eventHandlingRef.current = true;
+      
+      setTimeout(() => {
+        try {
+          console.log("ItemsContext: Received shelf-life-updated event");
+          // Force a re-render to update freshness calculations
+          setItems(prev => [...prev]);
+        } catch (error) {
+          console.error("ItemsContext: Error handling shelf life update:", error);
+        } finally {
+          eventHandlingRef.current = false;
+        }
+      }, 100);
     };
 
     // Listen for storage events from other tabs/windows
@@ -172,6 +197,13 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const addItem = async (item: Omit<Item, 'id' | 'openedDate'>): Promise<void> => {
+    if (addingItemRef.current) {
+      console.warn("ItemsContext: Add item already in progress, skipping");
+      return Promise.reject(new Error("Add item operation already in progress"));
+    }
+    
+    addingItemRef.current = true;
+    
     return new Promise((resolve, reject) => {
       try {
         console.log(`ItemsContext: Adding new item "${item.name}" with icon "${item.icon}"`);
@@ -197,6 +229,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
             console.log(`ItemsContext: Saved ${newItems.length} items to storage`);
           } catch (saveError) {
             console.error("ItemsContext: Error saving items after add:", saveError);
+            addingItemRef.current = false;
             reject(saveError);
             return prev; // Return previous state on error
           }
@@ -204,6 +237,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
           // Resolve the promise after successful save
           setTimeout(() => {
             console.log("ItemsContext: addItem operation completed successfully");
+            addingItemRef.current = false;
             resolve();
           }, 0);
           
@@ -211,6 +245,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
         });
       } catch (error) {
         console.error("ItemsContext: Error adding item:", error);
+        addingItemRef.current = false;
         reject(error);
       }
     });

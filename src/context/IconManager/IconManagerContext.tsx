@@ -1,5 +1,4 @@
-
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
 import { saveItems, loadItems } from '@/utils/itemUtils';
@@ -36,6 +35,9 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     customProducts,
     setCustomProducts
   } = useIconStorage();
+  
+  // Use ref to prevent multiple simultaneous updates
+  const updateInProgressRef = useRef(false);
   
   // Create a copy of ALL_ICONS with custom shelf life values applied
   const iconsWithCustomShelfLife = { ...ALL_ICONS };
@@ -81,26 +83,34 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
     return selectedIconValues.includes(iconValue);
   };
   
-  // Watch for shelf life changes and update items if needed
+  // Watch for shelf life changes and update items if needed - with debouncing
   useEffect(() => {
-    if (Object.keys(customShelfLife).length > 0) {
-      try {
-        console.log(`IconManager: Custom shelf life updated, keys: ${Object.keys(customShelfLife).join(', ')}`);
-        
-        // Get all tracked items
-        const items = loadItems();
-        
-        if (items.length > 0) {
-          console.log(`IconManager: Updating freshness for ${items.length} items after shelf life changes`);
-          // Force a UI update by saving and then dispatching an event
-          saveItems([...items]);
+    if (Object.keys(customShelfLife).length > 0 && !updateInProgressRef.current) {
+      updateInProgressRef.current = true;
+      
+      const timeoutId = setTimeout(() => {
+        try {
+          console.log(`IconManager: Custom shelf life updated, keys: ${Object.keys(customShelfLife).join(', ')}`);
           
-          // Dispatch a custom event to notify the app that shelf life settings have changed
-          window.dispatchEvent(new CustomEvent('shelf-life-updated'));
+          // Get all tracked items
+          const items = loadItems();
+          
+          if (items.length > 0) {
+            console.log(`IconManager: Updating freshness for ${items.length} items after shelf life changes`);
+            // Force a UI update by saving and then dispatching an event
+            saveItems([...items]);
+          }
+        } catch (error) {
+          console.error("IconManager: Error handling shelf life changes:", error);
+        } finally {
+          updateInProgressRef.current = false;
         }
-      } catch (error) {
-        console.error("IconManager: Error handling shelf life changes:", error);
-      }
+      }, 200); // Increased debounce time
+      
+      return () => {
+        clearTimeout(timeoutId);
+        updateInProgressRef.current = false;
+      };
     }
   }, [customShelfLife]);
   
