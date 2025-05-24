@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { IconOption } from '@/data/productData';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ShelfLifeListProps {
   icons: IconOption[];
@@ -24,6 +25,8 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
   handleShelfLifeBlur,
   getDisplayValue
 }) => {
+  const isMobile = useIsMobile();
+
   return (
     <>
       <p className="text-sm text-muted-foreground mb-4">
@@ -48,9 +51,13 @@ const ShelfLifeList: React.FC<ShelfLifeListProps> = ({
                   onChange={(e) => handleShelfLifeChange(icon.value, e.target.value)}
                   onFocus={() => handleShelfLifeFocus(icon.value)}
                   onBlur={() => handleShelfLifeBlur(icon.value)}
-                  className="w-20 text-center h-10 [&::-webkit-outer-spin-button]:appearance-auto [&::-webkit-inner-spin-button]:appearance-auto md:[&::-webkit-outer-spin-button]:appearance-auto md:[&::-webkit-inner-spin-button]:appearance-auto sm:[&::-webkit-outer-spin-button]:appearance-none sm:[&::-webkit-inner-spin-button]:appearance-none"
+                  className={`w-20 text-center h-10 ${
+                    isMobile 
+                      ? '[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' 
+                      : '[&::-webkit-outer-spin-button]:appearance-auto [&::-webkit-inner-spin-button]:appearance-auto'
+                  }`}
                   style={{
-                    MozAppearance: window.innerWidth >= 768 ? 'auto' : 'textfield'
+                    MozAppearance: isMobile ? 'textfield' : undefined
                   }}
                 />
                 <span className="text-sm font-medium text-gray-600">days</span>
