@@ -23,6 +23,18 @@ const AddItemDialog: React.FC = () => {
   const [customDuration, setCustomDuration] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Debug logging for component state
+  useEffect(() => {
+    console.log("AddItemDialog state:", {
+      open,
+      selectedIcon,
+      customDuration,
+      isSubmitting,
+      availableIconsCount: availableIcons.length,
+      itemsCount: items.length
+    });
+  }, [open, selectedIcon, customDuration, isSubmitting, availableIcons.length, items.length]);
+
   // Set initial selected icon when dialog opens
   useEffect(() => {
     if (open && availableIcons.length > 0 && !selectedIcon) {
@@ -33,6 +45,8 @@ const AddItemDialog: React.FC = () => {
 
   const handleOpenChange = (newOpen: boolean) => {
     try {
+      console.log("AddItemDialog: handleOpenChange called with:", newOpen);
+      
       // Check if user can add more items before opening the dialog
       if (newOpen && !checkCanAddItems(items.length)) {
         console.log("AddItemDialog: Item limit reached, showing upgrade dialog");
@@ -40,6 +54,7 @@ const AddItemDialog: React.FC = () => {
         return;
       }
       
+      console.log("AddItemDialog: Setting open to:", newOpen);
       setOpen(newOpen);
       
       // Reset form when dialog is closed
@@ -54,15 +69,24 @@ const AddItemDialog: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
+      console.log("AddItemDialog: handleSubmit called");
+      console.log("AddItemDialog: Current state at submit:", {
+        isSubmitting,
+        selectedIcon,
+        customDuration,
+        availableIconsLength: availableIcons.length
+      });
+      
       if (isSubmitting) {
         console.log("AddItemDialog: Preventing double submission");
         return;
       }
       
+      console.log("AddItemDialog: Setting isSubmitting to true");
       setIsSubmitting(true);
       
       if (!selectedIcon) {
@@ -94,12 +118,19 @@ const AddItemDialog: React.FC = () => {
         console.log(`AddItemDialog: Using custom duration: ${parsedCustomDuration} days`);
       }
       
+      // Add a small delay to ensure state is properly managed
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      console.log("AddItemDialog: About to call addItem");
+      
       // Add the item with the selected icon and optional custom duration
-      addItem({
+      await addItem({
         name: productName,
         icon: selectedIcon,
         customDuration: parsedCustomDuration,
       });
+      
+      console.log("AddItemDialog: addItem completed successfully");
       
       // Reset form state and close dialog
       console.log("AddItemDialog: Item added successfully, resetting form");
@@ -107,6 +138,8 @@ const AddItemDialog: React.FC = () => {
       setCustomDuration('');
       setIsSubmitting(false);
       setOpen(false);
+      
+      console.log("AddItemDialog: Form reset completed");
     } catch (error) {
       console.error("AddItemDialog: Error adding item:", error);
       setIsSubmitting(false);
@@ -117,6 +150,14 @@ const AddItemDialog: React.FC = () => {
     console.log(`AddItemDialog: Selected icon changed to "${iconValue}"`);
     setSelectedIcon(iconValue);
   };
+
+  // Debug logging for render
+  console.log("AddItemDialog: Rendering with state:", {
+    open,
+    selectedIcon,
+    isSubmitting,
+    availableIconsCount: availableIcons.length
+  });
 
   return (
     <>
@@ -129,6 +170,7 @@ const AddItemDialog: React.FC = () => {
               right: handedness === 'right' ? "1.5rem" : "auto",
               left: handedness === 'left' ? "1.5rem" : "auto"
             }}
+            onClick={() => console.log("AddItemDialog: Plus button clicked")}
           >
             <Plus className="h-6 w-6" />
           </Button>

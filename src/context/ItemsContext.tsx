@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
@@ -6,7 +5,7 @@ import { toast } from 'sonner';
 
 interface ItemsContextType {
   items: Item[];
-  addItem: (item: Omit<Item, 'id' | 'openedDate'>) => void;
+  addItem: (item: Omit<Item, 'id' | 'openedDate'>) => Promise<void>;
   deleteItem: (id: string) => void;
   resetItem: (id: string) => void;
   updateItemsWithProductChanges: (productId: string, newName: string) => void;
@@ -48,7 +47,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       setIsInitialized(true);
     } catch (error) {
       console.error("ItemsContext: Error initializing:", error);
-      toast.error("Failed to load your items");
     }
   }, []);
 
@@ -67,7 +65,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("ItemsContext: Error saving items:", error);
-        toast.error("Failed to save your items");
       }
     }
   }, [items, isFirstTimeUser, isInitialized]);
@@ -174,38 +171,49 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const addItem = (item: Omit<Item, 'id' | 'openedDate'>) => {
-    try {
-      console.log(`ItemsContext: Adding new item "${item.name}" with icon "${item.icon}"`);
-      
-      // Generate a more reliable ID (timestamp + random)
-      const id = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
-      
-      const newItem: Item = {
-        ...item,
-        id,
-        openedDate: new Date().toISOString(),
-      };
-      
-      console.log("ItemsContext: Created new item:", newItem);
-      
-      setItems(prev => {
-        const newItems = [...prev, newItem];
-        // Immediately save to storage to prevent data loss
-        try {
-          saveItems(newItems);
-          console.log(`ItemsContext: Saved ${newItems.length} items to storage`);
-        } catch (saveError) {
-          console.error("ItemsContext: Error saving items after add:", saveError);
-          toast.error("Failed to save the new item");
-        }
-        return newItems;
-      });
-    } catch (error) {
-      console.error("ItemsContext: Error adding item:", error);
-      toast.error("Failed to add item");
-      throw error; // Re-throw to allow components to handle the error
-    }
+  const addItem = async (item: Omit<Item, 'id' | 'openedDate'>): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      try {
+        console.log(`ItemsContext: Adding new item "${item.name}" with icon "${item.icon}"`);
+        
+        // Generate a more reliable ID (timestamp + random)
+        const id = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+        
+        const newItem: Item = {
+          ...item,
+          id,
+          openedDate: new Date().toISOString(),
+        };
+        
+        console.log("ItemsContext: Created new item:", newItem);
+        
+        setItems(prev => {
+          const newItems = [...prev, newItem];
+          console.log(`ItemsContext: Updated items array to ${newItems.length} items`);
+          
+          // Immediately save to storage to prevent data loss
+          try {
+            saveItems(newItems);
+            console.log(`ItemsContext: Saved ${newItems.length} items to storage`);
+          } catch (saveError) {
+            console.error("ItemsContext: Error saving items after add:", saveError);
+            reject(saveError);
+            return prev; // Return previous state on error
+          }
+          
+          // Resolve the promise after successful save
+          setTimeout(() => {
+            console.log("ItemsContext: addItem operation completed successfully");
+            resolve();
+          }, 0);
+          
+          return newItems;
+        });
+      } catch (error) {
+        console.error("ItemsContext: Error adding item:", error);
+        reject(error);
+      }
+    });
   };
 
   const deleteItem = (id: string) => {
