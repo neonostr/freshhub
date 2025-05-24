@@ -249,16 +249,16 @@ const ItemsList: React.FC = () => {
           </Button>
         </DrawerTrigger>
 
-        <DrawerContent side="bottom" className="z-50 px-[21px] py-[34px]">
-          <div className="px-4">
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">Filter by freshness</span>
-                <span className="text-sm text-gray-500">
-                  {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
-                </span>
-              </div>
-              
+        <DrawerContent side="bottom" className="z-50">
+          <div className="flex flex-col gap-5">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Filter by freshness</span>
+              <span className="text-sm text-gray-500">
+                {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
+              </span>
+            </div>
+            
+            <div style={{ touchAction: 'pan-x' }}>
               <Slider 
                 value={[Math.min(filterDays, maxFreshnessDays)]} 
                 min={1} 
@@ -270,25 +270,25 @@ const ItemsList: React.FC = () => {
                 }} 
                 className="w-full" 
               />
+            </div>
+            
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-medium">Sort by</span>
+              </div>
               
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-medium">Sort by</span>
-                </div>
+              <div className="flex gap-2">
+                <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
+                  Freshness
+                </Button>
                 
-                <div className="flex gap-2">
-                  <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
-                    Freshness
-                  </Button>
-                  
-                  <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
-                    A-Z
-                  </Button>
-                  
-                  <Button variant="outline" size="sm" onClick={toggleSortDirection}>
-                    {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
-                  </Button>
-                </div>
+                <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
+                  A-Z
+                </Button>
+                
+                <Button variant="outline" size="sm" onClick={toggleSortDirection}>
+                  {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+                </Button>
               </div>
             </div>
           </div>
