@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -82,7 +83,7 @@ const DrawerContent = React.forwardRef<React.ElementRef<typeof DrawerPrimitive.C
   React.useEffect(() => {
     // Check if we're in PWA mode and wait for stabilization
     const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
-                  window.navigator.standalone === true ||
+                  (window.navigator as any).standalone === true ||
                   document.referrer.includes('android-app://');
     
     if (isPWA) {
