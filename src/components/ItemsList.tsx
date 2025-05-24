@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -19,8 +18,14 @@ const ItemsList: React.FC = () => {
   const { items } = useItems();
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365); // Start with a default value
-  const [filterDays, setFilterDays] = useState<number>(365); // Default to show all
+  const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365);
+  
+  // Load filter from localStorage or default to showing all
+  const [filterDays, setFilterDays] = useState<number>(() => {
+    const saved = localStorage.getItem('currentFilterDays');
+    return saved ? parseInt(saved) : 365;
+  });
+  
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
@@ -33,6 +38,11 @@ const ItemsList: React.FC = () => {
   
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
+
+  // Save filter value to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('currentFilterDays', filterDays.toString());
+  }, [filterDays]);
 
   // Calculate max freshness days and update when items change or shelf life updates occur
   useEffect(() => {
@@ -51,7 +61,7 @@ const ItemsList: React.FC = () => {
     }
   }, [items, forceUpdate]);
 
-  // Listen for shelf life changes and product updates
+  // Listen for shelf life changes, product updates, and filter reset events
   useEffect(() => {
     const handleShelfLifeUpdated = () => {
       console.log("Shelf life updated, recalculating freshness values");
@@ -65,8 +75,14 @@ const ItemsList: React.FC = () => {
       setForceUpdate(prev => prev + 1);
     };
     
+    const handleResetFilter = () => {
+      console.log("Resetting freshness filter to show all items");
+      setFilterDays(maxFreshnessDays);
+    };
+    
     window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
     window.addEventListener('custom-product-updated', handleProductUpdated);
+    window.addEventListener('reset-freshness-filter', handleResetFilter);
     
     // Custom event for storage changes to handle PWA cache issues
     window.addEventListener('storage', (event) => {
@@ -81,8 +97,9 @@ const ItemsList: React.FC = () => {
     return () => {
       window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
       window.removeEventListener('custom-product-updated', handleProductUpdated);
+      window.removeEventListener('reset-freshness-filter', handleResetFilter);
     };
-  }, []);
+  }, [maxFreshnessDays]);
 
   // Check if scrolling should be enabled based on content vs container height
   useEffect(() => {
@@ -196,7 +213,7 @@ const ItemsList: React.FC = () => {
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
-            key={`${item.id}-${forceUpdate}`} // Add forceUpdate to key to ensure fresh render on shelf life changes
+            key={`${item.id}-${forceUpdate}`}
             item={item}
             isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
             onClick={() => toggleItemExpanded(item.id)}

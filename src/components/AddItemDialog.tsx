@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useHandedness } from '@/context/HandednessContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import PremiumUpgradeDialog from './PremiumUpgradeDialog';
+import FilterNotificationDialog from './FilterNotificationDialog';
 
 const AddItemDialog: React.FC = () => {
   const { items, addItem } = useItems();
@@ -19,9 +19,18 @@ const AddItemDialog: React.FC = () => {
   const { checkCanAddItems } = useSubscription();
   const [open, setOpen] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
+  const [showFilterNotification, setShowFilterNotification] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState('');
   const [customDuration, setCustomDuration] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notificationData, setNotificationData] = useState<{
+    itemName: string;
+    itemShelfLife: number;
+    currentFilter: number;
+  }>({ itemName: '', itemShelfLife: 0, currentFilter: 0 });
+  const [dontShowFilterNotification, setDontShowFilterNotification] = useState(
+    localStorage.getItem('dontShowFilterNotification') === 'true'
+  );
 
   // Debug logging for component state
   useEffect(() => {
@@ -120,6 +129,9 @@ const AddItemDialog: React.FC = () => {
         console.log("AddItemDialog: No custom duration provided, using default shelf life");
       }
       
+      // Get the effective shelf life for filter check
+      const effectiveShelfLife = parsedCustomDuration || selectedProduct.shelfLife;
+      
       console.log("AddItemDialog: About to call addItem with:", {
         name: productName,
         icon: selectedIcon,
@@ -134,6 +146,20 @@ const AddItemDialog: React.FC = () => {
       });
       
       console.log("AddItemDialog: addItem completed successfully");
+      
+      // Check if we need to show the filter notification
+      const currentFilter = parseInt(localStorage.getItem('currentFilterDays') || '365');
+      const shouldShowNotification = !dontShowFilterNotification && 
+        effectiveShelfLife > currentFilter;
+      
+      if (shouldShowNotification) {
+        setNotificationData({
+          itemName: productName,
+          itemShelfLife: effectiveShelfLife,
+          currentFilter: currentFilter
+        });
+        setShowFilterNotification(true);
+      }
       
       // Add a longer delay to ensure all state updates are complete
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -155,6 +181,16 @@ const AddItemDialog: React.FC = () => {
   const handleIconSelect = (iconValue: string) => {
     console.log(`AddItemDialog: Selected icon changed to "${iconValue}"`);
     setSelectedIcon(iconValue);
+  };
+
+  const handleResetFilter = () => {
+    // Dispatch an event to reset the filter in ItemsList
+    window.dispatchEvent(new CustomEvent('reset-freshness-filter'));
+  };
+
+  const handleDontShowAgainChange = (value: boolean) => {
+    setDontShowFilterNotification(value);
+    localStorage.setItem('dontShowFilterNotification', value.toString());
   };
 
   // Debug logging for render
@@ -243,6 +279,17 @@ const AddItemDialog: React.FC = () => {
       <PremiumUpgradeDialog 
         open={showUpgradeDialog} 
         onOpenChange={setShowUpgradeDialog} 
+      />
+      
+      <FilterNotificationDialog
+        open={showFilterNotification}
+        onOpenChange={setShowFilterNotification}
+        onResetFilter={handleResetFilter}
+        itemName={notificationData.itemName}
+        itemShelfLife={notificationData.itemShelfLife}
+        currentFilter={notificationData.currentFilter}
+        dontShowAgain={dontShowFilterNotification}
+        setDontShowAgain={handleDontShowAgainChange}
       />
     </>
   );
