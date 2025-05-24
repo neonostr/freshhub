@@ -67,11 +67,11 @@ const FilterNotificationDialog: React.FC<FilterNotificationDialogProps> = ({
           </label>
         </div>
         
-        <AlertDialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-2">
-          <AlertDialogCancel onClick={handleKeepFilter} className="flex-1 sm:flex-none">
+        <AlertDialogFooter className="flex flex-col sm:flex-row sm:justify-center gap-2 sm:gap-3">
+          <AlertDialogCancel onClick={handleKeepFilter} className="flex-1 sm:flex-none sm:min-w-[140px]">
             Keep Current Filter
           </AlertDialogCancel>
-          <AlertDialogAction onClick={handleResetFilter} className="flex-1 sm:flex-none">
+          <AlertDialogAction onClick={handleResetFilter} className="flex-1 sm:flex-none sm:min-w-[140px]">
             Reset Filter to Show All Items
           </AlertDialogAction>
         </AlertDialogFooter>
