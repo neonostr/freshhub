@@ -35,12 +35,9 @@ const ItemsList: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [scrollEnabled, setScrollEnabled] = useState(false);
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
   const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
-  const listContainerRef = useRef<HTMLDivElement>(null);
   
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -115,32 +112,6 @@ const ItemsList: React.FC = () => {
     };
   }, [maxFreshnessDays]);
 
-  // Check if scrolling should be enabled based on content vs container height
-  useEffect(() => {
-    const checkScrollNeeded = () => {
-      if (listContainerRef.current) {
-        const container = listContainerRef.current;
-        const contentHeight = container.scrollHeight;
-        const containerHeight = container.clientHeight;
-        const windowHeight = window.innerHeight;
-        
-        // Consider some buffer (20px) to avoid borderline cases
-        const shouldScroll = contentHeight > containerHeight || contentHeight > windowHeight - 150;
-        console.log(`Content height: ${contentHeight}, Container height: ${containerHeight}, Window height: ${windowHeight}, Should scroll: ${shouldScroll}`);
-        setScrollEnabled(shouldScroll);
-      }
-    };
-    
-    // Check on mount, when items change, or on window resize
-    checkScrollNeeded();
-    
-    // Add resize listener
-    window.addEventListener('resize', checkScrollNeeded);
-    
-    // Remove listener on cleanup
-    return () => window.removeEventListener('resize', checkScrollNeeded);
-  }, [items, isCompactMode, hideHeader, forceUpdate]);
-
   // Filter items based on the current freshness filter
   const filteredItems = items.filter(item => {
     const daysUntilExpiry = calculateDaysUntilExpiry(item);
@@ -191,13 +162,15 @@ const ItemsList: React.FC = () => {
   };
 
   if (items.length === 0) {
-    return <div className="flex flex-col items-center justify-center p-8 text-center">
-      <div className="text-4xl mb-2">🥛</div>
-      <h3 className="text-xl font-medium mb-2">No items yet</h3>
-      <p className="text-gray-500">
-        Add your first item by clicking the + button below
-      </p>
-    </div>;
+    return (
+      <div className="flex flex-col items-center justify-center p-8 text-center min-h-[60vh]">
+        <div className="text-4xl mb-2">🥛</div>
+        <h3 className="text-xl font-medium mb-2">No items yet</h3>
+        <p className="text-gray-500">
+          Add your first item by clicking the + button below
+        </p>
+      </div>
+    );
   }
 
   // Determine proper grid class based on compact mode, device type, and screen size
@@ -213,17 +186,8 @@ const ItemsList: React.FC = () => {
     return "desktop-compact-grid";
   };
 
-  // Calculate classes for the outer container based on scroll need
-  const containerClass = scrollEnabled 
-    ? "space-y-6 relative pb-16 overflow-y-auto" 
-    : "space-y-6 relative pb-16 overflow-y-hidden";
-
   return (
-    <div 
-      ref={listContainerRef} 
-      className={containerClass} 
-      style={scrollEnabled ? {} : { height: 'auto' }}
-    >
+    <>
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
@@ -236,76 +200,77 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating buttons - positioned based on handedness */}
-      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        <DrawerTrigger asChild>
-          <Button
-            className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
-            size="icon"
-            variant="default"
-            style={getButtonPosition(6)}
-          >
-            <Filter className="h-6 w-6" />
-          </Button>
-        </DrawerTrigger>
+      {/* Fixed floating buttons container */}
+      <div className="floating-buttons" style={getButtonPosition(1.5)}>
+        {/* Filter button */}
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+          <DrawerTrigger asChild>
+            <Button
+              className="shadow-lg rounded-full h-14 w-14 p-0 mb-4"
+              size="icon"
+              variant="default"
+            >
+              <Filter className="h-6 w-6" />
+            </Button>
+          </DrawerTrigger>
 
-        <DrawerContent side="bottom" className="z-50">
-          <div className="flex flex-col gap-5">
-            <div className="flex items-center justify-between">
-              <span className="font-medium">Filter by freshness</span>
-              <span className="text-sm text-gray-500">
-                {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
-              </span>
-            </div>
-            
-            <div style={{ touchAction: 'pan-x' }}>
-              <Slider 
-                value={[Math.min(filterDays, maxFreshnessDays)]} 
-                min={1} 
-                max={maxFreshnessDays || 365}  // Ensure we always have a valid max
-                step={1} 
-                onValueChange={([value]) => {
-                  console.log(`Changing filter days to ${value} (max: ${maxFreshnessDays})`);
-                  setFilterDays(value);
-                }} 
-                className="w-full" 
-              />
-            </div>
-            
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="font-medium">Sort by</span>
+          <DrawerContent side="bottom" className="z-50">
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center justify-between">
+                <span className="font-medium">Filter by freshness</span>
+                <span className="text-sm text-gray-500">
+                  {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
+                </span>
               </div>
               
-              <div className="flex gap-2">
-                <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
-                  Freshness
-                </Button>
+              <div style={{ touchAction: 'pan-x' }}>
+                <Slider 
+                  value={[Math.min(filterDays, maxFreshnessDays)]} 
+                  min={1} 
+                  max={maxFreshnessDays || 365}
+                  step={1} 
+                  onValueChange={([value]) => {
+                    console.log(`Changing filter days to ${value} (max: ${maxFreshnessDays})`);
+                    setFilterDays(value);
+                  }} 
+                  className="w-full" 
+                />
+              </div>
+              
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-medium">Sort by</span>
+                </div>
                 
-                <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
-                  A-Z
-                </Button>
-                
-                <Button variant="outline" size="sm" onClick={toggleSortDirection}>
-                  {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
+                    Freshness
+                  </Button>
+                  
+                  <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
+                    A-Z
+                  </Button>
+                  
+                  <Button variant="outline" size="sm" onClick={toggleSortDirection}>
+                    {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </DrawerContent>
-      </Drawer>
+          </DrawerContent>
+        </Drawer>
 
-      {/* Compact mode toggle button - using default variant */}
-      <Button
-        className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
-        size="icon"
-        variant="default"
-        style={getButtonPosition(10.5)}
-        onClick={toggleCompactMode}
-      >
-        {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
-      </Button>
-    </div>
+        {/* Compact mode toggle button */}
+        <Button
+          className="shadow-lg rounded-full h-14 w-14 p-0"
+          size="icon"
+          variant="default"
+          onClick={toggleCompactMode}
+        >
+          {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
+        </Button>
+      </div>
+    </>
   );
 };
 

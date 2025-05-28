@@ -60,54 +60,46 @@ export const useHeaderVisibility = (): HeaderVisibilityState => {
 
 // Component to conditionally render the SwipeTutorial
 const TutorialWrapper = () => {
-  const {
-    shouldShowTutorial
-  } = useItems();
+  const { shouldShowTutorial } = useItems();
   if (!shouldShowTutorial) return null;
   return <SwipeTutorial />;
 };
 
 const Index = () => {
-  const [isCompactMode, setIsCompactMode] = useState(false);
-  const {
-    hideHeader
-  } = useHeaderVisibilityStore();
+  const { hideHeader } = useHeaderVisibilityStore();
 
-  // Listen for changes to the display style of the header
-  // which indicates compact mode is enabled/disabled
-  React.useEffect(() => {
-    const header = document.getElementById('app-header');
-    if (header) {
-      const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-          if (mutation.attributeName === 'style') {
-            setIsCompactMode(header.style.display === 'none');
-          }
-        });
-      });
-      observer.observe(header, {
-        attributes: true
-      });
-      return () => observer.disconnect();
-    }
-  }, []);
-  return <HeaderVisibilityProvider>
-      <div className="container max-w-5xl mx-auto p-4 pb-20 min-h-screen">
-        {!hideHeader && <header className="py-6 text-center" id="app-header">
-            <h1 className="text-3xl font-bold">Freshify</h1>
-            <p className="text-gray-500 mt-2">Know when it's been open too long</p>
-          </header>}
+  return (
+    <HeaderVisibilityProvider>
+      <div className="main-content">
+        {/* Fixed Header */}
+        {!hideHeader && (
+          <header className="fixed-header">
+            <div className="container max-w-5xl mx-auto p-4">
+              <div className="py-6 text-center">
+                <h1 className="text-3xl font-bold">Freshify</h1>
+                <p className="text-gray-500 mt-2">Know when it's been open too long</p>
+              </div>
+            </div>
+          </header>
+        )}
         
-        <main className="my-6">
-          <ItemsList />
-        </main>
+        {/* Scrollable Content Area */}
+        <div className={`scrollable-content ${!hideHeader ? 'with-header' : ''}`}>
+          <div className="container max-w-5xl mx-auto p-4">
+            <main className="my-6">
+              <ItemsList />
+            </main>
+          </div>
+        </div>
         
-        {/* Always show IconManagerDialog regardless of compact mode */}
+        {/* Always show dialogs and components */}
         <IconManagerDialog />
         <AddItemDialog />
         <TutorialWrapper />
         <PWAInstallPrompt />
       </div>
-    </HeaderVisibilityProvider>;
+    </HeaderVisibilityProvider>
+  );
 };
+
 export default Index;
