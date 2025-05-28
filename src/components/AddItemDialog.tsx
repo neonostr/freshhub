@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -193,6 +194,18 @@ const AddItemDialog: React.FC = () => {
     localStorage.setItem('dontShowFilterNotification', value.toString());
   };
 
+  const handleOpenManageProducts = () => {
+    // Close the add item dialog
+    setOpen(false);
+    // Trigger the manage products dialog to open
+    setTimeout(() => {
+      const manageButton = document.querySelector('[data-manage-products-trigger]') as HTMLButtonElement;
+      if (manageButton) {
+        manageButton.click();
+      }
+    }, 100);
+  };
+
   // Debug logging for render
   console.log("AddItemDialog: Rendering with state:", {
     open,
@@ -242,6 +255,17 @@ const AddItemDialog: React.FC = () => {
                       <span className="text-sm text-center truncate max-w-full px-1">{icon.label}</span>
                     </Button>
                   ))}
+                  
+                  {/* Add More button at the end */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex flex-col items-center justify-center h-20 py-2 border-dashed"
+                    onClick={handleOpenManageProducts}
+                  >
+                    <Settings className="h-5 w-5 mb-1" />
+                    <span className="text-xs text-center">Add More</span>
+                  </Button>
                 </div>
               </ScrollArea>
             </div>

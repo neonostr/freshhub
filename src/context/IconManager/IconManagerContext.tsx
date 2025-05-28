@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { ALL_ICONS } from '@/data/productData';
 import { IconOption } from '@/data/productData';
@@ -156,11 +157,14 @@ export const IconManagerProvider = ({ children }: IconManagerProviderProps) => {
         }
       }));
       
-      // Auto-select the new product
-      if (!isIconSelected(product.value)) {
-        console.log(`IconManager: Auto-selecting new product ${product.value}`);
-        setSelectedIconValues(prev => [...prev, product.value]);
-      }
+      // Auto-select the new product immediately
+      console.log(`IconManager: Auto-selecting new product ${product.value}`);
+      setSelectedIconValues(prev => {
+        if (!prev.includes(product.value)) {
+          return [...prev, product.value];
+        }
+        return prev;
+      });
       
       // Notify that a custom product was added/updated
       setTimeout(() => {

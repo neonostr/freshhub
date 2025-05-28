@@ -181,8 +181,18 @@ const IconManagerDialog: React.FC = () => {
     setIsAddingProduct(false);
   };
 
-  // Check subscription and show upgrade dialog if needed
+  // Check subscription and show upgrade dialog if needed for adding products
   const handleAddCustomProductClick = () => {
+    if (!isPremium) {
+      setPremiumDialogOpen(true);
+      return;
+    }
+    setIsAddingProduct(true);
+  };
+
+  // Navigate to custom products tab
+  const handleNavigateToCustomProducts = () => {
+    setCurrentTab('custom');
     if (!isPremium) {
       setPremiumDialogOpen(true);
       return;
@@ -210,6 +220,7 @@ const IconManagerDialog: React.FC = () => {
               right: handedness === 'left' ? "1.5rem" : "auto",
               left: handedness === 'right' ? "1.5rem" : "auto"
             }}
+            data-manage-products-trigger
           >
             <Settings className="h-6 w-6" />
           </Button>
@@ -234,11 +245,51 @@ const IconManagerDialog: React.FC = () => {
               <div className="flex-1 overflow-hidden mt-4">
                 {/* Product selection tab */}
                 <TabsContent value="selection" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
-                  <ProductsList 
-                    icons={sortedIcons as IconOption[]} 
-                    isIconSelected={isIconSelected} 
-                    toggleIcon={toggleIcon} 
-                  />
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Select the products you want available when adding new products.
+                    You must select at least one product.
+                  </p>
+                  
+                  <div className="flex-1 overflow-hidden">
+                    <ScrollArea className="h-full">
+                      <div className="grid grid-cols-3 gap-2">
+                        {sortedIcons.map((icon) => (
+                          <Button
+                            key={icon.value}
+                            type="button"
+                            variant={isIconSelected(icon.value) ? "default" : "outline"}
+                            className="flex items-center justify-center h-20 py-2"
+                            onClick={() => {
+                              // Prevent deselecting if it's the last selected icon
+                              if (isIconSelected(icon.value)) {
+                                const atLeastOneLeft = sortedIcons.some(
+                                  item => item.value !== icon.value && isIconSelected(item.value)
+                                );
+                                if (atLeastOneLeft) {
+                                  toggleIcon(icon.value);
+                                }
+                              } else {
+                                toggleIcon(icon.value);
+                              }
+                            }}
+                          >
+                            <span className="text-sm text-center truncate max-w-full px-1">{icon.label}</span>
+                          </Button>
+                        ))}
+                        
+                        {/* Add Custom Products button at the end */}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="flex flex-col items-center justify-center h-20 py-2 border-dashed"
+                          onClick={handleNavigateToCustomProducts}
+                        >
+                          <Plus className="h-5 w-5 mb-1" />
+                          <span className="text-xs text-center">Add Custom Products</span>
+                        </Button>
+                      </div>
+                    </ScrollArea>
+                  </div>
                 </TabsContent>
                 
                 {/* Shelf life tab */}
