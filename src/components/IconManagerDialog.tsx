@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -6,9 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ALL_ICONS, useIconManager } from '@/context/IconManager';
 import { IconOption } from '@/data/productData';
-import ShelfLifeList from './ShelfLifeList';
-import CustomProductsList from './CustomProductsList';
-import AddCustomProductForm from './AddCustomProductForm';
+import ShelfLifeList from './IconSelector/ShelfLifeList';
+import CustomProductsList from './IconSelector/CustomProductsList';
+import AddCustomProductForm from './IconSelector/AddCustomProductForm';
 import { toast } from 'sonner';
 
 interface IconManagerDialogProps {
