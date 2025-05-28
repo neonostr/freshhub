@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -92,21 +91,14 @@ const Index = () => {
       return () => observer.disconnect();
     }
   }, []);
-
-  return (
-    <HeaderVisibilityProvider>
-      <div className="container max-w-5xl mx-auto min-h-screen">
-        {!hideHeader && (
-          <header 
-            className={`py-6 text-center ${hideHeader ? '' : 'fixed-header'}`} 
-            id="app-header"
-          >
+  return <HeaderVisibilityProvider>
+      <div className="container max-w-5xl mx-auto p-4 pb-20 min-h-screen">
+        {!hideHeader && <header className="py-6 text-center" id="app-header">
             <h1 className="text-3xl font-bold">Freshify</h1>
             <p className="text-gray-500 mt-2">Know when it's been open too long</p>
-          </header>
-        )}
+          </header>}
         
-        <main className={`my-6 main-content ${!hideHeader ? 'with-header' : ''}`}>
+        <main className="my-6">
           <ItemsList />
         </main>
         
@@ -116,7 +108,6 @@ const Index = () => {
         <TutorialWrapper />
         <PWAInstallPrompt />
       </div>
-    </HeaderVisibilityProvider>
-  );
+    </HeaderVisibilityProvider>;
 };
 export default Index;
