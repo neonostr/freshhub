@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -20,8 +21,29 @@ const IconManagerDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("products");
   const [showAddForm, setShowAddForm] = useState(false);
-  const { availableIcons, allIcons, toggleIcon, isIconSelected } = useIconManager();
+  const { 
+    availableIcons, 
+    allIcons, 
+    toggleIcon, 
+    isIconSelected, 
+    updateIconShelfLife,
+    addCustomProduct,
+    updateProductName,
+    deleteCustomProduct,
+    isCustomProduct,
+    customProducts
+  } = useIconManager();
   const [selectedBuiltInProducts, setSelectedBuiltInProducts] = useState<Record<string, boolean>>({});
+  
+  // State for shelf life editing
+  const [editingValues, setEditingValues] = useState<Record<string, string>>({});
+  
+  // State for custom products editing
+  const [editingProduct, setEditingProduct] = useState<{
+    productId: string;
+    name: string;
+    shelfLife: number;
+  } | null>(null);
 
   useEffect(() => {
     // Initialize selectedBuiltInProducts based on availableIcons on mount
@@ -41,6 +63,78 @@ const IconManagerDialog: React.FC = () => {
       ...prev,
       [iconValue]: !prev[iconValue]
     }));
+  };
+
+  // Shelf life management functions
+  const handleShelfLifeFocus = (value: string) => {
+    const currentShelfLife = allIcons[value]?.shelfLife?.toString() || '7';
+    setEditingValues(prev => ({
+      ...prev,
+      [value]: currentShelfLife
+    }));
+  };
+
+  const handleShelfLifeChange = (value: string, newValue: string) => {
+    setEditingValues(prev => ({
+      ...prev,
+      [value]: newValue
+    }));
+  };
+
+  const handleShelfLifeBlur = (value: string) => {
+    const newValue = editingValues[value];
+    if (newValue && !isNaN(parseInt(newValue))) {
+      updateIconShelfLife(value, parseInt(newValue));
+    }
+    setEditingValues(prev => {
+      const newState = { ...prev };
+      delete newState[value];
+      return newState;
+    });
+  };
+
+  const getDisplayValue = (value: string) => {
+    return editingValues[value] || allIcons[value]?.shelfLife?.toString() || '7';
+  };
+
+  // Custom products management functions
+  const startEditingProduct = (product: IconOption) => {
+    setEditingProduct({
+      productId: product.value,
+      name: product.label,
+      shelfLife: product.shelfLife
+    });
+  };
+
+  const saveProductChanges = () => {
+    if (!editingProduct) return;
+    
+    updateProductName(editingProduct.productId, editingProduct.name);
+    updateIconShelfLife(editingProduct.productId, editingProduct.shelfLife);
+    setEditingProduct(null);
+  };
+
+  const cancelEditingProduct = () => {
+    setEditingProduct(null);
+  };
+
+  const confirmDelete = (value: string) => {
+    deleteCustomProduct(value);
+  };
+
+  const updateEditingField = (field: string, value: string | number) => {
+    if (!editingProduct) return;
+    setEditingProduct(prev => prev ? {
+      ...prev,
+      [field]: value
+    } : null);
+  };
+
+  const handleAddCustomProduct = (product: IconOption) => {
+    addCustomProduct({
+      ...product,
+      isCustom: true
+    });
   };
 
   return (
@@ -115,13 +209,15 @@ const IconManagerDialog: React.FC = () => {
             <TabsContent value="shelf-life" className="mt-6 overflow-hidden">
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Customize Shelf Life</h3>
-                <p className="text-sm text-gray-600">
-                  Adjust the default shelf life for any product. This will affect all future items you add.
-                </p>
-                
-                <ScrollArea className="h-[400px]">
-                  <ShelfLifeList />
-                </ScrollArea>
+                <ShelfLifeList
+                  icons={availableIcons}
+                  isCustomProduct={isCustomProduct}
+                  editingValues={editingValues}
+                  handleShelfLifeFocus={handleShelfLifeFocus}
+                  handleShelfLifeChange={handleShelfLifeChange}
+                  handleShelfLifeBlur={handleShelfLifeBlur}
+                  getDisplayValue={getDisplayValue}
+                />
               </div>
             </TabsContent>
             
@@ -138,17 +234,25 @@ const IconManagerDialog: React.FC = () => {
                 {showAddForm && (
                   <div className="p-4 border rounded-lg bg-gray-50">
                     <AddCustomProductForm
+                      availableIcons={[]}
+                      onAdd={handleAddCustomProduct}
                       onCancel={() => setShowAddForm(false)}
-                      onSuccess={() => {
-                        setShowAddForm(false);
-                        toast.success("Custom product added successfully!");
-                      }}
                     />
                   </div>
                 )}
                 
                 <ScrollArea className="h-[350px]">
-                  <CustomProductsList />
+                  <CustomProductsList
+                    products={Object.values(customProducts)}
+                    editingProduct={editingProduct}
+                    startEditingProduct={startEditingProduct}
+                    saveProductChanges={saveProductChanges}
+                    cancelEditingProduct={cancelEditingProduct}
+                    confirmDelete={confirmDelete}
+                    onAddNewClick={() => setShowAddForm(true)}
+                    isAdding={showAddForm}
+                    updateEditingField={updateEditingField}
+                  />
                 </ScrollArea>
               </div>
             </TabsContent>
@@ -160,3 +264,4 @@ const IconManagerDialog: React.FC = () => {
 };
 
 export default IconManagerDialog;
+
