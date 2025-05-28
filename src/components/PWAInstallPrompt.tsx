@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Smartphone, X, Share, MoreVertical, Download } from 'lucide-react';
+import { Smartphone, X } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -14,8 +14,8 @@ const PWAInstallPrompt = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [dontShowAgain, setDontShowAgain] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(false);
-  const [platform, setPlatform] = useState<'ios' | 'android' | 'desktop' | 'unknown'>('unknown');
+  const [isInstalling, setIsInstalling] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   useEffect(() => {
     // Check if user has already dismissed the prompt
@@ -29,53 +29,57 @@ const PWAInstallPrompt = () => {
 
     if (isStandalone) return;
 
-    // Detect platform
-    const userAgent = navigator.userAgent.toLowerCase();
-    let detectedPlatform: 'ios' | 'android' | 'desktop' | 'unknown' = 'unknown';
-    
-    if (/iphone|ipad|ipod/.test(userAgent)) {
-      detectedPlatform = 'ios';
-    } else if (/android/.test(userAgent)) {
-      detectedPlatform = 'android';
-    } else if (/windows|mac|linux/.test(userAgent)) {
-      detectedPlatform = 'desktop';
-    }
-    
-    setPlatform(detectedPlatform);
-
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
+      // Show our custom prompt after a short delay
+      setTimeout(() => setIsOpen(true), 2000);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Show prompt after a short delay
-    setTimeout(() => setIsOpen(true), 2000);
+    // For browsers that don't support beforeinstallprompt, show after delay
+    const timer = setTimeout(() => {
+      if (!deferredPrompt) {
+        setIsOpen(true);
+      }
+    }, 3000);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      clearTimeout(timer);
     };
-  }, []);
+  }, [deferredPrompt]);
 
   const handleInstall = async () => {
     if (deferredPrompt) {
+      setIsInstalling(true);
       try {
         await deferredPrompt.prompt();
         const choiceResult = await deferredPrompt.userChoice;
         
         if (choiceResult.outcome === 'accepted') {
-          setIsOpen(false);
+          setShowSuccessMessage(true);
+          setTimeout(() => {
+            setIsOpen(false);
+            setShowSuccessMessage(false);
+          }, 3000);
         }
         
         setDeferredPrompt(null);
       } catch (error) {
         console.error('Error during installation:', error);
-        setShowInstructions(true);
+      } finally {
+        setIsInstalling(false);
       }
     } else {
-      setShowInstructions(true);
+      // Fallback for browsers without install prompt support
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setIsOpen(false);
+        setShowSuccessMessage(false);
+      }, 3000);
     }
   };
 
@@ -84,102 +88,6 @@ const PWAInstallPrompt = () => {
       localStorage.setItem('pwa-install-dismissed', 'true');
     }
     setIsOpen(false);
-  };
-
-  const renderInstructions = () => {
-    switch (platform) {
-      case 'ios':
-        return (
-          <div className="space-y-4">
-            <div className="text-center">
-              <h3 className="font-semibold mb-3">Install on iOS:</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center text-white font-bold">1</div>
-                  <div className="flex items-center gap-2">
-                    <span>Tap the</span>
-                    <Share className="w-4 h-4" />
-                    <span>share button in Safari</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center text-white font-bold">2</div>
-                  <div className="flex items-center gap-2">
-                    <span>Scroll down and tap</span>
-                    <div className="px-2 py-1 bg-gray-200 rounded text-xs">"Add to Home Screen"</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center text-white font-bold">3</div>
-                  <span>Tap "Add" to install Freshify</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      
-      case 'android':
-        return (
-          <div className="space-y-4">
-            <div className="text-center">
-              <h3 className="font-semibold mb-3">Install on Android:</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-green-500 rounded flex items-center justify-center text-white font-bold">1</div>
-                  <div className="flex items-center gap-2">
-                    <span>Tap the</span>
-                    <MoreVertical className="w-4 h-4" />
-                    <span>menu button in Chrome</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-green-500 rounded flex items-center justify-center text-white font-bold">2</div>
-                  <div className="flex items-center gap-2">
-                    <span>Tap</span>
-                    <div className="px-2 py-1 bg-gray-200 rounded text-xs">"Add to Home screen"</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-green-500 rounded flex items-center justify-center text-white font-bold">3</div>
-                  <span>Tap "Add" to install Freshify</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      
-      case 'desktop':
-        return (
-          <div className="space-y-4">
-            <div className="text-center">
-              <h3 className="font-semibold mb-3">Install on Desktop:</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-purple-500 rounded flex items-center justify-center text-white font-bold">1</div>
-                  <div className="flex items-center gap-2">
-                    <span>Look for the</span>
-                    <Download className="w-4 h-4" />
-                    <span>install icon in your browser's address bar</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 bg-purple-500 rounded flex items-center justify-center text-white font-bold">2</div>
-                  <span>Click it and follow the prompts to install</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      
-      default:
-        return (
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Look for an "Add to Home Screen" or "Install" option in your browser's menu to install Freshify as an app.
-            </p>
-          </div>
-        );
-    }
   };
 
   if (!isOpen) return null;
@@ -205,8 +113,13 @@ const PWAInstallPrompt = () => {
             </Button>
           </div>
           <DialogDescription className="text-left space-y-2">
-            {showInstructions ? (
-              renderInstructions()
+            {showSuccessMessage ? (
+              <div className="text-center py-4">
+                <p className="text-green-600 font-medium mb-2">✓ Installation started!</p>
+                <p className="text-sm text-gray-600">
+                  You can now close this tab, go to your home screen, and open Freshify from there!
+                </p>
+              </div>
             ) : (
               <>
                 <p>Freshify works best as a Progressive Web App (PWA). You'll get:</p>
@@ -222,7 +135,7 @@ const PWAInstallPrompt = () => {
           </DialogDescription>
         </DialogHeader>
         
-        {!showInstructions ? (
+        {!showSuccessMessage && (
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Checkbox
@@ -242,27 +155,11 @@ const PWAInstallPrompt = () => {
               <Button 
                 onClick={handleInstall} 
                 className="flex-1 bg-green-500 hover:bg-green-600"
+                disabled={isInstalling}
               >
-                Install App
+                {isInstalling ? 'Installing...' : 'Install App'}
               </Button>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="dont-show-again"
-                checked={dontShowAgain}
-                onCheckedChange={(checked) => setDontShowAgain(checked as boolean)}
-              />
-              <label htmlFor="dont-show-again" className="text-sm text-gray-600">
-                Don't show me this again
-              </label>
-            </div>
-            
-            <Button onClick={handleClose} className="w-full">
-              Got it!
-            </Button>
           </div>
         )}
       </DialogContent>
