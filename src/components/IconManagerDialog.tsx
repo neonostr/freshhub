@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { Settings, Plus, Edit, Trash2, Check, X } from 'lucide-react';
 import { useIconManager } from '@/context/IconManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import ProductsList from './IconSelector/ProductsList';
 import ShelfLifeList from './IconSelector/ShelfLifeList';
 import AddCustomProductForm from './IconSelector/AddCustomProductForm';
