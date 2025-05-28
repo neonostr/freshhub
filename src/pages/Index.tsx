@@ -3,7 +3,6 @@ import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
 import IconManagerDialog from '@/components/IconManagerDialog';
 import SwipeTutorial from '@/components/SwipeTutorial';
-import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
@@ -66,7 +65,6 @@ const TutorialWrapper = () => {
   if (!shouldShowTutorial) return null;
   return <SwipeTutorial />;
 };
-
 const Index = () => {
   const [isCompactMode, setIsCompactMode] = useState(false);
   const {
@@ -106,9 +104,7 @@ const Index = () => {
         <IconManagerDialog />
         <AddItemDialog />
         <TutorialWrapper />
-        <PWAInstallPrompt />
       </div>
     </HeaderVisibilityProvider>;
 };
-
 export default Index;
