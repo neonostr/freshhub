@@ -64,32 +64,45 @@ const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = () => {
     switch (platform) {
       case 'ios':
         return (
-          <div className="space-y-4 text-center">
+          <div className="space-y-6 text-left">
             <div className="flex items-center justify-center space-x-2 text-blue-600">
               <Smartphone className="h-8 w-8" />
               <span className="text-lg font-semibold">iOS Installation</span>
             </div>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div className="space-y-4">
+              <div className="flex items-start space-x-4 p-4 bg-blue-50 rounded-lg border">
                 <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                <div className="flex items-center space-x-2">
-                  <span>Tap the</span>
-                  <Share className="h-5 w-5 text-blue-600" />
-                  <span className="font-semibold">Share</span>
-                  <span>button in Safari</span>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="font-medium">Tap the</span>
+                    <Share className="h-5 w-5 text-blue-600" />
+                    <span className="font-semibold text-blue-600">Share</span>
+                    <span className="font-medium">button in Safari</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Located at the bottom of your screen in Safari</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-start space-x-4 p-4 bg-blue-50 rounded-lg border">
                 <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                <div className="flex items-center space-x-2">
-                  <span>Scroll down and tap</span>
-                  <Plus className="h-5 w-5 text-blue-600" />
-                  <span className="font-semibold">"Add to Home Screen"</span>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="font-medium">Scroll down and tap</span>
+                    <Plus className="h-5 w-5 text-blue-600" />
+                    <span className="font-semibold text-blue-600">"Add to Home Screen"</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Look for this option in the share menu</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-start space-x-4 p-4 bg-blue-50 rounded-lg border">
                 <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                <span>Tap <span className="font-semibold">"Add"</span> to confirm</span>
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <span className="font-medium">Tap</span>
+                    <span className="font-semibold text-blue-600 mx-1">"Add"</span>
+                    <span className="font-medium">to confirm</span>
+                  </div>
+                  <p className="text-sm text-gray-600">The app will appear on your home screen</p>
+                </div>
               </div>
             </div>
           </div>
@@ -97,27 +110,43 @@ const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = () => {
 
       case 'android':
         return (
-          <div className="space-y-4 text-center">
+          <div className="space-y-6 text-left">
             <div className="flex items-center justify-center space-x-2 text-green-600">
               <Smartphone className="h-8 w-8" />
               <span className="text-lg font-semibold">Android Installation</span>
             </div>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div className="space-y-4">
+              <div className="flex items-start space-x-4 p-4 bg-green-50 rounded-lg border">
                 <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                <span>Tap the <span className="font-semibold">three dots menu</span> in Chrome</span>
-              </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                <div className="flex items-center space-x-2">
-                  <span>Tap</span>
-                  <Plus className="h-5 w-5 text-green-600" />
-                  <span className="font-semibold">"Add to Home screen"</span>
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <span className="font-medium">Tap the</span>
+                    <span className="font-semibold text-green-600 mx-1">three dots menu</span>
+                    <span className="font-medium">in Chrome</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Usually located in the top-right corner</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-start space-x-4 p-4 bg-green-50 rounded-lg border">
+                <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="font-medium">Tap</span>
+                    <span className="font-semibold text-green-600">"Add to Home screen"</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Or look for "Install app" option</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4 p-4 bg-green-50 rounded-lg border">
                 <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                <span>Tap <span className="font-semibold">"Add"</span> to confirm</span>
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <span className="font-medium">Tap</span>
+                    <span className="font-semibold text-green-600 mx-1">"Add"</span>
+                    <span className="font-medium">to confirm</span>
+                  </div>
+                  <p className="text-sm text-gray-600">The app will appear on your home screen</p>
+                </div>
               </div>
             </div>
           </div>
@@ -125,23 +154,44 @@ const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = () => {
 
       case 'desktop':
         return (
-          <div className="space-y-4 text-center">
+          <div className="space-y-6 text-left">
             <div className="flex items-center justify-center space-x-2 text-purple-600">
               <Monitor className="h-8 w-8" />
               <span className="text-lg font-semibold">Desktop Installation</span>
             </div>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div className="space-y-4">
+              <div className="flex items-start space-x-4 p-4 bg-purple-50 rounded-lg border">
                 <div className="flex-shrink-0 w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                <span>Look for the <span className="font-semibold">install icon</span> in your browser's address bar</span>
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <span className="font-medium">Look for a</span>
+                    <span className="font-semibold text-purple-600 mx-1">"Install Freshify"</span>
+                    <span className="font-medium">popup or notification</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Your browser may automatically show an install prompt</p>
+                </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-start space-x-4 p-4 bg-purple-50 rounded-lg border">
                 <div className="flex-shrink-0 w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                <span>Or use <span className="font-semibold">browser menu</span> → "Install Freshify"</span>
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <span className="font-medium">Or use</span>
+                    <span className="font-semibold text-purple-600 mx-1">browser menu</span>
+                    <span className="font-medium">→ "Install Freshify"</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Chrome: Three dots menu → "Install Freshify"<br />Edge: Three dots menu → "Apps" → "Install this site as an app"</p>
+                </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-start space-x-4 p-4 bg-purple-50 rounded-lg border">
                 <div className="flex-shrink-0 w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                <span>Click <span className="font-semibold">"Install"</span> when prompted</span>
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <span className="font-medium">Click</span>
+                    <span className="font-semibold text-purple-600 mx-1">"Install"</span>
+                    <span className="font-medium">when prompted</span>
+                  </div>
+                  <p className="text-sm text-gray-600">The app will open in its own window</p>
+                </div>
               </div>
             </div>
           </div>
@@ -156,10 +206,10 @@ const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = () => {
 
   return (
     <Dialog open={isVisible} onOpenChange={() => {}}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md sm:max-w-lg max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">
               {showInstructions ? 'Installation Guide' : 'Get the Best Experience'}
             </DialogTitle>
             <Button
@@ -175,13 +225,13 @@ const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = () => {
         
         {!showInstructions ? (
           <div className="space-y-4">
-            <DialogDescription className="text-center">
+            <DialogDescription className="text-center text-sm sm:text-base">
               For optimal experience, offline capability, and faster loading, we recommend using Freshify as a{' '}
               <a 
                 href="https://what-is-a-pwa.app" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="underline text-blue-600 hover:text-blue-800"
+                className="underline text-blue-600 hover:text-blue-800 font-medium"
               >
                 PWA
               </a>{' '}
@@ -212,9 +262,9 @@ const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
             {renderInstructions()}
-            <Button onClick={handleDismiss} className="w-full">
+            <Button onClick={handleDismiss} className="w-full mt-6">
               Got it!
             </Button>
           </div>

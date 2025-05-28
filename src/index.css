@@ -107,7 +107,68 @@
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+    /* Ensure minimum height for mobile */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
   }
+
+  /* Ensure proper viewport handling on mobile */
+  html {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Fix for fixed positioning on mobile */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: hsl(var(--background));
+  border-bottom: 1px solid hsl(var(--border));
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Fixed button positioning with proper z-index layering */
+button[data-manage-products-trigger="true"] {
+  position: fixed !important;
+  top: 1rem;
+  right: 1rem;
+  z-index: 50 !important;
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  /* Ensure button is always visible on mobile */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Add Item Dialog Trigger positioning */
+button[data-add-item-trigger="true"] {
+  position: fixed !important;
+  bottom: 1.5rem;
+  right: 1rem;
+  z-index: 50 !important;
+  /* Ensure button is always visible on mobile */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+  /* Add safe area for devices with home indicator */
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+/* Content padding to account for fixed elements */
+.main-content {
+  padding-top: 0;
+  padding-bottom: 5rem; /* Space for fixed bottom button */
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+
+/* When header is shown, add top padding */
+.main-content.with-header {
+  padding-top: 8rem; /* Approximate header height */
 }
 
 /* Compact mode styles */
@@ -155,6 +216,7 @@
     right: 0 !important;
     bottom: 0 !important;
     height: 100vh !important;
+    height: 100dvh !important;
     width: 100vw !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -183,6 +245,13 @@
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     will-change: auto;
+  }
+
+  /* Ensure buttons are always visible in PWA mode */
+  button[data-manage-products-trigger="true"],
+  button[data-add-item-trigger="true"] {
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    transform: translate3d(0, 0, 0) !important;
   }
 }
 
@@ -223,4 +292,18 @@
 .swipe-tutorial-animation {
   animation: swipe-hint 2.5s ease-in-out;
   animation-iteration-count: 2;
+}
+
+/* Mobile viewport fix for better rendering */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Ensure content doesn't get hidden behind fixed elements */
+  main {
+    min-height: calc(100vh - 8rem);
+    min-height: calc(100dvh - 8rem);
+  }
 }
