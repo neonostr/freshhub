@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -153,6 +154,13 @@ const ItemsList: React.FC = () => {
     setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
   };
 
+  // Get the button position based on handedness
+  const getButtonPosition = () => {
+    return handedness === 'right' 
+      ? { right: '1.5rem', left: 'auto' }
+      : { left: '1.5rem', right: 'auto' };
+  };
+
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-8 text-center min-h-[60vh]">
@@ -192,8 +200,8 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Fixed floating buttons - positioned in bottom right corner */}
-      <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
+      {/* Fixed floating buttons - positioned based on handedness */}
+      <div className="fixed bottom-6 flex flex-col gap-4 z-50" style={getButtonPosition()}>
         {/* Filter button */}
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
           <DrawerTrigger asChild>
