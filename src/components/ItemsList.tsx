@@ -216,8 +216,8 @@ const ItemsList: React.FC = () => {
 
   // Calculate classes for the outer container based on scroll need
   const containerClass = scrollEnabled 
-    ? "space-y-6 relative pb-20 overflow-y-auto" 
-    : "space-y-6 relative pb-20 overflow-y-hidden";
+    ? "space-y-6 relative pb-32 overflow-y-auto" 
+    : "space-y-6 relative pb-32 overflow-y-hidden";
 
   return (
     <div 
@@ -237,11 +237,11 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating buttons - positioned based on handedness with fixed positioning */}
+      {/* Bottom floating buttons - absolutely fixed positioning */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button
-            className="fixed bottom-6 z-50 shadow-lg rounded-full h-14 w-14 p-0 fixed-bottom-button"
+            className="fixed-bottom-button shadow-lg rounded-full h-14 w-14 p-0"
             size="icon"
             variant="default"
             style={getButtonPosition(6)}
@@ -296,9 +296,9 @@ const ItemsList: React.FC = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Compact mode toggle button - using default variant with fixed positioning */}
+      {/* Compact mode toggle button - absolutely fixed positioning */}
       <Button
-        className="fixed bottom-6 z-50 shadow-lg rounded-full h-14 w-14 p-0 fixed-bottom-button"
+        className="fixed-bottom-button shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
         variant="default"
         style={getButtonPosition(10.5)}
