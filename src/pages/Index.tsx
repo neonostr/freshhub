@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -65,6 +66,7 @@ const TutorialWrapper = () => {
   if (!shouldShowTutorial) return null;
   return <SwipeTutorial />;
 };
+
 const Index = () => {
   const [isCompactMode, setIsCompactMode] = useState(false);
   const {
@@ -89,22 +91,34 @@ const Index = () => {
       return () => observer.disconnect();
     }
   }, []);
-  return <HeaderVisibilityProvider>
-      <div className="container max-w-5xl mx-auto p-4 pb-20 min-h-screen">
-        {!hideHeader && <header className="py-6 text-center" id="app-header">
+
+  return (
+    <HeaderVisibilityProvider>
+      <div className="flex flex-col h-screen max-w-5xl mx-auto">
+        {/* Fixed Header */}
+        {!hideHeader && (
+          <header className="flex-shrink-0 py-6 px-4 text-center" id="app-header">
             <h1 className="text-3xl font-bold">Freshify</h1>
             <p className="text-gray-500 mt-2">Know when it's been open too long</p>
-          </header>}
+          </header>
+        )}
         
-        <main className="my-6">
-          <ItemsList />
+        {/* Scrollable Content Area - positioned between header and buttons */}
+        <main className="flex-1 overflow-hidden px-4" style={{ 
+          paddingBottom: '5.5rem' // Space for the bottom buttons
+        }}>
+          <div className="h-full overflow-y-auto">
+            <ItemsList />
+          </div>
         </main>
         
-        {/* Always show IconManagerDialog regardless of compact mode */}
+        {/* Always show IconManagerDialog and AddItemDialog regardless of compact mode */}
         <IconManagerDialog />
         <AddItemDialog />
         <TutorialWrapper />
       </div>
-    </HeaderVisibilityProvider>;
+    </HeaderVisibilityProvider>
+  );
 };
+
 export default Index;

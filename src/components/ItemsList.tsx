@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -36,11 +37,9 @@ const ItemsList: React.FC = () => {
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [scrollEnabled, setScrollEnabled] = useState(false);
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
   const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
-  const listContainerRef = useRef<HTMLDivElement>(null);
   
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -115,32 +114,6 @@ const ItemsList: React.FC = () => {
     };
   }, [maxFreshnessDays]);
 
-  // Check if scrolling should be enabled based on content vs container height
-  useEffect(() => {
-    const checkScrollNeeded = () => {
-      if (listContainerRef.current) {
-        const container = listContainerRef.current;
-        const contentHeight = container.scrollHeight;
-        const containerHeight = container.clientHeight;
-        const windowHeight = window.innerHeight;
-        
-        // Consider some buffer (20px) to avoid borderline cases
-        const shouldScroll = contentHeight > containerHeight || contentHeight > windowHeight - 150;
-        console.log(`Content height: ${contentHeight}, Container height: ${containerHeight}, Window height: ${windowHeight}, Should scroll: ${shouldScroll}`);
-        setScrollEnabled(shouldScroll);
-      }
-    };
-    
-    // Check on mount, when items change, or on window resize
-    checkScrollNeeded();
-    
-    // Add resize listener
-    window.addEventListener('resize', checkScrollNeeded);
-    
-    // Remove listener on cleanup
-    return () => window.removeEventListener('resize', checkScrollNeeded);
-  }, [items, isCompactMode, hideHeader, forceUpdate]);
-
   // Filter items based on the current freshness filter
   const filteredItems = items.filter(item => {
     const daysUntilExpiry = calculateDaysUntilExpiry(item);
@@ -191,7 +164,7 @@ const ItemsList: React.FC = () => {
   };
 
   if (items.length === 0) {
-    return <div className="flex flex-col items-center justify-center p-8 text-center">
+    return <div className="flex flex-col items-center justify-center p-8 text-center h-full">
       <div className="text-4xl mb-2">🥛</div>
       <h3 className="text-xl font-medium mb-2">No items yet</h3>
       <p className="text-gray-500">
@@ -213,17 +186,8 @@ const ItemsList: React.FC = () => {
     return "desktop-compact-grid";
   };
 
-  // Calculate classes for the outer container based on scroll need
-  const containerClass = scrollEnabled 
-    ? "space-y-6 relative pb-16 overflow-y-auto" 
-    : "space-y-6 relative pb-16 overflow-y-hidden";
-
   return (
-    <div 
-      ref={listContainerRef} 
-      className={containerClass} 
-      style={scrollEnabled ? {} : { height: 'auto' }}
-    >
+    <div className="py-6">
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
@@ -236,11 +200,11 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating buttons - positioned based on handedness */}
+      {/* Bottom floating buttons - positioned based on handedness and truly fixed */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button
-            className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
+            className="fixed bottom-6 z-50 shadow-lg rounded-full h-14 w-14 p-0"
             size="icon"
             variant="default"
             style={getButtonPosition(6)}
@@ -295,9 +259,9 @@ const ItemsList: React.FC = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Compact mode toggle button - using default variant */}
+      {/* Compact mode toggle button - truly fixed */}
       <Button
-        className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
+        className="fixed bottom-6 z-50 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
         variant="default"
         style={getButtonPosition(10.5)}
