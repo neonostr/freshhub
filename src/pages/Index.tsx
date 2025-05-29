@@ -68,34 +68,14 @@ const TutorialWrapper = () => {
 };
 
 const Index = () => {
-  const [isCompactMode, setIsCompactMode] = useState(false);
   const {
     hideHeader
   } = useHeaderVisibilityStore();
 
-  // Listen for changes to the display style of the header
-  // which indicates compact mode is enabled/disabled
-  React.useEffect(() => {
-    const header = document.getElementById('app-header');
-    if (header) {
-      const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-          if (mutation.attributeName === 'style') {
-            setIsCompactMode(header.style.display === 'none');
-          }
-        });
-      });
-      observer.observe(header, {
-        attributes: true
-      });
-      return () => observer.disconnect();
-    }
-  }, []);
-
   return (
     <HeaderVisibilityProvider>
       <div className="flex flex-col h-screen max-w-5xl mx-auto">
-        {/* Fixed Header */}
+        {/* Conditionally rendered Header */}
         {!hideHeader && (
           <header className="flex-shrink-0 py-6 px-4 text-center" id="app-header">
             <h1 className="text-3xl font-bold">Freshify</h1>
@@ -103,7 +83,7 @@ const Index = () => {
           </header>
         )}
         
-        {/* Scrollable Content Area - positioned between header and buttons */}
+        {/* Scrollable Content Area - adjusts based on header visibility */}
         <main className="flex-1 overflow-hidden px-4" style={{ 
           paddingBottom: '5.5rem' // Space for the bottom buttons
         }}>
