@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
@@ -10,7 +9,6 @@ import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from
 import { Item } from '@/types/item';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHandedness, type Handedness } from '@/context/HandednessContext';
-import { useHeaderVisibilityStore } from '@/pages/Index';
 
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
@@ -39,7 +37,6 @@ const ItemsList: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isMobile = useIsMobile();
   const { handedness } = useHandedness();
-  const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
   
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -137,17 +134,10 @@ const ItemsList: React.FC = () => {
     setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
   };
 
-  // Toggle compact mode
+  // Toggle compact mode - only affects item display, not header
   const toggleCompactMode = () => {
     setIsCompactMode(prev => !prev);
     setExpandedItemIds([]); // Reset expanded items when toggling mode
-
-    // Update header visibility when toggling compact mode
-    if (!isCompactMode) {
-      setHideHeader(true);
-    } else {
-      setHideHeader(false);
-    }
   };
 
   // Toggle expanded/collapsed state for an item
