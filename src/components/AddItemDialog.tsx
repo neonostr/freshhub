@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -256,15 +255,14 @@ const AddItemDialog: React.FC = () => {
                     </Button>
                   ))}
                   
-                  {/* Add More button at the end */}
+                  {/* Add More button with just + icon */}
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex flex-col items-center justify-center h-20 py-2 border-dashed"
+                    className="flex items-center justify-center h-20 py-2 border-dashed"
                     onClick={handleOpenManageProducts}
                   >
-                    <Settings className="h-5 w-5 mb-1" />
-                    <span className="text-xs text-center">Add More</span>
+                    <Plus className="h-6 w-6" />
                   </Button>
                 </div>
               </ScrollArea>

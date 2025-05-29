@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -279,15 +278,14 @@ const IconManagerDialog: React.FC = () => {
                           </Button>
                         ))}
                         
-                        {/* Add Custom Products button at the end */}
+                        {/* Add Custom Products button with just + icon */}
                         <Button
                           type="button"
                           variant="outline"
-                          className="flex flex-col items-center justify-center h-20 py-2 border-dashed"
+                          className="flex items-center justify-center h-20 py-2 border-dashed"
                           onClick={handleNavigateToCustomProducts}
                         >
-                          <Plus className="h-5 w-5 mb-1" />
-                          <span className="text-xs text-center">Add Custom Products</span>
+                          <Plus className="h-6 w-6" />
                         </Button>
                       </div>
                     </ScrollArea>
