@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry, calculateMaxFreshnessDays } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
+import { Filter, ArrowDown, ArrowUp, Minimize, Maximize, Settings, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
@@ -154,11 +153,17 @@ const ItemsList: React.FC = () => {
     setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
   };
 
-  // Get the button position based on handedness
-  const getButtonPosition = () => {
+  // Get the button positions based on handedness
+  const getMainButtonsPosition = () => {
     return handedness === 'right' 
       ? { right: '1.5rem', left: 'auto' }
       : { left: '1.5rem', right: 'auto' };
+  };
+
+  const getSettingsButtonPosition = () => {
+    return handedness === 'right' 
+      ? { left: '1.5rem', right: 'auto' }
+      : { right: '1.5rem', left: 'auto' };
   };
 
   if (items.length === 0) {
@@ -200,8 +205,30 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Fixed floating buttons - positioned based on handedness */}
-      <div className="fixed bottom-6 flex flex-col gap-4 z-50" style={getButtonPosition()}>
+      {/* Settings button - positioned on opposite side from main buttons */}
+      <div className="fixed bottom-6 z-50" style={getSettingsButtonPosition()}>
+        <Button
+          className="shadow-lg rounded-full h-14 w-14 p-0"
+          size="icon"
+          variant="default"
+          onClick={() => {/* TODO: Open settings */}}
+        >
+          <Settings className="h-6 w-6" />
+        </Button>
+      </div>
+
+      {/* Main floating buttons - positioned based on handedness */}
+      <div className="fixed bottom-6 flex flex-col gap-4 z-50" style={getMainButtonsPosition()}>
+        {/* Add item button (top in stack) */}
+        <Button
+          className="shadow-lg rounded-full h-14 w-14 p-0"
+          size="icon"
+          variant="default"
+          onClick={() => {/* TODO: Open add item dialog */}}
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
+
         {/* Filter button */}
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
           <DrawerTrigger asChild>
@@ -260,7 +287,7 @@ const ItemsList: React.FC = () => {
           </DrawerContent>
         </Drawer>
 
-        {/* Compact mode toggle button */}
+        {/* Compact mode toggle button (bottom in stack) */}
         <Button
           className="shadow-lg rounded-full h-14 w-14 p-0"
           size="icon"
