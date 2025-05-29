@@ -186,56 +186,6 @@
   }
 }
 
-/* CRITICAL: Fixed bottom buttons - absolutely positioned to prevent any scroll movement */
-.fixed-bottom-button {
-  position: fixed !important;
-  bottom: 1.5rem !important;
-  z-index: 9999 !important;
-  -webkit-transform: translateZ(0) !important;
-  transform: translateZ(0) !important;
-  -webkit-backface-visibility: hidden !important;
-  backface-visibility: hidden !important;
-  will-change: auto !important;
-  /* Prevent any transform or position changes during scroll */
-  pointer-events: auto !important;
-}
-
-/* Enhanced positioning for PWA and mobile devices */
-@media (display-mode: standalone) {
-  .fixed-bottom-button {
-    bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
-  }
-}
-
-/* Mobile specific fixes for button positioning - stronger rules */
-@media (max-width: 768px) {
-  .fixed-bottom-button {
-    position: fixed !important;
-    bottom: calc(1.5rem + env(safe-area-inset-bottom, 1rem)) !important;
-    -webkit-transform: translate3d(0, 0, 0) !important;
-    transform: translate3d(0, 0, 0) !important;
-  }
-}
-
-/* iOS Safari and WebKit specific fixes */
-@supports (-webkit-touch-callout: none) {
-  .fixed-bottom-button {
-    position: fixed !important;
-    bottom: calc(1.5rem + env(safe-area-inset-bottom, 1rem)) !important;
-    -webkit-transform: translate3d(0, 0, 0) !important;
-    transform: translate3d(0, 0, 0) !important;
-  }
-}
-
-/* Force fixed positioning on all touch devices */
-@media (pointer: coarse) {
-  .fixed-bottom-button {
-    position: fixed !important;
-    -webkit-transform: translate3d(0, 0, 0) !important;
-    transform: translate3d(0, 0, 0) !important;
-  }
-}
-
 /* Swipe animation styles */
 @keyframes slide-out-left {
   0% { transform: translateX(0); }
