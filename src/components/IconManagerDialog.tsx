@@ -19,7 +19,6 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useSubscription } from '@/context/SubscriptionContext';
 import PremiumUpgradeDialog from './PremiumUpgradeDialog';
-
 const IconManagerDialog: React.FC = () => {
   const {
     toast
@@ -35,8 +34,9 @@ const IconManagerDialog: React.FC = () => {
     isCustomProduct,
     customProducts
   } = useIconManager();
-
-  const { status } = useSubscription();
+  const {
+    status
+  } = useSubscription();
   const isPremium = status === 'premium';
 
   // Get handedness from context
@@ -111,7 +111,6 @@ const IconManagerDialog: React.FC = () => {
       setPremiumDialogOpen(true);
       return;
     }
-
     setEditingProduct({
       productId: product.value,
       name: product.label,
@@ -126,7 +125,6 @@ const IconManagerDialog: React.FC = () => {
       setPremiumDialogOpen(true);
       return;
     }
-    
     setProductToDelete(iconValue);
     setDeleteDialogOpen(true);
   };
@@ -160,14 +158,14 @@ const IconManagerDialog: React.FC = () => {
     if (editingProduct) {
       // First update the name if it changed
       updateProductName(editingProduct.productId, editingProduct.name);
-      
+
       // Then add/update the product in the custom products store
       addCustomProduct({
         value: editingProduct.productId,
         label: editingProduct.name,
         shelfLife: editingProduct.shelfLife
       });
-      
+
       // Reset editing state
       setEditingProduct(null);
     }
@@ -202,27 +200,17 @@ const IconManagerDialog: React.FC = () => {
   };
 
   // Extract basic product types from ALL_ICONS for custom products
-  const foodProductTypes = Object.values(ALL_ICONS)
-    .map(product => ({
-      name: product.label,
-      value: product.value
-    }))
-    .slice(0, 20);
-
-  return (
-    <>
+  const foodProductTypes = Object.values(ALL_ICONS).map(product => ({
+    name: product.label,
+    value: product.value
+  })).slice(0, 20);
+  return <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button 
-            className="fixed bottom-6 z-10 rounded-full h-14 w-14 p-0 shadow-lg" 
-            size="icon" 
-            variant="outline"
-            style={{
-              right: handedness === 'left' ? "1.5rem" : "auto",
-              left: handedness === 'right' ? "1.5rem" : "auto"
-            }}
-            data-manage-products-trigger
-          >
+          <Button className="fixed bottom-6 z-10 rounded-full h-14 w-14 p-0 shadow-lg" size="icon" variant="outline" style={{
+          right: handedness === 'left' ? "1.5rem" : "auto",
+          left: handedness === 'right' ? "1.5rem" : "auto"
+        }} data-manage-products-trigger>
             <Settings className="h-6 w-6" />
           </Button>
         </DialogTrigger>
@@ -254,37 +242,22 @@ const IconManagerDialog: React.FC = () => {
                   <div className="flex-1 overflow-hidden">
                     <ScrollArea className="h-full">
                       <div className="grid grid-cols-3 gap-2">
-                        {sortedIcons.map((icon) => (
-                          <Button
-                            key={icon.value}
-                            type="button"
-                            variant={isIconSelected(icon.value) ? "default" : "outline"}
-                            className="flex items-center justify-center h-20 py-2"
-                            onClick={() => {
-                              // Prevent deselecting if it's the last selected icon
-                              if (isIconSelected(icon.value)) {
-                                const atLeastOneLeft = sortedIcons.some(
-                                  item => item.value !== icon.value && isIconSelected(item.value)
-                                );
-                                if (atLeastOneLeft) {
-                                  toggleIcon(icon.value);
-                                }
-                              } else {
-                                toggleIcon(icon.value);
-                              }
-                            }}
-                          >
+                        {sortedIcons.map(icon => <Button key={icon.value} type="button" variant={isIconSelected(icon.value) ? "default" : "outline"} className="flex items-center justify-center h-20 py-2" onClick={() => {
+                        // Prevent deselecting if it's the last selected icon
+                        if (isIconSelected(icon.value)) {
+                          const atLeastOneLeft = sortedIcons.some(item => item.value !== icon.value && isIconSelected(item.value));
+                          if (atLeastOneLeft) {
+                            toggleIcon(icon.value);
+                          }
+                        } else {
+                          toggleIcon(icon.value);
+                        }
+                      }}>
                             <span className="text-sm text-center truncate max-w-full px-1">{icon.label}</span>
-                          </Button>
-                        ))}
+                          </Button>)}
                         
                         {/* Add Custom Products button with just + icon */}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="flex items-center justify-center h-20 py-2 border-dashed"
-                          onClick={handleNavigateToCustomProducts}
-                        >
+                        <Button type="button" variant="outline" onClick={handleNavigateToCustomProducts} className="flex items-center justify-center h-20">
                           <Plus className="h-6 w-6" />
                         </Button>
                       </div>
@@ -294,15 +267,7 @@ const IconManagerDialog: React.FC = () => {
                 
                 {/* Shelf life tab */}
                 <TabsContent value="shelfLife" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
-                  <ShelfLifeList 
-                    icons={Object.values(allIcons).filter(icon => isIconSelected(icon.value)).sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]} 
-                    isCustomProduct={isCustomProduct} 
-                    editingValues={editingValues} 
-                    handleShelfLifeFocus={handleShelfLifeFocus} 
-                    handleShelfLifeChange={handleShelfLifeChange} 
-                    handleShelfLifeBlur={handleShelfLifeBlur} 
-                    getDisplayValue={getDisplayValue} 
-                  />
+                  <ShelfLifeList icons={Object.values(allIcons).filter(icon => isIconSelected(icon.value)).sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]} isCustomProduct={isCustomProduct} editingValues={editingValues} handleShelfLifeFocus={handleShelfLifeFocus} handleShelfLifeChange={handleShelfLifeChange} handleShelfLifeBlur={handleShelfLifeBlur} getDisplayValue={getDisplayValue} />
                 </TabsContent>
                 
                 {/* Custom products tab */}
@@ -312,51 +277,23 @@ const IconManagerDialog: React.FC = () => {
                       {isPremium ? "Add your own custom products or edit existing ones." : "Upgrade to Premium to create custom products."}
                     </p>
                     
-                    {!isAddingProduct && !editingProduct && (
-                      <Button size="sm" variant="outline" onClick={handleAddCustomProductClick}>
+                    {!isAddingProduct && !editingProduct && <Button size="sm" variant="outline" onClick={handleAddCustomProductClick}>
                         <span className="flex items-center gap-1">+&nbsp;New Product</span>
-                      </Button>
-                    )}
+                      </Button>}
                   </div>
                   
                   <div className="flex-grow overflow-y-auto">
-                    {isAddingProduct ? (
-                      <AddCustomProductForm 
-                        availableIcons={foodProductTypes} 
-                        onAdd={handleAddCustomProduct} 
-                        onCancel={() => setIsAddingProduct(false)} 
-                      />
-                    ) : editingProduct ? (
-                      <AddCustomProductForm 
-                        availableIcons={foodProductTypes}
-                        onAdd={(product) => {
-                          addCustomProduct({
-                            value: editingProduct.productId,
-                            label: product.label,
-                            shelfLife: product.shelfLife
-                          });
-                          setEditingProduct(null);
-                        }}
-                        onCancel={() => setEditingProduct(null)} 
-                        initialValues={{
-                          name: editingProduct.name,
-                          shelfLife: editingProduct.shelfLife
-                        }} 
-                        isEditing={true} 
-                      />
-                    ) : (
-                      <CustomProductsList 
-                        products={Object.values(customProducts).sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]} 
-                        editingProduct={editingProduct}
-                        startEditingProduct={startEditingProduct}
-                        saveProductChanges={handleSaveProductChanges}
-                        cancelEditingProduct={() => setEditingProduct(null)}
-                        confirmDelete={confirmDelete}
-                        onAddNewClick={handleAddCustomProductClick}
-                        isAdding={isAddingProduct}
-                        updateEditingField={updateEditingField}
-                      />
-                    )}
+                    {isAddingProduct ? <AddCustomProductForm availableIcons={foodProductTypes} onAdd={handleAddCustomProduct} onCancel={() => setIsAddingProduct(false)} /> : editingProduct ? <AddCustomProductForm availableIcons={foodProductTypes} onAdd={product => {
+                    addCustomProduct({
+                      value: editingProduct.productId,
+                      label: product.label,
+                      shelfLife: product.shelfLife
+                    });
+                    setEditingProduct(null);
+                  }} onCancel={() => setEditingProduct(null)} initialValues={{
+                    name: editingProduct.name,
+                    shelfLife: editingProduct.shelfLife
+                  }} isEditing={true} /> : <CustomProductsList products={Object.values(customProducts).sort((a, b) => a.label.localeCompare(b.label)) as IconOption[]} editingProduct={editingProduct} startEditingProduct={startEditingProduct} saveProductChanges={handleSaveProductChanges} cancelEditingProduct={() => setEditingProduct(null)} confirmDelete={confirmDelete} onAddNewClick={handleAddCustomProductClick} isAdding={isAddingProduct} updateEditingField={updateEditingField} />}
                   </div>
                 </TabsContent>
                 
@@ -449,138 +386,111 @@ const IconManagerDialog: React.FC = () => {
           </div>
           
           {/* Action buttons for different states */}
-          {currentTab === 'selection' && (
-            <DialogClose asChild>
+          {currentTab === 'selection' && <DialogClose asChild>
               <Button type="button" className="mt-4 w-full">
                 <Check className="mr-1 h-4 w-4" /> Done
               </Button>
-            </DialogClose>
-          )}
+            </DialogClose>}
           
-          {currentTab === 'shelfLife' && (
-            <DialogClose asChild>
+          {currentTab === 'shelfLife' && <DialogClose asChild>
               <Button type="button" className="mt-4 w-full">
                 <Check className="mr-1 h-4 w-4" /> Done
               </Button>
-            </DialogClose>
-          )}
+            </DialogClose>}
           
-          {currentTab === 'custom' && isAddingProduct && (
-            <div className="flex gap-2 mt-4">
+          {currentTab === 'custom' && isAddingProduct && <div className="flex gap-2 mt-4">
               <Button variant="outline" onClick={() => setIsAddingProduct(false)} className="w-1/3">
                 <X className="mr-1 h-4 w-4" /> Cancel
               </Button>
-              <Button 
-                onClick={() => {
-                  const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
-                  const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
-                  
-                  if (nameInput && shelfLifeInput) {
-                    const name = nameInput.value;
-                    const shelfLife = parseInt(shelfLifeInput.value, 10);
-                    
-                    if (!name.trim()) {
-                      toast({
-                        title: "Name required",
-                        description: "Please provide a name for the product",
-                        variant: "destructive"
-                      });
-                      return;
-                    }
-                    
-                    if (isNaN(shelfLife) || shelfLife <= 0) {
-                      toast({
-                        title: "Invalid shelf life",
-                        description: "Please provide a valid shelf life (days)",
-                        variant: "destructive"
-                      });
-                      return;
-                    }
-                    
-                    const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
-                    
-                    // Create a new custom product
-                    const newProduct: IconOption = {
-                      value: productId,
-                      label: name.trim(),
-                      shelfLife: shelfLife
-                    };
-                    
-                    handleAddCustomProduct(newProduct);
-                  }
-                }} 
-                className="w-2/3"
-              >
+              <Button onClick={() => {
+            const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
+            const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
+            if (nameInput && shelfLifeInput) {
+              const name = nameInput.value;
+              const shelfLife = parseInt(shelfLifeInput.value, 10);
+              if (!name.trim()) {
+                toast({
+                  title: "Name required",
+                  description: "Please provide a name for the product",
+                  variant: "destructive"
+                });
+                return;
+              }
+              if (isNaN(shelfLife) || shelfLife <= 0) {
+                toast({
+                  title: "Invalid shelf life",
+                  description: "Please provide a valid shelf life (days)",
+                  variant: "destructive"
+                });
+                return;
+              }
+              const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
+
+              // Create a new custom product
+              const newProduct: IconOption = {
+                value: productId,
+                label: name.trim(),
+                shelfLife: shelfLife
+              };
+              handleAddCustomProduct(newProduct);
+            }
+          }} className="w-2/3">
                 <Plus className="mr-1 h-4 w-4" /> Add Product
               </Button>
-            </div>
-          )}
+            </div>}
           
-          {currentTab === 'custom' && editingProduct && (
-            <div className="flex gap-2 mt-4">
+          {currentTab === 'custom' && editingProduct && <div className="flex gap-2 mt-4">
               <Button variant="outline" onClick={() => setEditingProduct(null)} className="w-1/3">
                 <X className="mr-1 h-4 w-4" /> Cancel
               </Button>
-              <Button 
-                onClick={() => {
-                  const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
-                  const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
-                  
-                  if (nameInput && shelfLifeInput) {
-                    const name = nameInput.value;
-                    const shelfLife = parseInt(shelfLifeInput.value, 10);
-                    
-                    if (!name.trim()) {
-                      toast({
-                        title: "Name required",
-                        description: "Please provide a name for the product",
-                        variant: "destructive"
-                      });
-                      return;
-                    }
-                    
-                    if (isNaN(shelfLife) || shelfLife <= 0) {
-                      toast({
-                        title: "Invalid shelf life",
-                        description: "Please provide a valid shelf life (days)",
-                        variant: "destructive"
-                      });
-                      return;
-                    }
-                    
-                    // Create an updated product
-                    const updatedProduct: IconOption = {
-                      value: editingProduct.productId,
-                      label: name.trim(),
-                      shelfLife: shelfLife
-                    };
-                    
-                    addCustomProduct(updatedProduct);
-                    setEditingProduct(null);
-                  }
-                }} 
-                className="w-2/3"
-              >
+              <Button onClick={() => {
+            const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
+            const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
+            if (nameInput && shelfLifeInput) {
+              const name = nameInput.value;
+              const shelfLife = parseInt(shelfLifeInput.value, 10);
+              if (!name.trim()) {
+                toast({
+                  title: "Name required",
+                  description: "Please provide a name for the product",
+                  variant: "destructive"
+                });
+                return;
+              }
+              if (isNaN(shelfLife) || shelfLife <= 0) {
+                toast({
+                  title: "Invalid shelf life",
+                  description: "Please provide a valid shelf life (days)",
+                  variant: "destructive"
+                });
+                return;
+              }
+
+              // Create an updated product
+              const updatedProduct: IconOption = {
+                value: editingProduct.productId,
+                label: name.trim(),
+                shelfLife: shelfLife
+              };
+              addCustomProduct(updatedProduct);
+              setEditingProduct(null);
+            }
+          }} className="w-2/3">
                 <Check className="mr-1 h-4 w-4" /> Save
               </Button>
-            </div>
-          )}
+            </div>}
           
-          {currentTab === 'custom' && !isAddingProduct && !editingProduct && (
-            <DialogClose asChild>
+          {currentTab === 'custom' && !isAddingProduct && !editingProduct && <DialogClose asChild>
               <Button type="button" className="mt-4 w-full">
                 <Check className="mr-1 h-4 w-4" /> Done
               </Button>
-            </DialogClose>
-          )}
+            </DialogClose>}
           
-          {currentTab === 'settings' && (
-            <DialogClose asChild>
+          {currentTab === 'settings' && <DialogClose asChild>
               <Button type="button" className="mt-4 w-full">
                 <Check className="mr-1 h-4 w-4" /> Done
               </Button>
-            </DialogClose>
-          )}
+            </DialogClose>}
         </DialogContent>
       </Dialog>
       
@@ -606,12 +516,7 @@ const IconManagerDialog: React.FC = () => {
       </AlertDialog>
       
       {/* Premium upgrade dialog */}
-      <PremiumUpgradeDialog 
-        open={premiumDialogOpen}
-        onOpenChange={setPremiumDialogOpen}
-      />
-    </>
-  );
+      <PremiumUpgradeDialog open={premiumDialogOpen} onOpenChange={setPremiumDialogOpen} />
+    </>;
 };
-
 export default IconManagerDialog;
