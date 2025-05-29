@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -223,4 +222,31 @@
 .swipe-tutorial-animation {
   animation: swipe-hint 2.5s ease-in-out;
   animation-iteration-count: 2;
+}
+
+/* Enhanced mobile and PWA button positioning */
+@media (max-width: 768px) {
+  .fixed {
+    position: fixed !important;
+  }
+}
+
+/* PWA specific positioning fixes */
+@media (display-mode: standalone) {
+  .fixed {
+    position: fixed !important;
+    z-index: 999 !important;
+  }
+  
+  /* Ensure buttons stay above all content */
+  .fixed[class*="bottom-6"] {
+    bottom: calc(1.5rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .fixed[class*="bottom-6"] {
+    bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
 }
