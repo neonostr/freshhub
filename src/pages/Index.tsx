@@ -3,7 +3,6 @@ import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
 import IconManagerDialog from '@/components/IconManagerDialog';
 import SwipeTutorial from '@/components/SwipeTutorial';
-import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
@@ -60,46 +59,52 @@ export const useHeaderVisibility = (): HeaderVisibilityState => {
 
 // Component to conditionally render the SwipeTutorial
 const TutorialWrapper = () => {
-  const { shouldShowTutorial } = useItems();
+  const {
+    shouldShowTutorial
+  } = useItems();
   if (!shouldShowTutorial) return null;
   return <SwipeTutorial />;
 };
-
 const Index = () => {
-  const { hideHeader } = useHeaderVisibilityStore();
+  const [isCompactMode, setIsCompactMode] = useState(false);
+  const {
+    hideHeader
+  } = useHeaderVisibilityStore();
 
-  return (
-    <HeaderVisibilityProvider>
-      <div className="main-content">
-        {/* Fixed Header */}
-        {!hideHeader && (
-          <header className="fixed-header">
-            <div className="container max-w-5xl mx-auto p-4">
-              <div className="py-6 text-center">
-                <h1 className="text-3xl font-bold">Freshify</h1>
-                <p className="text-gray-500 mt-2">Know when it's been open too long</p>
-              </div>
-            </div>
-          </header>
-        )}
+  // Listen for changes to the display style of the header
+  // which indicates compact mode is enabled/disabled
+  React.useEffect(() => {
+    const header = document.getElementById('app-header');
+    if (header) {
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.attributeName === 'style') {
+            setIsCompactMode(header.style.display === 'none');
+          }
+        });
+      });
+      observer.observe(header, {
+        attributes: true
+      });
+      return () => observer.disconnect();
+    }
+  }, []);
+  return <HeaderVisibilityProvider>
+      <div className="container max-w-5xl mx-auto p-4 pb-20 min-h-screen">
+        {!hideHeader && <header className="py-6 text-center" id="app-header">
+            <h1 className="text-3xl font-bold">Freshify</h1>
+            <p className="text-gray-500 mt-2">Know when it's been open too long</p>
+          </header>}
         
-        {/* Scrollable Content Area */}
-        <div className={`scrollable-content ${!hideHeader ? 'with-header' : ''}`}>
-          <div className="container max-w-5xl mx-auto p-4">
-            <main className="my-6">
-              <ItemsList />
-            </main>
-          </div>
-        </div>
+        <main className="my-6">
+          <ItemsList />
+        </main>
         
-        {/* Always show dialogs and components */}
+        {/* Always show IconManagerDialog regardless of compact mode */}
         <IconManagerDialog />
         <AddItemDialog />
         <TutorialWrapper />
-        <PWAInstallPrompt />
       </div>
-    </HeaderVisibilityProvider>
-  );
+    </HeaderVisibilityProvider>;
 };
-
 export default Index;
