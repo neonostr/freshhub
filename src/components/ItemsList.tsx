@@ -3,7 +3,7 @@ import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateFreshnessLevel, calculateDaysUntilExpiry, calculateMaxFreshnessDays } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { Filter, ArrowDown, ArrowUp, Minimize, Maximize, Settings, Plus } from 'lucide-react';
+import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
 import { Item } from '@/types/item';
@@ -236,179 +236,75 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating buttons - fixed positioning for all devices */}
-      
-      {/* Settings button - bottom left */}
+      {/* Bottom floating buttons - positioned based on handedness */}
+      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <DrawerTrigger asChild>
+          <Button
+            className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
+            size="icon"
+            variant="default"
+            style={getButtonPosition(6)}
+          >
+            <Filter className="h-6 w-6" />
+          </Button>
+        </DrawerTrigger>
+
+        <DrawerContent side="bottom" className="z-50">
+          <div className="flex flex-col gap-5">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Filter by freshness</span>
+              <span className="text-sm text-gray-500">
+                {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
+              </span>
+            </div>
+            
+            <div style={{ touchAction: 'pan-x' }}>
+              <Slider 
+                value={[Math.min(filterDays, maxFreshnessDays)]} 
+                min={1} 
+                max={maxFreshnessDays || 365}  // Ensure we always have a valid max
+                step={1} 
+                onValueChange={([value]) => {
+                  console.log(`Changing filter days to ${value} (max: ${maxFreshnessDays})`);
+                  setFilterDays(value);
+                }} 
+                className="w-full" 
+              />
+            </div>
+            
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-medium">Sort by</span>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
+                  Freshness
+                </Button>
+                
+                <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
+                  A-Z
+                </Button>
+                
+                <Button variant="outline" size="sm" onClick={toggleSortDirection}>
+                  {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Compact mode toggle button - using default variant */}
       <Button
-        className="fixed bottom-6 left-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
+        className="fixed bottom-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
-        variant="outline"
+        variant="default"
+        style={getButtonPosition(10.5)}
+        onClick={toggleCompactMode}
       >
-        <Settings className="h-6 w-6" />
+        {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
-
-      {/* Right side buttons */}
-      {handedness === 'right' ? (
-        <>
-          {/* Add Item button - far right */}
-          <Button
-            className="fixed bottom-6 right-6 z-10 shadow-lg rounded-full h-14 w-14 p-0"
-            size="icon"
-            variant="default"
-          >
-            <Plus className="h-6 w-6" />
-          </Button>
-
-          {/* Filter button */}
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerTrigger asChild>
-              <Button
-                className="fixed bottom-6 right-[5.5rem] z-10 shadow-lg rounded-full h-14 w-14 p-0"
-                size="icon"
-                variant="default"
-              >
-                <Filter className="h-6 w-6" />
-              </Button>
-            </DrawerTrigger>
-
-            <DrawerContent side="bottom" className="z-50">
-              <div className="flex flex-col gap-5">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Filter by freshness</span>
-                  <span className="text-sm text-gray-500">
-                    {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
-                  </span>
-                </div>
-                
-                <div style={{ touchAction: 'pan-x' }}>
-                  <Slider 
-                    value={[Math.min(filterDays, maxFreshnessDays)]} 
-                    min={1} 
-                    max={maxFreshnessDays || 365}  // Ensure we always have a valid max
-                    step={1} 
-                    onValueChange={([value]) => {
-                      console.log(`Changing filter days to ${value} (max: ${maxFreshnessDays})`);
-                      setFilterDays(value);
-                    }} 
-                    className="w-full" 
-                  />
-                </div>
-                
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-medium">Sort by</span>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
-                      Freshness
-                    </Button>
-                    
-                    <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
-                      A-Z
-                    </Button>
-                    
-                    <Button variant="outline" size="sm" onClick={toggleSortDirection}>
-                      {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DrawerContent>
-          </Drawer>
-
-          {/* Compact mode toggle button */}
-          <Button
-            className="fixed bottom-6 right-[9rem] z-10 shadow-lg rounded-full h-14 w-14 p-0"
-            size="icon"
-            variant="default"
-            onClick={toggleCompactMode}
-          >
-            {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
-          </Button>
-        </>
-      ) : (
-        <>
-          {/* Left-handed mode - buttons mirrored */}
-          
-          {/* Add Item button - far left (after settings) */}
-          <Button
-            className="fixed bottom-6 left-[5.5rem] z-10 shadow-lg rounded-full h-14 w-14 p-0"
-            size="icon"
-            variant="default"
-          >
-            <Plus className="h-6 w-6" />
-          </Button>
-
-          {/* Filter button */}
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerTrigger asChild>
-              <Button
-                className="fixed bottom-6 left-[9rem] z-10 shadow-lg rounded-full h-14 w-14 p-0"
-                size="icon"
-                variant="default"
-              >
-                <Filter className="h-6 w-6" />
-              </Button>
-            </DrawerTrigger>
-
-            <DrawerContent side="bottom" className="z-50">
-              <div className="flex flex-col gap-5">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Filter by freshness</span>
-                  <span className="text-sm text-gray-500">
-                    {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
-                  </span>
-                </div>
-                
-                <div style={{ touchAction: 'pan-x' }}>
-                  <Slider 
-                    value={[Math.min(filterDays, maxFreshnessDays)]} 
-                    min={1} 
-                    max={maxFreshnessDays || 365}  // Ensure we always have a valid max
-                    step={1} 
-                    onValueChange={([value]) => {
-                      console.log(`Changing filter days to ${value} (max: ${maxFreshnessDays})`);
-                      setFilterDays(value);
-                    }} 
-                    className="w-full" 
-                  />
-                </div>
-                
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-medium">Sort by</span>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
-                      Freshness
-                    </Button>
-                    
-                    <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
-                      A-Z
-                    </Button>
-                    
-                    <Button variant="outline" size="sm" onClick={toggleSortDirection}>
-                      {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DrawerContent>
-          </Drawer>
-
-          {/* Compact mode toggle button */}
-          <Button
-            className="fixed bottom-6 left-[12.5rem] z-10 shadow-lg rounded-full h-14 w-14 p-0"
-            size="icon"
-            variant="default"
-            onClick={toggleCompactMode}
-          >
-            {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
-          </Button>
-        </>
-      )}
     </div>
   );
 };
