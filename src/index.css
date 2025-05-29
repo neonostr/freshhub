@@ -186,6 +186,36 @@
   }
 }
 
+/* Fixed bottom buttons - ensure they stay in place during scrolling */
+.fixed-bottom-button {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  z-index: 50 !important;
+}
+
+/* Enhanced positioning for PWA and mobile devices */
+@media (display-mode: standalone) {
+  .fixed-bottom-button {
+    bottom: calc(1.5rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Mobile specific fixes for button positioning */
+@media (max-width: 768px) {
+  .fixed-bottom-button {
+    position: fixed !important;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom, 1rem)) !important;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .fixed-bottom-button {
+    position: fixed !important;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom, 1rem)) !important;
+  }
+}
+
 /* Swipe animation styles */
 @keyframes slide-out-left {
   0% { transform: translateX(0); }
