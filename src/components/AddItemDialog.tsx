@@ -11,12 +11,21 @@ import { useHandedness } from '@/context/HandednessContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import PremiumUpgradeDialog from './PremiumUpgradeDialog';
 import FilterNotificationDialog from './FilterNotificationDialog';
-
 const AddItemDialog: React.FC = () => {
-  const { items, addItem } = useItems();
-  const { availableIcons, allIcons } = useIconManager();
-  const { handedness } = useHandedness();
-  const { checkCanAddItems } = useSubscription();
+  const {
+    items,
+    addItem
+  } = useItems();
+  const {
+    availableIcons,
+    allIcons
+  } = useIconManager();
+  const {
+    handedness
+  } = useHandedness();
+  const {
+    checkCanAddItems
+  } = useSubscription();
   const [open, setOpen] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [showFilterNotification, setShowFilterNotification] = useState(false);
@@ -27,10 +36,12 @@ const AddItemDialog: React.FC = () => {
     itemName: string;
     itemShelfLife: number;
     currentFilter: number;
-  }>({ itemName: '', itemShelfLife: 0, currentFilter: 0 });
-  const [dontShowFilterNotification, setDontShowFilterNotification] = useState(
-    localStorage.getItem('dontShowFilterNotification') === 'true'
-  );
+  }>({
+    itemName: '',
+    itemShelfLife: 0,
+    currentFilter: 0
+  });
+  const [dontShowFilterNotification, setDontShowFilterNotification] = useState(localStorage.getItem('dontShowFilterNotification') === 'true');
 
   // Debug logging for component state
   useEffect(() => {
@@ -51,21 +62,19 @@ const AddItemDialog: React.FC = () => {
       setSelectedIcon(availableIcons[0].value);
     }
   }, [open, availableIcons, selectedIcon]);
-
   const handleOpenChange = (newOpen: boolean) => {
     try {
       console.log("AddItemDialog: handleOpenChange called with:", newOpen);
-      
+
       // Check if user can add more items before opening the dialog
       if (newOpen && !checkCanAddItems(items.length)) {
         console.log("AddItemDialog: Item limit reached, showing upgrade dialog");
         setShowUpgradeDialog(true);
         return;
       }
-      
       console.log("AddItemDialog: Setting open to:", newOpen);
       setOpen(newOpen);
-      
+
       // Reset form when dialog is closed
       if (!newOpen) {
         console.log("AddItemDialog: Dialog closed, resetting form");
@@ -77,10 +86,8 @@ const AddItemDialog: React.FC = () => {
       console.error("AddItemDialog: Error handling dialog open change:", error);
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       console.log("AddItemDialog: handleSubmit called");
       console.log("AddItemDialog: Current state at submit:", {
@@ -89,21 +96,18 @@ const AddItemDialog: React.FC = () => {
         customDuration,
         availableIconsLength: availableIcons.length
       });
-      
       if (isSubmitting) {
         console.log("AddItemDialog: Preventing double submission");
         return;
       }
-      
       console.log("AddItemDialog: Setting isSubmitting to true");
       setIsSubmitting(true);
-      
       if (!selectedIcon) {
         console.error("AddItemDialog: No icon selected");
         setIsSubmitting(false);
         return;
       }
-      
+
       // Get the product name from the selected icon
       const selectedProduct = allIcons[selectedIcon];
       if (!selectedProduct) {
@@ -111,10 +115,9 @@ const AddItemDialog: React.FC = () => {
         setIsSubmitting(false);
         return;
       }
-      
       const productName = selectedProduct?.label || '';
       console.log(`AddItemDialog: Adding item "${productName}" with icon "${selectedIcon}"`);
-      
+
       // Parse custom duration if provided
       let parsedCustomDuration: number | undefined = undefined;
       if (customDuration && customDuration.trim() !== '') {
@@ -128,30 +131,26 @@ const AddItemDialog: React.FC = () => {
       } else {
         console.log("AddItemDialog: No custom duration provided, using default shelf life");
       }
-      
+
       // Get the effective shelf life for filter check
       const effectiveShelfLife = parsedCustomDuration || selectedProduct.shelfLife;
-      
       console.log("AddItemDialog: About to call addItem with:", {
         name: productName,
         icon: selectedIcon,
         customDuration: parsedCustomDuration
       });
-      
+
       // Add the item with the selected icon and optional custom duration
       await addItem({
         name: productName,
         icon: selectedIcon,
-        customDuration: parsedCustomDuration,
+        customDuration: parsedCustomDuration
       });
-      
       console.log("AddItemDialog: addItem completed successfully");
-      
+
       // Check if we need to show the filter notification
       const currentFilter = parseInt(localStorage.getItem('currentFilterDays') || '365');
-      const shouldShowNotification = !dontShowFilterNotification && 
-        effectiveShelfLife > currentFilter;
-      
+      const shouldShowNotification = !dontShowFilterNotification && effectiveShelfLife > currentFilter;
       if (shouldShowNotification) {
         setNotificationData({
           itemName: productName,
@@ -160,39 +159,34 @@ const AddItemDialog: React.FC = () => {
         });
         setShowFilterNotification(true);
       }
-      
+
       // Add a longer delay to ensure all state updates are complete
       await new Promise(resolve => setTimeout(resolve, 300));
-      
+
       // Reset form state and close dialog
       console.log("AddItemDialog: Item added successfully, resetting form");
       setSelectedIcon(availableIcons[0]?.value || '');
       setCustomDuration('');
       setIsSubmitting(false);
       setOpen(false);
-      
       console.log("AddItemDialog: Form reset completed");
     } catch (error) {
       console.error("AddItemDialog: Error adding item:", error);
       setIsSubmitting(false);
     }
   };
-
   const handleIconSelect = (iconValue: string) => {
     console.log(`AddItemDialog: Selected icon changed to "${iconValue}"`);
     setSelectedIcon(iconValue);
   };
-
   const handleResetFilter = () => {
     // Dispatch an event to reset the filter in ItemsList
     window.dispatchEvent(new CustomEvent('reset-freshness-filter'));
   };
-
   const handleDontShowAgainChange = (value: boolean) => {
     setDontShowFilterNotification(value);
     localStorage.setItem('dontShowFilterNotification', value.toString());
   };
-
   const handleOpenManageProducts = () => {
     // Close the add item dialog
     setOpen(false);
@@ -212,20 +206,13 @@ const AddItemDialog: React.FC = () => {
     isSubmitting,
     availableIconsCount: availableIcons.length
   });
-
-  return (
-    <>
+  return <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
-          <Button 
-            className="fixed bottom-6 rounded-full w-14 h-14 shadow-lg z-10" 
-            size="icon"
-            style={{
-              right: handedness === 'right' ? "1.5rem" : "auto",
-              left: handedness === 'left' ? "1.5rem" : "auto"
-            }}
-            onClick={() => console.log("AddItemDialog: Plus button clicked")}
-          >
+          <Button className="fixed bottom-6 rounded-full w-14 h-14 shadow-lg z-10" size="icon" style={{
+          right: handedness === 'right' ? "1.5rem" : "auto",
+          left: handedness === 'left' ? "1.5rem" : "auto"
+        }} onClick={() => console.log("AddItemDialog: Plus button clicked")}>
             <Plus className="h-6 w-6" />
           </Button>
         </DialogTrigger>
@@ -243,25 +230,12 @@ const AddItemDialog: React.FC = () => {
               <Label>Choose a Product</Label>
               <ScrollArea className="h-[200px]">
                 <div className="grid grid-cols-3 gap-2">
-                  {availableIcons.map((icon) => (
-                    <Button
-                      key={icon.value}
-                      type="button"
-                      variant={selectedIcon === icon.value ? "default" : "outline"}
-                      className="flex items-center justify-center h-20 py-2"
-                      onClick={() => handleIconSelect(icon.value)}
-                    >
+                  {availableIcons.map(icon => <Button key={icon.value} type="button" variant={selectedIcon === icon.value ? "default" : "outline"} className="flex items-center justify-center h-20 py-2" onClick={() => handleIconSelect(icon.value)}>
                       <span className="text-sm text-center truncate max-w-full px-1">{icon.label}</span>
-                    </Button>
-                  ))}
+                    </Button>)}
                   
                   {/* Add More button with just + icon */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex items-center justify-center h-20 py-2 border-dashed"
-                    onClick={handleOpenManageProducts}
-                  >
+                  <Button type="button" variant="outline" onClick={handleOpenManageProducts} className="flex items-center justify-center h-20">
                     <Plus className="h-6 w-6" />
                   </Button>
                 </div>
@@ -273,48 +247,22 @@ const AddItemDialog: React.FC = () => {
               <Label htmlFor="customDuration">
                 Custom Shelf Life (days, optional)
               </Label>
-              <Input
-                id="customDuration"
-                type="number"
-                inputMode="numeric"
-                min="1"
-                placeholder={`Default: ${allIcons[selectedIcon]?.shelfLife || 7} days`}
-                value={customDuration}
-                onChange={(e) => {
-                  console.log("AddItemDialog: Custom duration changed to:", e.target.value);
-                  setCustomDuration(e.target.value);
-                }}
-              />
+              <Input id="customDuration" type="number" inputMode="numeric" min="1" placeholder={`Default: ${allIcons[selectedIcon]?.shelfLife || 7} days`} value={customDuration} onChange={e => {
+              console.log("AddItemDialog: Custom duration changed to:", e.target.value);
+              setCustomDuration(e.target.value);
+            }} />
             </div>
             
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={isSubmitting || !selectedIcon}
-            >
+            <Button type="submit" className="w-full" disabled={isSubmitting || !selectedIcon}>
               {isSubmitting ? "Adding..." : "Add Product"}
             </Button>
           </form>
         </DialogContent>
       </Dialog>
       
-      <PremiumUpgradeDialog 
-        open={showUpgradeDialog} 
-        onOpenChange={setShowUpgradeDialog} 
-      />
+      <PremiumUpgradeDialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog} />
       
-      <FilterNotificationDialog
-        open={showFilterNotification}
-        onOpenChange={setShowFilterNotification}
-        onResetFilter={handleResetFilter}
-        itemName={notificationData.itemName}
-        itemShelfLife={notificationData.itemShelfLife}
-        currentFilter={notificationData.currentFilter}
-        dontShowAgain={dontShowFilterNotification}
-        setDontShowAgain={handleDontShowAgainChange}
-      />
-    </>
-  );
+      <FilterNotificationDialog open={showFilterNotification} onOpenChange={setShowFilterNotification} onResetFilter={handleResetFilter} itemName={notificationData.itemName} itemShelfLife={notificationData.itemShelfLife} currentFilter={notificationData.currentFilter} dontShowAgain={dontShowFilterNotification} setDontShowAgain={handleDontShowAgainChange} />
+    </>;
 };
-
 export default AddItemDialog;
