@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -78,12 +79,12 @@ const Index = () => {
           </header>
         )}
         
-        {/* Scrollable Content Area with minimal padding */}
-        <main className="flex-1 px-4 overflow-hidden relative" style={{ marginTop: hideHeader ? '1px' : '1px' }}>
+        {/* Scrollable Content Area */}
+        <main className="flex-1 px-4 overflow-hidden relative">
           <div 
             className="h-full overflow-y-auto overscroll-contain"
             style={{ 
-              paddingBottom: '7rem' // Proper space for buttons (3.5rem button + 1.5rem bottom + 2rem buffer)
+              paddingBottom: '6rem' // Enough space for buttons (3.5rem + 1.5rem + buffer)
             }}
           >
             <ItemsList />

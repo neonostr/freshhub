@@ -2,7 +2,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Filter, Minimize, Maximize } from 'lucide-react';
-import { useHandedness } from '@/context/HandednessContext';
 
 interface FloatingButtonsProps {
   onFilterClick: () => void;
@@ -15,31 +14,34 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
   onCompactModeClick,
   isCompactMode
 }) => {
-  const { handedness } = useHandedness();
+  // Simple positioning - filter button middle, compact mode rightmost
+  const filterButtonStyle = {
+    position: 'fixed' as const,
+    zIndex: 50,
+    bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
+    right: '6rem', // Middle position
+    width: '3.5rem',
+    height: '3.5rem',
+    borderRadius: '50%',
+    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+  };
 
-  // Reduced spacing by 80% - from 5rem to 1rem between buttons
-  const getButtonStyle = (buttonIndex: number) => {
-    const basePosition = 1.5;
-    const buttonSpacing = 1; // Reduced from 5 to 1 (80% reduction)
-    const position = basePosition + (buttonIndex * buttonSpacing);
-    
-    return {
-      position: 'fixed' as const,
-      zIndex: 50,
-      bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-      right: `${position}rem`, // Always align to right regardless of handedness
-      width: '3.5rem',
-      height: '3.5rem',
-      borderRadius: '50%',
-      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
-    };
+  const compactButtonStyle = {
+    position: 'fixed' as const,
+    zIndex: 50,
+    bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
+    right: '10.5rem', // Rightmost position
+    width: '3.5rem',
+    height: '3.5rem',
+    borderRadius: '50%',
+    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
   };
 
   return (
     <>
-      {/* Filter Button - Position 2 (rightmost) */}
+      {/* Filter Button */}
       <Button
-        style={getButtonStyle(2)}
+        style={filterButtonStyle}
         size="icon"
         variant="default"
         onClick={onFilterClick}
@@ -47,9 +49,9 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
         <Filter className="h-6 w-6" />
       </Button>
 
-      {/* Compact Mode Button - Position 1 (middle) */}
+      {/* Compact Mode Button */}
       <Button
-        style={getButtonStyle(1)}
+        style={compactButtonStyle}
         size="icon"
         variant="default"
         onClick={onCompactModeClick}
