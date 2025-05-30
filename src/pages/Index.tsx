@@ -78,12 +78,12 @@ const Index = () => {
           </header>
         )}
         
-        {/* Scrollable Content Area with proper padding to stop 1px above buttons */}
-        <main className="flex-1 px-4 overflow-hidden relative">
+        {/* Scrollable Content Area with minimal padding */}
+        <main className="flex-1 px-4 overflow-hidden relative" style={{ marginTop: hideHeader ? '1px' : '1px' }}>
           <div 
             className="h-full overflow-y-auto overscroll-contain"
             style={{ 
-              paddingBottom: '6rem' // Space for floating buttons
+              paddingBottom: '7rem' // Proper space for buttons (3.5rem button + 1.5rem bottom + 2rem buffer)
             }}
           >
             <ItemsList />

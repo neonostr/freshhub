@@ -17,17 +17,17 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
 }) => {
   const { handedness } = useHandedness();
 
-  // Simple button positioning with consistent spacing
+  // Reduced spacing by 80% - from 5rem to 1rem between buttons
   const getButtonStyle = (buttonIndex: number) => {
     const basePosition = 1.5;
-    const buttonSpacing = 5; // Increased spacing between buttons
+    const buttonSpacing = 1; // Reduced from 5 to 1 (80% reduction)
     const position = basePosition + (buttonIndex * buttonSpacing);
     
     return {
       position: 'fixed' as const,
       zIndex: 50,
       bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-      [handedness === 'right' ? 'right' : 'left']: `${position}rem`,
+      right: `${position}rem`, // Always align to right regardless of handedness
       width: '3.5rem',
       height: '3.5rem',
       borderRadius: '50%',
@@ -37,9 +37,9 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
 
   return (
     <>
-      {/* Filter Button - Position 1 */}
+      {/* Filter Button - Position 2 (rightmost) */}
       <Button
-        style={getButtonStyle(1)}
+        style={getButtonStyle(2)}
         size="icon"
         variant="default"
         onClick={onFilterClick}
@@ -47,9 +47,9 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
         <Filter className="h-6 w-6" />
       </Button>
 
-      {/* Compact Mode Button - Position 2 */}
+      {/* Compact Mode Button - Position 1 (middle) */}
       <Button
-        style={getButtonStyle(2)}
+        style={getButtonStyle(1)}
         size="icon"
         variant="default"
         onClick={onCompactModeClick}

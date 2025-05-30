@@ -198,13 +198,13 @@ const AddItemDialog: React.FC = () => {
     availableIconsCount: availableIcons.length
   });
 
-  // Simple add button positioning - position 0 (first button)
+  // Position 0 (rightmost in the group) - reduced spacing
   const getAddButtonStyle = () => {
     return {
       position: 'fixed' as const,
       zIndex: 50,
       bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-      [handedness === 'right' ? 'right' : 'left']: '1.5rem',
+      right: '1.5rem', // Position 0 - rightmost
       width: '3.5rem',
       height: '3.5rem',
       borderRadius: '50%',
