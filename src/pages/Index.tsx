@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -7,6 +6,8 @@ import SwipeTutorial from '@/components/SwipeTutorial';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
+import { Button } from '@/components/ui/button';
+import { Settings } from 'lucide-react';
 
 // Create a Zustand store to manage header visibility
 interface HeaderVisibilityState {
@@ -75,7 +76,7 @@ const Index = () => {
         {!hideHeader && (
           <header className="flex-shrink-0 py-6 px-4 text-center bg-background relative z-10" id="app-header">
             <h1 className="text-3xl font-bold">Freshify</h1>
-            <p className="text-gray-500 mt-2">Know when it's been open too long</p>
+            <p className="text-gray-500 mt-1">Know when it's been open too long</p>
           </header>
         )}
         
@@ -84,12 +85,36 @@ const Index = () => {
           <div 
             className="h-full overflow-y-auto overscroll-contain"
             style={{ 
-              paddingBottom: '5rem' // Exact space to stop at red line (3.5rem button + 1.5rem bottom)
+              paddingBottom: '7rem' // Space to stop exactly above the button row
             }}
           >
             <ItemsList />
           </div>
         </main>
+
+        {/* Settings Button - positioned on the left */}
+        <Button
+          style={{
+            position: 'fixed',
+            zIndex: 50,
+            bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
+            left: '1.5rem',
+            width: '3.5rem',
+            height: '3.5rem',
+            borderRadius: '50%',
+            boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+          }}
+          size="icon"
+          variant="outline"
+          onClick={() => {
+            const manageButton = document.querySelector('[data-manage-products-trigger]') as HTMLButtonElement;
+            if (manageButton) {
+              manageButton.click();
+            }
+          }}
+        >
+          <Settings className="h-6 w-6" />
+        </Button>
         
         <IconManagerDialog />
         <AddItemDialog />
