@@ -149,7 +149,8 @@ const ItemsList: React.FC = () => {
   const getButtonPosition = (position: number) => {
     return {
       right: handedness === 'right' ? `${position}rem` : "auto",
-      left: handedness === 'left' ? `${position}rem` : "auto"
+      left: handedness === 'left' ? `${position}rem` : "auto",
+      bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)` // Add safe area padding
     };
   };
 
@@ -190,11 +191,11 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating buttons - positioned based on handedness and truly fixed */}
+      {/* Bottom floating buttons - positioned with safe area support */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button
-            className="fixed bottom-6 z-50 shadow-lg rounded-full h-14 w-14 p-0"
+            className="fixed z-50 shadow-lg rounded-full h-14 w-14 p-0"
             size="icon"
             variant="default"
             style={getButtonPosition(6)}
@@ -249,12 +250,12 @@ const ItemsList: React.FC = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Compact mode toggle button - truly fixed */}
+      {/* Compact mode toggle button */}
       <Button
-        className="fixed bottom-6 z-50 shadow-lg rounded-full h-14 w-14 p-0"
+        className="fixed z-50 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
         variant="default"
-        style={getButtonPosition(10.5)}
+        style={getButtonPosition(11)}
         onClick={toggleCompactMode}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
