@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
 import { useItems } from '@/context/ItemsContext';
 import { useIconManager } from '@/context/IconManager';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,10 +13,20 @@ import PremiumUpgradeDialog from './PremiumUpgradeDialog';
 import FilterNotificationDialog from './FilterNotificationDialog';
 
 const AddItemDialog: React.FC = () => {
-  const { items, addItem } = useItems();
-  const { availableIcons, allIcons } = useIconManager();
-  const { handedness } = useHandedness();
-  const { checkCanAddItems } = useSubscription();
+  const {
+    items,
+    addItem
+  } = useItems();
+  const {
+    availableIcons,
+    allIcons
+  } = useIconManager();
+  const {
+    handedness
+  } = useHandedness();
+  const {
+    checkCanAddItems
+  } = useSubscription();
   const [open, setOpen] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [showFilterNotification, setShowFilterNotification] = useState(false);
@@ -198,17 +208,15 @@ const AddItemDialog: React.FC = () => {
     availableIconsCount: availableIcons.length
   });
 
-  // Simple add button positioning - position 0 (first button)
-  const getAddButtonStyle = () => {
+  // Get the button position - this should be the first button (index 0)
+  const getButtonPosition = () => {
+    const basePosition = 1.5; // Base distance from edge
+    const position = basePosition; // First button position
+    
     return {
-      position: 'fixed' as const,
-      zIndex: 50,
-      bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-      [handedness === 'right' ? 'right' : 'left']: '1.5rem',
-      width: '3.5rem',
-      height: '3.5rem',
-      borderRadius: '50%',
-      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+      right: handedness === 'right' ? `${position}rem` : "auto",
+      left: handedness === 'left' ? `${position}rem` : "auto",
+      bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`
     };
   };
 
@@ -217,8 +225,9 @@ const AddItemDialog: React.FC = () => {
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           <Button 
-            style={getAddButtonStyle()}
-            size="icon"
+            className="fixed rounded-full w-14 h-14 shadow-lg z-50" 
+            size="icon" 
+            style={getButtonPosition()}
             onClick={() => console.log("AddItemDialog: Plus button clicked")}
           >
             <Plus className="h-6 w-6" />

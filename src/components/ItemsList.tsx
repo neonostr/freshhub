@@ -1,14 +1,14 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
-import { calculateDaysUntilExpiry, calculateMaxFreshnessDays } from '@/utils/itemUtils';
+import { calculateFreshnessLevel, calculateDaysUntilExpiry, calculateMaxFreshnessDays } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { Filter, ArrowDown, ArrowUp, Minimize, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerOverlay } from '@/components/ui/drawer';
+import { Item } from '@/types/item';
 import { useIsMobile } from '@/hooks/use-mobile';
-import FloatingButtons from './FloatingButtons';
+import { useHandedness, type Handedness } from '@/context/HandednessContext';
 
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
@@ -34,7 +34,9 @@ const ItemsList: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { handedness } = useHandedness();
   
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -42,6 +44,7 @@ const ItemsList: React.FC = () => {
   // Save filter value to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('currentFilterDays', filterDays.toString());
+    // Update the "show all" state
     setIsShowingAll(filterDays >= maxFreshnessDays);
   }, [filterDays, maxFreshnessDays]);
 
@@ -50,14 +53,17 @@ const ItemsList: React.FC = () => {
     if (items.length > 0) {
       const maxDays = calculateMaxFreshnessDays(items);
       
+      // Only update if the value has actually changed to prevent slider issues
       if (maxDays !== maxFreshnessDays) {
         const previousMaxDays = maxFreshnessDays;
         setMaxFreshnessDays(maxDays);
         
+        // If we were showing all items before AND the max increased, update filter to continue showing all
         if (isShowingAll && maxDays > previousMaxDays) {
           console.log(`Max freshness days increased from ${previousMaxDays} to ${maxDays}, updating filter to continue showing all`);
           setFilterDays(maxDays);
         }
+        // If the filterDays is beyond our new max (and we weren't in "show all" mode), adjust it
         else if (!isShowingAll && filterDays > maxDays) {
           setFilterDays(maxDays);
         }
@@ -69,11 +75,13 @@ const ItemsList: React.FC = () => {
   useEffect(() => {
     const handleShelfLifeUpdated = () => {
       console.log("Shelf life updated, recalculating freshness values");
+      // Force a re-render by incrementing the counter
       setForceUpdate(prev => prev + 1);
     };
     
     const handleProductUpdated = () => {
       console.log("Product updated, recalculating freshness values");
+      // Force a re-render when products are updated
       setForceUpdate(prev => prev + 1);
     };
     
@@ -86,6 +94,7 @@ const ItemsList: React.FC = () => {
     window.addEventListener('custom-product-updated', handleProductUpdated);
     window.addEventListener('reset-freshness-filter', handleResetFilter);
     
+    // Custom event for storage changes to handle PWA cache issues
     window.addEventListener('storage', (event) => {
       if (event.key === 'freshTrackerCustomShelfLife' || 
           event.key === 'freshTrackerCustomProducts' ||
@@ -115,21 +124,38 @@ const ItemsList: React.FC = () => {
       const bFreshness = calculateDaysUntilExpiry(b);
       return sortDirection === 'asc' ? aFreshness - bFreshness : bFreshness - aFreshness;
     } else {
+      // Alphabetical sorting
       return sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
     }
   });
 
+  // Toggle sort direction
   const toggleSortDirection = () => {
     setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
   };
 
+  // Toggle compact mode - only affects item display, not header
   const toggleCompactMode = () => {
     setIsCompactMode(prev => !prev);
-    setExpandedItemIds([]);
+    setExpandedItemIds([]); // Reset expanded items when toggling mode
   };
 
+  // Toggle expanded/collapsed state for an item
   const toggleItemExpanded = (itemId: string) => {
     setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
+  };
+
+  // Get the button position based on handedness with consistent spacing
+  const getButtonPosition = (buttonIndex: number) => {
+    const basePosition = 1.5; // Base distance from edge
+    const buttonSpacing = 3.5; // Reduced spacing between buttons
+    const position = basePosition + (buttonIndex * buttonSpacing);
+    
+    return {
+      right: handedness === 'right' ? `${position}rem` : "auto",
+      left: handedness === 'left' ? `${position}rem` : "auto",
+      bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`
+    };
   };
 
   if (items.length === 0) {
@@ -142,18 +168,21 @@ const ItemsList: React.FC = () => {
     </div>;
   }
 
+  // Determine proper grid class based on compact mode, device type, and screen size
   const getGridClass = () => {
     if (!isCompactMode) {
-      return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3";
+      return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3"; // Normal grid
     }
     if (isMobile) {
-      return "grid gap-2 grid-cols-1";
+      return "grid gap-2 grid-cols-1"; // Single column on mobile in compact mode
     }
+
+    // For desktop in compact mode, use grid-cols-3
     return "desktop-compact-grid";
   };
 
   return (
-    <div className="pb-20"> {/* Bottom padding to ensure content doesn't go under buttons */}
+    <div className="py-1">
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
@@ -166,15 +195,19 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Floating buttons with simplified positioning */}
-      <FloatingButtons
-        onFilterClick={() => setIsDrawerOpen(true)}
-        onCompactModeClick={toggleCompactMode}
-        isCompactMode={isCompactMode}
-      />
-
-      {/* Filter drawer */}
+      {/* Bottom floating buttons with consistent positioning */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <DrawerTrigger asChild>
+          <Button
+            className="fixed z-50 shadow-lg rounded-full h-14 w-14 p-0"
+            size="icon"
+            variant="default"
+            style={getButtonPosition(1)} // Second button (filter)
+          >
+            <Filter className="h-6 w-6" />
+          </Button>
+        </DrawerTrigger>
+
         <DrawerContent side="bottom" className="z-50">
           <div className="flex flex-col gap-5">
             <div className="flex items-center justify-between">
@@ -188,7 +221,7 @@ const ItemsList: React.FC = () => {
               <Slider 
                 value={[Math.min(filterDays, maxFreshnessDays)]} 
                 min={1} 
-                max={maxFreshnessDays || 365}
+                max={maxFreshnessDays || 365}  // Ensure we always have a valid max
                 step={1} 
                 onValueChange={([value]) => {
                   console.log(`Changing filter days to ${value} (max: ${maxFreshnessDays})`);
@@ -220,6 +253,17 @@ const ItemsList: React.FC = () => {
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* Compact mode toggle button */}
+      <Button
+        className="fixed z-50 shadow-lg rounded-full h-14 w-14 p-0"
+        size="icon"
+        variant="default"
+        style={getButtonPosition(2)} // Third button (compact mode)
+        onClick={toggleCompactMode}
+      >
+        {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
+      </Button>
     </div>
   );
 };
