@@ -148,7 +148,7 @@ const ItemsList: React.FC = () => {
   // Get the button position based on handedness with consistent spacing
   const getButtonPosition = (buttonIndex: number) => {
     const basePosition = 1.5; // Base distance from edge
-    const buttonSpacing = 4.5; // Consistent spacing between buttons
+    const buttonSpacing = 3.5; // Reduced spacing between buttons
     const position = basePosition + (buttonIndex * buttonSpacing);
     
     return {
@@ -202,7 +202,7 @@ const ItemsList: React.FC = () => {
             className="fixed z-50 shadow-lg rounded-full h-14 w-14 p-0"
             size="icon"
             variant="default"
-            style={getButtonPosition(1)} // Second button
+            style={getButtonPosition(1)} // Second button (filter)
           >
             <Filter className="h-6 w-6" />
           </Button>
@@ -259,7 +259,7 @@ const ItemsList: React.FC = () => {
         className="fixed z-50 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
         variant="default"
-        style={getButtonPosition(0)} // First button
+        style={getButtonPosition(2)} // Third button (compact mode)
         onClick={toggleCompactMode}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}

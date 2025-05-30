@@ -11,6 +11,7 @@ import { useHandedness } from '@/context/HandednessContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import PremiumUpgradeDialog from './PremiumUpgradeDialog';
 import FilterNotificationDialog from './FilterNotificationDialog';
+
 const AddItemDialog: React.FC = () => {
   const {
     items,
@@ -206,16 +207,33 @@ const AddItemDialog: React.FC = () => {
     isSubmitting,
     availableIconsCount: availableIcons.length
   });
-  return <>
+
+  // Get the button position - this should be the first button (index 0)
+  const getButtonPosition = () => {
+    const basePosition = 1.5; // Base distance from edge
+    const position = basePosition; // First button position
+    
+    return {
+      right: handedness === 'right' ? `${position}rem` : "auto",
+      left: handedness === 'left' ? `${position}rem` : "auto",
+      bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`
+    };
+  };
+
+  return (
+    <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
-          <Button className="fixed bottom-6 rounded-full w-14 h-14 shadow-lg z-10" size="icon" style={{
-          right: handedness === 'right' ? "1.5rem" : "auto",
-          left: handedness === 'left' ? "1.5rem" : "auto"
-        }} onClick={() => console.log("AddItemDialog: Plus button clicked")}>
+          <Button 
+            className="fixed rounded-full w-14 h-14 shadow-lg z-50" 
+            size="icon" 
+            style={getButtonPosition()}
+            onClick={() => console.log("AddItemDialog: Plus button clicked")}
+          >
             <Plus className="h-6 w-6" />
           </Button>
         </DialogTrigger>
+        
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Product</DialogTitle>
@@ -262,7 +280,18 @@ const AddItemDialog: React.FC = () => {
       
       <PremiumUpgradeDialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog} />
       
-      <FilterNotificationDialog open={showFilterNotification} onOpenChange={setShowFilterNotification} onResetFilter={handleResetFilter} itemName={notificationData.itemName} itemShelfLife={notificationData.itemShelfLife} currentFilter={notificationData.currentFilter} dontShowAgain={dontShowFilterNotification} setDontShowAgain={handleDontShowAgainChange} />
-    </>;
+      <FilterNotificationDialog 
+        open={showFilterNotification} 
+        onOpenChange={setShowFilterNotification} 
+        onResetFilter={handleResetFilter} 
+        itemName={notificationData.itemName} 
+        itemShelfLife={notificationData.itemShelfLife} 
+        currentFilter={notificationData.currentFilter} 
+        dontShowAgain={dontShowFilterNotification} 
+        setDontShowAgain={handleDontShowAgainChange} 
+      />
+    </>
+  );
 };
+
 export default AddItemDialog;
