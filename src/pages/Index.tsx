@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -60,9 +59,7 @@ export const useHeaderVisibility = (): HeaderVisibilityState => {
 
 // Component to conditionally render the SwipeTutorial
 const TutorialWrapper = () => {
-  const {
-    shouldShowTutorial
-  } = useItems();
+  const { shouldShowTutorial } = useItems();
   if (!shouldShowTutorial) return null;
   return <SwipeTutorial />;
 };
@@ -81,21 +78,18 @@ const Index = () => {
           </header>
         )}
         
-        {/* Scrollable Content Area - precise height calculation */}
-        <main 
-          className="flex-1 px-4 overflow-hidden relative"
-          style={{ 
-            height: hideHeader 
-              ? 'calc(100vh - 7rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))' 
-              : 'calc(100vh - 13rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))'
-          }}
-        >
-          <div className="h-full overflow-y-auto overscroll-contain">
+        {/* Scrollable Content Area with proper padding to stop 1px above buttons */}
+        <main className="flex-1 px-4 overflow-hidden relative">
+          <div 
+            className="h-full overflow-y-auto overscroll-contain"
+            style={{ 
+              paddingBottom: '6rem' // Space for floating buttons
+            }}
+          >
             <ItemsList />
           </div>
         </main>
         
-        {/* Always show IconManagerDialog and AddItemDialog regardless of compact mode */}
         <IconManagerDialog />
         <AddItemDialog />
         <TutorialWrapper />
