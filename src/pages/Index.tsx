@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -85,7 +86,7 @@ const Index = () => {
           <div 
             className="h-full overflow-y-auto overscroll-contain"
             style={{ 
-              paddingBottom: '7rem' // Space to stop exactly above the button row
+              paddingBottom: 'calc(env(safe-area-inset-bottom) + 5.5rem)' // Correctly account for button height (3.5rem) + position (1.5rem) + safe area
             }}
           >
             <ItemsList />
