@@ -84,7 +84,7 @@ const Index = () => {
           <div 
             className="h-full overflow-y-auto overscroll-contain"
             style={{ 
-              paddingBottom: '6rem' // Enough space for buttons (3.5rem + 1.5rem + buffer)
+              paddingBottom: '5rem' // Exact space to stop at red line (3.5rem button + 1.5rem bottom)
             }}
           >
             <ItemsList />

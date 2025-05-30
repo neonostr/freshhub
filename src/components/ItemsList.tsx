@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useItems } from '@/context/ItemsContext';
 import ItemCard from './ItemCard';
 import { calculateDaysUntilExpiry, calculateMaxFreshnessDays } from '@/utils/itemUtils';
 import { Slider } from '@/components/ui/slider';
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { ArrowDown, ArrowUp, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -152,8 +151,20 @@ const ItemsList: React.FC = () => {
     return "desktop-compact-grid";
   };
 
+  // Settings button style to match other floating buttons
+  const settingsButtonStyle = {
+    position: 'fixed' as const,
+    zIndex: 50,
+    bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
+    left: '1.5rem', // Left side
+    width: '3.5rem',
+    height: '3.5rem',
+    borderRadius: '50%',
+    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+  };
+
   return (
-    <div className="pb-20"> {/* Bottom padding to ensure content doesn't go under buttons */}
+    <div>
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
@@ -166,7 +177,22 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Floating buttons with simplified positioning */}
+      {/* Settings Button - aligned with other floating buttons */}
+      <Button
+        style={settingsButtonStyle}
+        size="icon"
+        variant="outline"
+        onClick={() => {
+          const manageButton = document.querySelector('[data-manage-products-trigger]') as HTMLButtonElement;
+          if (manageButton) {
+            manageButton.click();
+          }
+        }}
+      >
+        <Settings className="h-6 w-6" />
+      </Button>
+
+      {/* Floating buttons */}
       <FloatingButtons
         onFilterClick={() => setIsDrawerOpen(true)}
         onCompactModeClick={toggleCompactMode}
