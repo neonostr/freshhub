@@ -72,18 +72,24 @@ const Index = () => {
 
   return (
     <HeaderVisibilityProvider>
-      <div className="flex flex-col h-screen w-full max-w-5xl mx-auto overflow-hidden">
+      <div className="flex flex-col h-full w-full max-w-5xl mx-auto relative">
         {/* Conditionally rendered Header */}
         {!hideHeader && (
-          <header className="flex-shrink-0 py-6 px-4 text-center bg-background" id="app-header">
+          <header className="flex-shrink-0 py-6 px-4 text-center bg-background relative z-10" id="app-header">
             <h1 className="text-3xl font-bold">Freshify</h1>
             <p className="text-gray-500 mt-2">Know when it's been open too long</p>
           </header>
         )}
         
-        {/* Scrollable Content Area - uses remaining space */}
-        <main className="flex-1 min-h-0 px-4 pb-24 overflow-hidden">
-          <div className="h-full overflow-y-auto">
+        {/* Scrollable Content Area - uses remaining space and prevents whole page scroll */}
+        <main 
+          className="flex-1 px-4 overflow-hidden relative"
+          style={{ 
+            paddingBottom: '6rem', // Space for the floating buttons
+            height: hideHeader ? 'calc(100vh - 6rem)' : 'calc(100vh - 12rem)' // Adjust height based on header
+          }}
+        >
+          <div className="h-full overflow-y-auto overscroll-contain">
             <ItemsList />
           </div>
         </main>
