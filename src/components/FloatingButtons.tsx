@@ -14,7 +14,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
   onCompactModeClick,
   isCompactMode
 }) => {
-  // Consistent positioning with the settings button in Index.tsx
+  // Simple positioning - filter button middle, compact mode rightmost
   const filterButtonStyle = {
     position: 'fixed' as const,
     zIndex: 50,

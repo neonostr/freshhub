@@ -198,13 +198,13 @@ const AddItemDialog: React.FC = () => {
     availableIconsCount: availableIcons.length
   });
 
-  // Add button positioning - consistent with other floating buttons
+  // Add button positioning - leftmost in the group
   const getAddButtonStyle = () => {
     return {
       position: 'fixed' as const,
       zIndex: 50,
       bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-      right: '1.5rem', // Rightmost position
+      right: '1.5rem', // Leftmost position
       width: '3.5rem',
       height: '3.5rem',
       borderRadius: '50%',

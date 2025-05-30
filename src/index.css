@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -118,18 +119,6 @@
   #root {
     height: 100%;
     overflow: hidden;
-  }
-  
-  /* Ensure content doesn't get hidden behind fixed buttons */
-  .overflow-y-auto {
-    -webkit-overflow-scrolling: touch; /* Smoother scrolling on iOS */
-    scrollbar-width: thin; /* Firefox */
-    scroll-padding-bottom: calc(env(safe-area-inset-bottom) + 5.5rem); /* Ensure content is visible above buttons */
-  }
-
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .overflow-y-auto::-webkit-scrollbar {
-    display: none;
   }
 }
 
