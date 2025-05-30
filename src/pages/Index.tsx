@@ -68,25 +68,21 @@ const TutorialWrapper = () => {
 };
 
 const Index = () => {
-  const {
-    hideHeader
-  } = useHeaderVisibilityStore();
+  const { hideHeader } = useHeaderVisibilityStore();
 
   return (
     <HeaderVisibilityProvider>
-      <div className="flex flex-col h-screen max-w-5xl mx-auto">
+      <div className="flex flex-col h-screen w-full max-w-5xl mx-auto overflow-hidden">
         {/* Conditionally rendered Header */}
         {!hideHeader && (
-          <header className="flex-shrink-0 py-6 px-4 text-center" id="app-header">
+          <header className="flex-shrink-0 py-6 px-4 text-center bg-background" id="app-header">
             <h1 className="text-3xl font-bold">Freshify</h1>
             <p className="text-gray-500 mt-2">Know when it's been open too long</p>
           </header>
         )}
         
-        {/* Scrollable Content Area - adjusts based on header visibility */}
-        <main className="flex-1 overflow-hidden px-4" style={{ 
-          paddingBottom: '5.5rem' // Space for the bottom buttons
-        }}>
+        {/* Scrollable Content Area - uses remaining space */}
+        <main className="flex-1 min-h-0 px-4 pb-24 overflow-hidden">
           <div className="h-full overflow-y-auto">
             <ItemsList />
           </div>
