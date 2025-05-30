@@ -145,12 +145,16 @@ const ItemsList: React.FC = () => {
     setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
   };
 
-  // Get the button position based on handedness
-  const getButtonPosition = (position: number) => {
+  // Get the button position based on handedness with consistent spacing
+  const getButtonPosition = (buttonIndex: number) => {
+    const basePosition = 1.5; // Base distance from edge
+    const buttonSpacing = 4.5; // Consistent spacing between buttons
+    const position = basePosition + (buttonIndex * buttonSpacing);
+    
     return {
       right: handedness === 'right' ? `${position}rem` : "auto",
       left: handedness === 'left' ? `${position}rem` : "auto",
-      bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)` // Add safe area padding
+      bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`
     };
   };
 
@@ -178,7 +182,7 @@ const ItemsList: React.FC = () => {
   };
 
   return (
-    <div className="py-6">
+    <div className="py-1">
       <div className={getGridClass()}>
         {sortedItems.map(item => (
           <ItemCard
@@ -191,14 +195,14 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Bottom floating buttons - positioned with safe area support */}
+      {/* Bottom floating buttons with consistent positioning */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
           <Button
             className="fixed z-50 shadow-lg rounded-full h-14 w-14 p-0"
             size="icon"
             variant="default"
-            style={getButtonPosition(6)}
+            style={getButtonPosition(1)} // Second button
           >
             <Filter className="h-6 w-6" />
           </Button>
@@ -255,7 +259,7 @@ const ItemsList: React.FC = () => {
         className="fixed z-50 shadow-lg rounded-full h-14 w-14 p-0"
         size="icon"
         variant="default"
-        style={getButtonPosition(11)}
+        style={getButtonPosition(0)} // First button
         onClick={toggleCompactMode}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
