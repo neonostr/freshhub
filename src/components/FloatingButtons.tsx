@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Filter, Minimize, Maximize } from 'lucide-react';
+import { useHandedness } from '@/context/HandednessContext';
 
 interface FloatingButtonsProps {
   onFilterClick: () => void;
@@ -14,27 +15,28 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
   onCompactModeClick,
   isCompactMode
 }) => {
-  // Simple positioning - filter button middle, compact mode rightmost
-  const filterButtonStyle = {
+  const { handedness } = useHandedness();
+  
+  // Base position styles
+  const baseButtonStyle = {
     position: 'fixed' as const,
     zIndex: 50,
     bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-    right: '6rem', // Middle position
     width: '3.5rem',
     height: '3.5rem',
     borderRadius: '50%',
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
   };
 
+  // Position styles based on handedness
+  const filterButtonStyle = {
+    ...baseButtonStyle,
+    [handedness === 'right' ? 'right' : 'left']: '6rem', // Middle position
+  };
+
   const compactButtonStyle = {
-    position: 'fixed' as const,
-    zIndex: 50,
-    bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-    right: '10.5rem', // Rightmost position
-    width: '3.5rem',
-    height: '3.5rem',
-    borderRadius: '50%',
-    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+    ...baseButtonStyle,
+    [handedness === 'right' ? 'right' : 'left']: '10.5rem', // Far position
   };
 
   return (

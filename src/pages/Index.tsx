@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -8,6 +9,7 @@ import { create } from 'zustand';
 import { createContext, useContext } from 'react';
 import { Button } from '@/components/ui/button';
 import { Settings } from 'lucide-react';
+import { useHandedness } from '@/context/HandednessContext';
 
 // Create a Zustand store to manage header visibility
 interface HeaderVisibilityState {
@@ -68,6 +70,19 @@ const TutorialWrapper = () => {
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
+  const { handedness } = useHandedness();
+
+  // Position styles based on handedness
+  const settingsButtonStyle = {
+    position: 'fixed' as const,
+    zIndex: 50,
+    bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
+    [handedness === 'right' ? 'left' : 'right']: '1.5rem',
+    width: '3.5rem',
+    height: '3.5rem',
+    borderRadius: '50%',
+    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+  };
 
   return (
     <HeaderVisibilityProvider>
@@ -92,18 +107,9 @@ const Index = () => {
           </div>
         </main>
 
-        {/* Settings Button - positioned on the left */}
+        {/* Settings Button - positioned based on handedness */}
         <Button
-          style={{
-            position: 'fixed',
-            zIndex: 50,
-            bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-            left: '1.5rem',
-            width: '3.5rem',
-            height: '3.5rem',
-            borderRadius: '50%',
-            boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
-          }}
+          style={settingsButtonStyle}
           size="icon"
           variant="outline"
           onClick={() => {

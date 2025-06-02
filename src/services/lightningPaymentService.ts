@@ -1,6 +1,4 @@
 
-import { toast } from "@/hooks/use-toast";
-
 const COINOS_BASE_URL = 'https://coinos.io';
 const USERNAME = 'freshify';
 const PAYMENT_AMOUNT_SATS = 21; // Changed from 2100 to 21 for testing
@@ -86,22 +84,4 @@ export function formatInvoice(invoice: string): string {
   if (!invoice || invoice.length < 20) return invoice;
   
   return `${invoice.substring(0, 10)}...${invoice.substring(invoice.length - 10)}`;
-}
-
-// Helper to copy invoice to clipboard
-export async function copyInvoiceToClipboard(invoice: string): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(invoice);
-    toast({
-      title: "Copied to clipboard",
-      description: "Lightning invoice copied to clipboard"
-    });
-  } catch (error) {
-    console.error('Failed to copy invoice:', error);
-    toast({
-      title: "Failed to copy",
-      description: "Could not copy invoice to clipboard",
-      variant: "destructive"
-    });
-  }
 }
