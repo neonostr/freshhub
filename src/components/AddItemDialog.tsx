@@ -198,13 +198,14 @@ const AddItemDialog: React.FC = () => {
     availableIconsCount: availableIcons.length
   });
 
-  // Add button positioning - leftmost in the group
+  // Add button positioning - rightmost position
   const getAddButtonStyle = () => {
+    const { handedness } = useHandedness();
     return {
       position: 'fixed' as const,
       zIndex: 50,
       bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-      right: '1.5rem', // Leftmost position
+      [handedness === 'right' ? 'right' : 'left']: '1.5rem', // Closest position on the same side as other buttons
       width: '3.5rem',
       height: '3.5rem',
       borderRadius: '50%',

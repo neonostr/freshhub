@@ -28,7 +28,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
   };
 
-  // Position styles based on handedness
+  // Position styles based on handedness - middle and far positions
   const filterButtonStyle = {
     ...baseButtonStyle,
     [handedness === 'right' ? 'right' : 'left']: '6rem', // Middle position

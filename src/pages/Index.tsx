@@ -72,12 +72,12 @@ const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
   const { handedness } = useHandedness();
 
-  // Position styles based on handedness
+  // Settings button positioning - always show, positioned opposite to other buttons
   const settingsButtonStyle = {
     position: 'fixed' as const,
     zIndex: 50,
     bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-    [handedness === 'right' ? 'left' : 'right']: '1.5rem',
+    [handedness === 'right' ? 'left' : 'right']: '1.5rem', // Opposite side from other buttons
     width: '3.5rem',
     height: '3.5rem',
     borderRadius: '50%',
@@ -100,14 +100,14 @@ const Index = () => {
           <div 
             className="h-full overflow-y-auto overscroll-contain"
             style={{ 
-              paddingBottom: '7rem' // Space to stop exactly above the button row
+              paddingBottom: `calc(env(safe-area-inset-bottom) + 5.5rem)` // Space for buttons
             }}
           >
             <ItemsList />
           </div>
         </main>
 
-        {/* Settings Button - positioned based on handedness */}
+        {/* Settings Button - always visible, positioned based on handedness */}
         <Button
           style={settingsButtonStyle}
           size="icon"
