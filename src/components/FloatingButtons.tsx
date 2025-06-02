@@ -39,14 +39,20 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
     [handedness === 'right' ? 'right' : 'left']: '10.5rem', // Far position
   };
 
+  const handleFilterClick = () => {
+    // Dispatch an event to toggle the freshness filter in ItemsList
+    window.dispatchEvent(new CustomEvent('toggle-freshness-filter'));
+    onFilterClick();
+  };
+
   return (
     <>
-      {/* Filter Button - actually filters items */}
+      {/* Filter Button */}
       <Button
         style={filterButtonStyle}
         size="icon"
         variant="default"
-        onClick={onFilterClick}
+        onClick={handleFilterClick}
       >
         <Filter className="h-6 w-6" />
       </Button>
