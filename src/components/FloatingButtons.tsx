@@ -41,7 +41,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
 
   return (
     <>
-      {/* Filter Button */}
+      {/* Filter Button - actually filters items */}
       <Button
         style={filterButtonStyle}
         size="icon"

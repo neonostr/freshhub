@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -10,6 +9,7 @@ import { createContext, useContext } from 'react';
 import { Button } from '@/components/ui/button';
 import { Settings } from 'lucide-react';
 import { useHandedness } from '@/context/HandednessContext';
+import FloatingButtons from '@/components/FloatingButtons';
 
 // Create a Zustand store to manage header visibility
 interface HeaderVisibilityState {
@@ -84,6 +84,17 @@ const Index = () => {
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
   };
 
+  // Filter functionality
+  const handleFilterClick = () => {
+    // Dispatch an event to toggle the freshness filter in ItemsList
+    window.dispatchEvent(new CustomEvent('toggle-freshness-filter'));
+  };
+
+  const handleCompactModeClick = () => {
+    // Toggle header visibility
+    useHeaderVisibilityStore.getState().setHideHeader(!hideHeader);
+  };
+
   return (
     <HeaderVisibilityProvider>
       <div className="flex flex-col h-full w-full max-w-5xl mx-auto relative">
@@ -121,6 +132,13 @@ const Index = () => {
         >
           <Settings className="h-6 w-6" />
         </Button>
+
+        {/* Floating Buttons - only show when there are items */}
+        <FloatingButtons 
+          onFilterClick={handleFilterClick}
+          onCompactModeClick={handleCompactModeClick}
+          isCompactMode={hideHeader}
+        />
         
         <IconManagerDialog />
         <AddItemDialog />
