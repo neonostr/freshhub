@@ -28,7 +28,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
   };
 
-  // Position styles based on handedness - only for filter, compact, and settings buttons
+  // Position styles based on handedness
   const filterButtonStyle = {
     ...baseButtonStyle,
     [handedness === 'right' ? 'right' : 'left']: '6rem', // Middle position
@@ -45,7 +45,11 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
   };
 
   const handleFilterClick = () => {
-    onFilterClick();
+    window.dispatchEvent(new CustomEvent('toggle-freshness-filter'));
+  };
+
+  const handleCompactModeClick = () => {
+    window.dispatchEvent(new CustomEvent('toggle-compact-mode'));
   };
 
   const handleSettingsClick = () => {
@@ -72,12 +76,12 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
         style={compactButtonStyle}
         size="icon"
         variant="default"
-        onClick={onCompactModeClick}
+        onClick={handleCompactModeClick}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
 
-      {/* Settings Button - positioned on opposite side */}
+      {/* Settings Button */}
       <Button
         style={settingsButtonStyle}
         size="icon"

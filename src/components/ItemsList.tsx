@@ -53,6 +53,21 @@ const ItemsList: React.FC = () => {
     };
   }, []);
 
+  // Listen for compact mode toggle event
+  useEffect(() => {
+    const handleToggleCompactMode = () => {
+      setIsCompactMode(prev => !prev);
+      setExpandedItemIds([]);
+      setHideHeader(!hideHeader);
+    };
+    
+    window.addEventListener('toggle-compact-mode', handleToggleCompactMode);
+    
+    return () => {
+      window.removeEventListener('toggle-compact-mode', handleToggleCompactMode);
+    };
+  }, [hideHeader, setHideHeader]);
+
   // Save filter value to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('currentFilterDays', filterDays.toString());
@@ -135,13 +150,6 @@ const ItemsList: React.FC = () => {
 
   const toggleSortDirection = () => {
     setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-  };
-
-  const toggleCompactMode = () => {
-    setIsCompactMode(prev => !prev);
-    setExpandedItemIds([]);
-    // Also toggle header when toggling compact mode
-    setHideHeader(!hideHeader);
   };
 
   const toggleItemExpanded = (itemId: string) => {
