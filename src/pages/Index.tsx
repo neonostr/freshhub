@@ -42,12 +42,15 @@ export const HeaderVisibilityProvider: React.FC<{
     hideHeader,
     setHideHeader
   } = useHeaderVisibilityStore();
-  return <HeaderVisibilityContext.Provider value={{
-    hideHeader,
-    setHideHeader
-  }}>
+  // Corrected the return statement to wrap children with the context provider
+  return (
+    <HeaderVisibilityContext.Provider value={{
+      hideHeader,
+      setHideHeader
+    }}>
       {children}
-    </HeaderVisibilityProvider>;
+    </HeaderVisibilityContext.Provider>
+  );
 };
 export const useHeaderVisibility = (): HeaderVisibilityState => {
   const context = useContext(HeaderVisibilityContext);
