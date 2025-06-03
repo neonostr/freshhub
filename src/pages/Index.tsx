@@ -92,7 +92,7 @@ const Index = () => {
             className="h-full px-4 overflow-y-auto overscroll-contain"
             style={{
               // Adjust paddingTop to find the perfect gap (e.g., '2px', '3px', '4px')
-              paddingTop: hideHeader ? '1rem' : '7px', // <-- Adjust this value (e.g., '2px', '3px')
+              paddingTop: hideHeader ? '1rem' : '16px', // <-- Adjust this value (e.g., '2px', '3px')
               paddingBottom: `calc(env(safe-area-inset-bottom) + 7rem)`, // Extra space for floating buttons
               scrollPaddingTop: '0.5rem',
               scrollPaddingBottom: '1rem'
