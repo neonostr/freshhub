@@ -70,25 +70,39 @@ const Index = () => {
 
   return (
     <HeaderVisibilityProvider>
-      <div className="flex flex-col h-full w-full max-w-5xl mx-auto relative">
-        {/* Conditionally rendered Header */}
+      <div className="flex flex-col h-full w-full max-w-5xl mx-auto relative overflow-hidden">
+        {/* Fixed Header with clipping shadow */}
         {!hideHeader && (
-          <header className="flex-shrink-0 py-6 px-4 text-center bg-background relative z-10" id="app-header">
+          <header className="flex-shrink-0 py-6 px-4 text-center bg-background relative z-20 shadow-sm border-b border-border/20" id="app-header">
             <h1 className="text-3xl font-bold">FreshHub</h1>
             <p className="text-gray-500 mt-1">All your shelf life in one spot</p>
+            {/* Bottom gradient for clipping effect */}
+            <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-b from-transparent to-background/80 pointer-events-none"></div>
           </header>
         )}
         
-        {/* Scrollable Content Area */}
-        <main className="flex-1 px-4 overflow-hidden relative">
+        {/* Scrollable Content Area with proper clipping boundaries */}
+        <main className="flex-1 relative overflow-hidden">
+          {/* Top clipping zone when header is hidden */}
+          {hideHeader && (
+            <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
+          )}
+          
+          {/* Main scroll container with defined boundaries */}
           <div 
-            className="h-full overflow-y-auto overscroll-contain"
+            className="h-full px-4 overflow-y-auto overscroll-contain"
             style={{ 
-              paddingBottom: `calc(env(safe-area-inset-bottom) + 5.5rem)` // Space for buttons
+              paddingTop: hideHeader ? '1rem' : '0.5rem',
+              paddingBottom: `calc(env(safe-area-inset-bottom) + 7rem)`, // Extra space for floating buttons
+              scrollPaddingTop: '0.5rem',
+              scrollPaddingBottom: '1rem'
             }}
           >
             <ItemsList />
           </div>
+          
+          {/* Bottom clipping zone with gradient */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 to-transparent z-10 pointer-events-none"></div>
         </main>
         
         <IconManagerDialog />

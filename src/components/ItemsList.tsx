@@ -9,12 +9,13 @@ import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import FloatingButtons from './FloatingButtons';
 import { useHeaderVisibilityStore } from '@/pages/Index';
+
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
 
 const ItemsList: React.FC = () => {
   const { items } = useItems();
-  const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
+  const { hideHeader } = useHeaderVisibilityStore();
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365);
@@ -151,17 +152,17 @@ const ItemsList: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full"> {/* <--- CHANGE THIS LINE */}
- {items.length === 0 ? (
-      <div className="flex flex-col justify-center items-center text-center flex-1"> {/* <--- CHANGE THIS LINE */}
-        <div className="text-4xl mb-2">🥛</div> {/* <--- CHANGE span to div, revert classes */}
-        <h3 className="text-xl font-medium mb-2">No items yet</h3> {/* <--- Revert classes */}
-        <p className="text-gray-500"> {/* <--- Revert classes */}
-          Add your first item by clicking the + button below
-        </p>
-      </div>
+    <div className="w-full">
+      {items.length === 0 ? (
+        <div className="flex flex-col justify-center items-center text-center min-h-[50vh] py-12">
+          <div className="text-4xl mb-2">🥛</div>
+          <h3 className="text-xl font-medium mb-2">No items yet</h3>
+          <p className="text-gray-500">
+            Add your first item by clicking the + button below
+          </p>
+        </div>
       ) : (
-      <div className={getGridClass() + (hideHeader ? " mt-5" : "") + " pb-24"}> {/* <--- Ensure pb-24 is present */}
+        <div className={`${getGridClass()} ${hideHeader ? "pt-2" : ""}`}>
           {sortedItems.map(item => (
             <ItemCard
               key={`${item.id}-${forceUpdate}`}
