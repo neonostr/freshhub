@@ -74,8 +74,8 @@ const Index = () => {
         {/* Conditionally rendered Header */}
         {!hideHeader && (
           <header className="flex-shrink-0 py-6 px-4 text-center bg-background relative z-10" id="app-header">
-            <h1 className="text-3xl font-bold">Freshify</h1>
-            <p className="text-gray-500 mt-1">Know when it's been open too long</p>
+            <h1 className="text-3xl font-bold">FreshHub</h1>
+            <p className="text-gray-500 mt-1">All your shelf life in one spot</p>
           </header>
         )}
         
