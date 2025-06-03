@@ -193,7 +193,7 @@ const ItemsList: React.FC = () => {
   onFilterClick={() => setIsDrawerOpen(true)}
   onCompactModeClick={() => {}} // This is no longer used since we use events
   isCompactMode={isCompactMode}
-/>
+    />
 
       {/* Filter drawer */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
