@@ -155,15 +155,44 @@ const ItemsList: React.FC = () => {
     setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
   };
 
-  if (items.length === 0) {
-    return <div className="flex flex-col items-center justify-center p-8 text-center h-full">
-      <div className="text-4xl mb-2">🥛</div>
-      <h3 className="text-xl font-medium mb-2">No items yet</h3>
-      <p className="text-gray-500">
-        Add your first item by clicking the + button below
-      </p>
-    </div>;
-  }
+return (
+  <div>
+    {items.length === 0 ? (
+      <div className="flex flex-col items-center justify-center p-8 text-center h-full">
+        <div className="text-4xl mb-2">🥛</div>
+        <h3 className="text-xl font-medium mb-2">No items yet</h3>
+        <p className="text-gray-500">
+          Add your first item by clicking the + button below
+        </p>
+      </div>
+    ) : (
+      <div className={getGridClass() + (hideHeader ? " mt-5" : "")}>
+        {sortedItems.map(item => (
+          <ItemCard
+            key={`${item.id}-${forceUpdate}`}
+            item={item}
+            isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
+            onClick={() => toggleItemExpanded(item.id)}
+            isExpandable={isCompactMode}
+          />
+        ))}
+      </div>
+    )}
+
+    <FloatingButtons
+      onFilterClick={() => setIsDrawerOpen(true)}
+      onCompactModeClick={() => {}} // This is no longer used since we use events
+      isCompactMode={isCompactMode}
+    />
+
+    {/* Filter drawer */}
+    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+      <DrawerContent side="bottom" className="z-50">
+        {/* ...rest of your drawer code... */}
+      </DrawerContent>
+    </Drawer>
+  </div>
+);
 
   const getGridClass = () => {
     if (!isCompactMode) {
