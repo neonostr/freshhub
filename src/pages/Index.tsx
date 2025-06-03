@@ -96,10 +96,10 @@ const { hideHeader } = useHeaderVisibilityStore();
             <ItemsList />
           </div>
 
-          {/* Top clipping gradient when header is hidden */}
-          {hideHeader && (
+       {/* Top clipping gradient when header is hidden */}
+          {/* {hideHeader && (
             <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
-          )}
+          )} */}
 
           {/* Bottom clipping zone with gradient */}
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 to-transparent z-10 pointer-events-none"></div>
