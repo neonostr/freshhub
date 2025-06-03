@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
 import IconManagerDialog from '@/components/IconManagerDialog';
 import SwipeTutorial from '@/components/SwipeTutorial';
+import FloatingButtons from '@/components/FloatingButtons';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
@@ -68,6 +70,7 @@ const TutorialWrapper = () => {
 };
 
 const Index = () => {
+  const { items } = useItems();
   const { hideHeader } = useHeaderVisibilityStore();
   const { handedness } = useHandedness();
 
@@ -81,6 +84,17 @@ const Index = () => {
     height: '3.5rem',
     borderRadius: '50%',
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+  };
+
+  // Filter functionality
+  const handleFilterClick = () => {
+    // Dispatch an event to toggle the freshness filter in ItemsList
+    window.dispatchEvent(new CustomEvent('toggle-freshness-filter'));
+  };
+
+  const handleCompactModeClick = () => {
+    // Toggle header visibility
+    useHeaderVisibilityStore.getState().setHideHeader(!hideHeader);
   };
 
   return (
@@ -120,6 +134,15 @@ const Index = () => {
         >
           <Settings className="h-6 w-6" />
         </Button>
+
+        {/* Floating Buttons - only show when there are items */}
+        {items.length > 0 && (
+          <FloatingButtons 
+            onFilterClick={handleFilterClick}
+            onCompactModeClick={handleCompactModeClick}
+            isCompactMode={hideHeader}
+          />
+        )}
         
         <IconManagerDialog />
         <AddItemDialog />
