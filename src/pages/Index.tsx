@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -71,26 +70,21 @@ const Index = () => {
   return (
     <HeaderVisibilityProvider>
       <div className="flex flex-col h-full w-full max-w-5xl mx-auto relative overflow-hidden">
-        {/* Fixed Header with clipping shadow */}
+        {/* Fixed Header */}
         {!hideHeader && (
-                    <header className="flex-shrink-0 py-6 px-4 text-center bg-background relative z-20" id="app-header">
+          <header className="flex-shrink-0 py-6 px-4 text-center bg-background relative z-20" id="app-header">
             <h1 className="text-3xl font-bold">FreshHub</h1>
             <p className="text-gray-500 mt-1">All your shelf life in one spot</p>
           </header>
         )}
-        
-        {/* Scrollable Content Area with proper clipping boundaries */}
-       <main className="flex-1 relative overflow-hidden" style={{ marginTop: '-1px' }}>
-          {/* Top clipping zone when header is hidden */}
-          {hideHeader && (
-            <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
-          )}
-          
-          {/* Main scroll container with defined boundaries */}
-          <div 
+
+        {/* Scrollable Content Area with precise clipping boundaries */}
+        <main className="flex-1 relative overflow-hidden">
+          {/* Main scroll container with precise boundaries */}
+          <div
             className="h-full px-4 overflow-y-auto overscroll-contain"
-            style={{ 
-              paddingTop: hideHeader ? '1rem' : '0.5rem',
+            style={{
+              paddingTop: hideHeader ? '1rem' : '0', // Changed from '0.5rem' or '0.0625rem' to '0'
               paddingBottom: `calc(env(safe-area-inset-bottom) + 7rem)`, // Extra space for floating buttons
               scrollPaddingTop: '0.5rem',
               scrollPaddingBottom: '1rem'
@@ -98,11 +92,16 @@ const Index = () => {
           >
             <ItemsList />
           </div>
-          
-          {/* Bottom clipping zone with gradient */}
+
+          {/* Top clipping gradient when header is hidden */}
+          {hideHeader && (
+            <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
+          )}
+
+          {/* Bottom clipping gradient - adjusted height to match button area exactly */}
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 to-transparent z-10 pointer-events-none"></div>
         </main>
-        
+
         <IconManagerDialog />
         <AddItemDialog />
         <TutorialWrapper />
