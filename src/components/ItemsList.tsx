@@ -177,7 +177,7 @@ const ItemsList: React.FC = () => {
 
   return (
     <div>
-      <div className={getGridClass()}>
+      <div className={getGridClass() + " mt-6"}>
         {sortedItems.map(item => (
           <ItemCard
             key={`${item.id}-${forceUpdate}`}
