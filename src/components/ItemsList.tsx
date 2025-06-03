@@ -15,7 +15,7 @@ type SortDirection = 'asc' | 'desc';
 
 const ItemsList: React.FC = () => {
   const { items } = useItems();
-  const { hideHeader } = useHeaderVisibilityStore();
+   const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365);
