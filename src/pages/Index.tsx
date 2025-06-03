@@ -83,12 +83,16 @@ const Index = () => {
 
         {/* Scrollable Content Area with precise clipping boundaries */}
         <main className="flex-1 relative overflow-hidden">
+          {/* Top clipping gradient - always visible */}
+          {/* Removed hideHeader && condition */}
+          <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
+
           {/* Main scroll container with precise boundaries */}
           <div
             className="h-full px-4 overflow-y-auto overscroll-contain"
             style={{
-              // Set paddingTop to 1px when header is visible, 1rem when hidden
-              paddingTop: hideHeader ? '1rem' : '10px',
+              // Adjust paddingTop to find the perfect gap (e.g., '2px', '3px', '4px')
+              paddingTop: hideHeader ? '1rem' : '1px', // <-- Adjust this value (e.g., '2px', '3px')
               paddingBottom: `calc(env(safe-area-inset-bottom) + 7rem)`, // Extra space for floating buttons
               scrollPaddingTop: '0.5rem',
               scrollPaddingBottom: '1rem'
@@ -96,11 +100,6 @@ const Index = () => {
           >
             <ItemsList />
           </div>
-
-          {/* Top clipping gradient when header is hidden */}
-          {hideHeader && (
-            <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
-          )}
 
           {/* Bottom clipping zone with gradient */}
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 to-transparent z-10 pointer-events-none"></div>
