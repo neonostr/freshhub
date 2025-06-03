@@ -28,12 +28,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
   };
 
-  // Position styles based on handedness
-  const addButtonStyle = {
-    ...baseButtonStyle,
-    [handedness === 'right' ? 'right' : 'left']: '1.5rem', // Closest position
-  };
-
+  // Position styles based on handedness - only for filter, compact, and settings buttons
   const filterButtonStyle = {
     ...baseButtonStyle,
     [handedness === 'right' ? 'right' : 'left']: '6rem', // Middle position
@@ -62,22 +57,6 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
 
   return (
     <>
-      {/* Add Button */}
-      <Button
-        style={addButtonStyle}
-        size="icon"
-        variant="default"
-        onClick={() => {
-          // Trigger the add item dialog
-          const addButton = document.querySelector('[data-add-item-trigger]') as HTMLButtonElement;
-          if (addButton) {
-            addButton.click();
-          }
-        }}
-      >
-        <span className="text-2xl">+</span>
-      </Button>
-
       {/* Filter Button */}
       <Button
         style={filterButtonStyle}
