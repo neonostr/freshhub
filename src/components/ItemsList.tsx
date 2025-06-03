@@ -5,7 +5,7 @@ import { calculateDaysUntilExpiry, calculateMaxFreshnessDays } from '@/utils/ite
 import { Slider } from '@/components/ui/slider';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import FloatingButtons from './FloatingButtons';
 import { useHeaderVisibilityStore } from '@/pages/Index';
@@ -19,24 +19,24 @@ const ItemsList: React.FC = () => {
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365);
-  
+
   // Load filter from localStorage or default to showing all
   const [filterDays, setFilterDays] = useState<number>(() => {
     const saved = localStorage.getItem('currentFilterDays');
     return saved ? parseInt(saved) : 365;
   });
-  
+
   // Track if filter is set to "show all" (at maximum)
   const [isShowingAll, setIsShowingAll] = useState<boolean>(() => {
     const saved = localStorage.getItem('currentFilterDays');
     return !saved || parseInt(saved) >= 365;
   });
-  
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
   const [expandedItemIds, setExpandedItemIds] = useState<string[]>([]);
   const isMobile = useIsMobile();
-  
+
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
 
@@ -45,9 +45,7 @@ const ItemsList: React.FC = () => {
     const handleToggleFilter = () => {
       setIsDrawerOpen(true);
     };
-    
     window.addEventListener('toggle-freshness-filter', handleToggleFilter);
-    
     return () => {
       window.removeEventListener('toggle-freshness-filter', handleToggleFilter);
     };
@@ -59,9 +57,7 @@ const ItemsList: React.FC = () => {
       setIsCompactMode(prev => !prev);
       setExpandedItemIds([]);
     };
-    
     window.addEventListener('toggle-compact-mode', handleToggleCompactMode);
-    
     return () => {
       window.removeEventListener('toggle-compact-mode', handleToggleCompactMode);
     };
@@ -77,16 +73,12 @@ const ItemsList: React.FC = () => {
   useEffect(() => {
     if (items.length > 0) {
       const maxDays = calculateMaxFreshnessDays(items);
-      
       if (maxDays !== maxFreshnessDays) {
         const previousMaxDays = maxFreshnessDays;
         setMaxFreshnessDays(maxDays);
-        
         if (isShowingAll && maxDays > previousMaxDays) {
-          console.log(`Max freshness days increased from ${previousMaxDays} to ${maxDays}, updating filter to continue showing all`);
           setFilterDays(maxDays);
-        }
-        else if (!isShowingAll && filterDays > maxDays) {
+        } else if (!isShowingAll && filterDays > maxDays) {
           setFilterDays(maxDays);
         }
       }
@@ -95,34 +87,24 @@ const ItemsList: React.FC = () => {
 
   // Listen for shelf life changes, product updates, and filter reset events
   useEffect(() => {
-    const handleShelfLifeUpdated = () => {
-      console.log("Shelf life updated, recalculating freshness values");
-      setForceUpdate(prev => prev + 1);
-    };
-    
-    const handleProductUpdated = () => {
-      console.log("Product updated, recalculating freshness values");
-      setForceUpdate(prev => prev + 1);
-    };
-    
-    const handleResetFilter = () => {
-      console.log("Resetting freshness filter to show all items");
-      setFilterDays(maxFreshnessDays);
-    };
-    
+    const handleShelfLifeUpdated = () => setForceUpdate(prev => prev + 1);
+    const handleProductUpdated = () => setForceUpdate(prev => prev + 1);
+    const handleResetFilter = () => setFilterDays(maxFreshnessDays);
+
     window.addEventListener('shelf-life-updated', handleShelfLifeUpdated);
     window.addEventListener('custom-product-updated', handleProductUpdated);
     window.addEventListener('reset-freshness-filter', handleResetFilter);
-    
+
     window.addEventListener('storage', (event) => {
-      if (event.key === 'freshTrackerCustomShelfLife' || 
-          event.key === 'freshTrackerCustomProducts' ||
-          event.key === 'freshItems') {
-        console.log(`Storage '${event.key}' changed, forcing UI update`);
+      if (
+        event.key === 'freshTrackerCustomShelfLife' ||
+        event.key === 'freshTrackerCustomProducts' ||
+        event.key === 'freshItems'
+      ) {
         setForceUpdate(prev => prev + 1);
       }
     });
-    
+
     return () => {
       window.removeEventListener('shelf-life-updated', handleShelfLifeUpdated);
       window.removeEventListener('custom-product-updated', handleProductUpdated);
@@ -143,56 +125,21 @@ const ItemsList: React.FC = () => {
       const bFreshness = calculateDaysUntilExpiry(b);
       return sortDirection === 'asc' ? aFreshness - bFreshness : bFreshness - aFreshness;
     } else {
-      return sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+      return sortDirection === 'asc'
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name);
     }
   });
 
   const toggleSortDirection = () => {
-    setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
   };
 
   const toggleItemExpanded = (itemId: string) => {
-    setExpandedItemIds(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
+    setExpandedItemIds(prev =>
+      prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]
+    );
   };
-
-return (
-  <div>
-    {items.length === 0 ? (
-      <div className="flex flex-col items-center justify-center p-8 text-center h-full">
-        <div className="text-4xl mb-2">🥛</div>
-        <h3 className="text-xl font-medium mb-2">No items yet</h3>
-        <p className="text-gray-500">
-          Add your first item by clicking the + button below
-        </p>
-      </div>
-    ) : (
-      <div className={getGridClass() + (hideHeader ? " mt-5" : "")}>
-        {sortedItems.map(item => (
-          <ItemCard
-            key={`${item.id}-${forceUpdate}`}
-            item={item}
-            isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
-            onClick={() => toggleItemExpanded(item.id)}
-            isExpandable={isCompactMode}
-          />
-        ))}
-      </div>
-    )}
-
-    <FloatingButtons
-      onFilterClick={() => setIsDrawerOpen(true)}
-      onCompactModeClick={() => {}} // This is no longer used since we use events
-      isCompactMode={isCompactMode}
-    />
-
-    {/* Filter drawer */}
-    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-      <DrawerContent side="bottom" className="z-50">
-        {/* ...rest of your drawer code... */}
-      </DrawerContent>
-    </Drawer>
-  </div>
-);
 
   const getGridClass = () => {
     if (!isCompactMode) {
@@ -206,23 +153,33 @@ return (
 
   return (
     <div>
-      <div className={getGridClass() + (hideHeader ? " mt-5" : "")}>
-        {sortedItems.map(item => (
-          <ItemCard
-            key={`${item.id}-${forceUpdate}`}
-            item={item}
-            isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
-            onClick={() => toggleItemExpanded(item.id)}
-            isExpandable={isCompactMode}
-          />
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center p-8 text-center h-full">
+          <div className="text-4xl mb-2">🥛</div>
+          <h3 className="text-xl font-medium mb-2">No items yet</h3>
+          <p className="text-gray-500">
+            Add your first item by clicking the + button below
+          </p>
+        </div>
+      ) : (
+        <div className={getGridClass() + (hideHeader ? " mt-5" : "")}>
+          {sortedItems.map(item => (
+            <ItemCard
+              key={`${item.id}-${forceUpdate}`}
+              item={item}
+              isCompact={isCompactMode && !expandedItemIds.includes(item.id)}
+              onClick={() => toggleItemExpanded(item.id)}
+              isExpandable={isCompactMode}
+            />
+          ))}
+        </div>
+      )}
 
-    <FloatingButtons
-  onFilterClick={() => setIsDrawerOpen(true)}
-  onCompactModeClick={() => {}} // This is no longer used since we use events
-  isCompactMode={isCompactMode}
-    />
+      <FloatingButtons
+        onFilterClick={() => setIsDrawerOpen(true)}
+        onCompactModeClick={() => {}} // This is no longer used since we use events
+        isCompactMode={isCompactMode}
+      />
 
       {/* Filter drawer */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -231,39 +188,54 @@ return (
             <div className="flex items-center justify-between">
               <span className="font-medium">Filter by freshness</span>
               <span className="text-sm text-gray-500">
-                {filterDays === maxFreshnessDays ? 'Show all' : `Up to ${filterDays} days`}
+                {filterDays === maxFreshnessDays
+                  ? 'Show all'
+                  : `Up to ${filterDays} days`}
               </span>
             </div>
-            
+
             <div style={{ touchAction: 'pan-x' }}>
-              <Slider 
-                value={[Math.min(filterDays, maxFreshnessDays)]} 
-                min={1} 
+              <Slider
+                value={[Math.min(filterDays, maxFreshnessDays)]}
+                min={1}
                 max={maxFreshnessDays || 365}
-                step={1} 
+                step={1}
                 onValueChange={([value]) => {
-                  console.log(`Changing filter days to ${value} (max: ${maxFreshnessDays})`);
                   setFilterDays(value);
-                }} 
-                className="w-full" 
+                }}
+                className="w-full"
               />
             </div>
-            
+
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="font-medium">Sort by</span>
               </div>
-              
+
               <div className="flex gap-2">
-                <Button variant={sortOption === 'freshness' ? "default" : "outline"} size="sm" onClick={() => setSortOption('freshness')} className="flex-1">
+                <Button
+                  variant={sortOption === 'freshness' ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSortOption('freshness')}
+                  className="flex-1"
+                >
                   Freshness
                 </Button>
-                
-                <Button variant={sortOption === 'alphabetical' ? "default" : "outline"} size="sm" onClick={() => setSortOption('alphabetical')} className="flex-1">
+
+                <Button
+                  variant={sortOption === 'alphabetical' ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSortOption('alphabetical')}
+                  className="flex-1"
+                >
                   A-Z
                 </Button>
-                
-                <Button variant="outline" size="sm" onClick={toggleSortDirection}>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleSortDirection}
+                >
                   {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
                 </Button>
               </div>
