@@ -59,12 +59,11 @@ export const useHeaderVisibility = (): HeaderVisibilityState => {
   return context;
 };
 
-// Component to conditionally render the SwipeTutorial
-const TutorialWrapper = () => {
-  const { shouldShowTutorial } = useItems();
-  if (!shouldShowTutorial) return null;
-  return <SwipeTutorial />;
-};
+    // Component to conditionally render the SwipeTutorial
+    const TutorialWrapper = () => {
+      // Temporarily disable rendering of SwipeTutorial for testing
+      return null;
+    };
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
