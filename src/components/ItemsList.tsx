@@ -153,7 +153,7 @@ const ItemsList: React.FC = () => {
   return (
     <div>
 {items.length === 0 ? (
-  <div className="fflex flex-col justify-center items-center h-screen text-center">
+  <div className="flex flex-col justify-center items-center h-screen text-center">
     <div className="text-4xl mb-2">🥛</div>
     <h3 className="text-xl font-medium mb-2">No items yet</h3>
     <p className="text-gray-500">
