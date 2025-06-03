@@ -4,11 +4,9 @@ import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
 import IconManagerDialog from '@/components/IconManagerDialog';
 import SwipeTutorial from '@/components/SwipeTutorial';
-import FloatingButtons from '@/components/FloatingButtons';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
-import { useHandedness } from '@/context/HandednessContext';
 
 // Create a Zustand store to manage header visibility
 interface HeaderVisibilityState {
@@ -68,19 +66,7 @@ const TutorialWrapper = () => {
 };
 
 const Index = () => {
-  const { items } = useItems();
-  const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
-
-  // Filter functionality
-  const handleFilterClick = () => {
-    // Dispatch an event to toggle the freshness filter in ItemsList
-    window.dispatchEvent(new CustomEvent('toggle-freshness-filter'));
-  };
-
-  const handleCompactModeClick = () => {
-    // Toggle header visibility
-    setHideHeader(!hideHeader);
-  };
+  const { hideHeader } = useHeaderVisibilityStore();
 
   return (
     <HeaderVisibilityProvider>
@@ -104,15 +90,6 @@ const Index = () => {
             <ItemsList />
           </div>
         </main>
-
-        {/* Floating Buttons - only show when there are items */}
-        {items.length > 0 && (
-          <FloatingButtons 
-            onFilterClick={handleFilterClick}
-            onCompactModeClick={handleCompactModeClick}
-            isCompactMode={hideHeader}
-          />
-        )}
         
         <IconManagerDialog />
         <AddItemDialog />

@@ -8,12 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import FloatingButtons from './FloatingButtons';
+import { useHeaderVisibilityStore } from '@/pages/Index';
 
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
 
 const ItemsList: React.FC = () => {
   const { items } = useItems();
+  const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
   const [sortOption, setSortOption] = useState<SortOption>('freshness');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [maxFreshnessDays, setMaxFreshnessDays] = useState<number>(365);
@@ -37,6 +39,19 @@ const ItemsList: React.FC = () => {
   
   // Force re-render when data changes
   const [forceUpdate, setForceUpdate] = useState(0);
+
+  // Listen for toggle freshness filter event
+  useEffect(() => {
+    const handleToggleFilter = () => {
+      setIsDrawerOpen(true);
+    };
+    
+    window.addEventListener('toggle-freshness-filter', handleToggleFilter);
+    
+    return () => {
+      window.removeEventListener('toggle-freshness-filter', handleToggleFilter);
+    };
+  }, []);
 
   // Save filter value to localStorage when it changes
   useEffect(() => {
@@ -125,6 +140,8 @@ const ItemsList: React.FC = () => {
   const toggleCompactMode = () => {
     setIsCompactMode(prev => !prev);
     setExpandedItemIds([]);
+    // Also toggle header when toggling compact mode
+    setHideHeader(!hideHeader);
   };
 
   const toggleItemExpanded = (itemId: string) => {
@@ -165,12 +182,14 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Floating buttons */}
-      <FloatingButtons
-        onFilterClick={() => setIsDrawerOpen(true)}
-        onCompactModeClick={toggleCompactMode}
-        isCompactMode={isCompactMode}
-      />
+      {/* Floating buttons - only show when there are items */}
+      {items.length > 0 && (
+        <FloatingButtons
+          onFilterClick={() => setIsDrawerOpen(true)}
+          onCompactModeClick={toggleCompactMode}
+          isCompactMode={isCompactMode}
+        />
+      )}
 
       {/* Filter drawer */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
