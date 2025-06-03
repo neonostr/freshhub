@@ -58,7 +58,6 @@ const ItemsList: React.FC = () => {
     const handleToggleCompactMode = () => {
       setIsCompactMode(prev => !prev);
       setExpandedItemIds([]);
-      setHideHeader(!hideHeader);
     };
     
     window.addEventListener('toggle-compact-mode', handleToggleCompactMode);
