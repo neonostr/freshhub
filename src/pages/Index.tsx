@@ -71,11 +71,12 @@ const Index = () => {
 
   return (
     <HeaderVisibilityProvider>
-      <div className="flex flex-col h-full w-full max-w-5xl mx-auto relative overflow-hidden">
+      {/* Changed h-full to h-screen and added bg-background */}
+      <div className="flex flex-col h-screen w-full max-w-5xl mx-auto relative overflow-hidden bg-background">
         {/* Fixed Header */}
         {!hideHeader && (
-          // Changed py-6 to pt-6 px-4 to remove bottom padding from header
-          <header className="flex-shrink-0 pt-6 px-4 text-center bg-background relative z-20" id="app-header">
+          // Added style to include safe area inset at the top
+          <header className="flex-shrink-0 pt-6 px-4 text-center bg-background relative z-20" id="app-header" style={{ paddingTop: `calc(1.5rem + env(safe-area-inset-top))` }}>
             <h1 className="text-3xl font-bold">FreshHub</h1>
             <p className="text-gray-500 mt-1">All your shelf life in one spot</p>
           </header>
@@ -84,15 +85,14 @@ const Index = () => {
         {/* Scrollable Content Area with precise clipping boundaries */}
         <main className="flex-1 relative overflow-hidden">
           {/* Top clipping gradient - always visible */}
-          {/* Removed hideHeader && condition */}
           <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
 
           {/* Main scroll container with precise boundaries */}
           <div
             className="h-full px-4 overflow-y-auto overscroll-contain"
             style={{
-              // Adjust paddingTop to find the perfect gap (e.g., '2px', '3px', '4px')
-              paddingTop: hideHeader ? '1rem' : '16px', // <-- Adjust this value (e.g., '2px', '3px')
+              // Adjust paddingTop to find the perfect gap AND include safe area inset when header is hidden
+              paddingTop: hideHeader ? `calc(1rem + env(safe-area-inset-top))` : '7px', // <-- Adjust 7px here
               paddingBottom: `calc(env(safe-area-inset-bottom) + 7rem)`, // Extra space for floating buttons
               scrollPaddingTop: '0.5rem',
               scrollPaddingBottom: '1rem'
