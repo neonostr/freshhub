@@ -17,11 +17,11 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
 }) => {
   const { handedness } = useHandedness();
   
-  // Base position styles
+  // Base position styles with proper PWA support using safe-area-inset
   const baseButtonStyle = {
     position: 'fixed' as const,
     zIndex: 50,
-    bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
+    bottom: `calc(env(safe-area-inset-bottom, 0px) + 1.5rem)`,
     width: '3.5rem',
     height: '3.5rem',
     borderRadius: '50%',
@@ -41,7 +41,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
 
   const settingsButtonStyle = {
     ...baseButtonStyle,
-    [handedness === 'right' ? 'left' : 'right']: '1.5rem', // Opposite side
+    [handedness === 'right' ? 'left' : 'right']: `calc(env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px) + 1.5rem)`, // Opposite side with safe area
   };
 
   const handleFilterClick = () => {
@@ -53,10 +53,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
   };
 
   const handleSettingsClick = () => {
-    const manageButton = document.querySelector('[data-manage-products-trigger]') as HTMLButtonElement;
-    if (manageButton) {
-      manageButton.click();
-    }
+    window.dispatchEvent(new CustomEvent('open-settings-dialog'));
   };
 
   return (
@@ -67,6 +64,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
         size="icon"
         variant="default"
         onClick={handleFilterClick}
+        aria-label="Toggle freshness filter"
       >
         <Filter className="h-6 w-6" />
       </Button>
@@ -77,6 +75,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
         size="icon"
         variant="default"
         onClick={handleCompactModeClick}
+        aria-label={isCompactMode ? "Exit compact mode" : "Enter compact mode"}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
       </Button>
@@ -87,6 +86,8 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
         size="icon"
         variant="outline"
         onClick={handleSettingsClick}
+        aria-label="Open settings"
+        data-settings-button="true"
       >
         <Settings className="h-6 w-6" />
       </Button>
