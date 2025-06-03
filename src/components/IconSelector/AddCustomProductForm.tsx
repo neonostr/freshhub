@@ -86,6 +86,8 @@ const AddCustomProductForm: React.FC<AddCustomProductFormProps> = ({
           <Input
             id="new-product-shelf-life"
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min="1"
             value={shelfLife}
             onChange={(e) => setShelfLife(e.target.value)}
