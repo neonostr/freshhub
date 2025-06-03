@@ -189,14 +189,11 @@ const ItemsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Floating buttons - only show when there are items */}
-      {items.length > 0 && (
-        <FloatingButtons
-          onFilterClick={() => setIsDrawerOpen(true)}
-          onCompactModeClick={() => {}} // This is no longer used since we use events
-          isCompactMode={isCompactMode}
-        />
-      )}
+    <FloatingButtons
+  onFilterClick={() => setIsDrawerOpen(true)}
+  onCompactModeClick={() => {}} // This is no longer used since we use events
+  isCompactMode={isCompactMode}
+/>
 
       {/* Filter drawer */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
