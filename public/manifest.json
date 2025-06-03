@@ -1,8 +1,8 @@
 
 {
-  "name": "Freshify",
-  "short_name": "Freshify",
-  "description": "Know when it's been open too long",
+  "name": "FreshHub",
+  "short_name": "FreshHub",
+  "description": "All your shelf life in one spot",
   "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#ffffff",
