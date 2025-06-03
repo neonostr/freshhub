@@ -82,7 +82,7 @@ const Index = () => {
 
         {/* Scrollable Content Area with precise clipping boundaries */}
         {/* Using flexbox layout and negative margin to position below the header */}
-        <main className="flex-1 relative overflow-hidden" style={{ marginTop: '-50px' }}> {/* Added negative margin */}
+        <main className="flex-1 relative overflow-hidden" style={{ marginTop: '-250px' }}> {/* Added negative margin */}
           {/* Main scroll container with precise boundaries */}
           <div
             className="h-full px-4 overflow-y-auto overscroll-contain"
