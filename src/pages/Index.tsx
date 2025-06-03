@@ -102,7 +102,7 @@ const Index = () => {
           </div>
 
           {/* Bottom clipping zone with gradient */}
-          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background via-background/80 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent z-10 pointer-events-none"></div>
         </main>
 
         <IconManagerDialog />
