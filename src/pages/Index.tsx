@@ -67,11 +67,6 @@ const TutorialWrapper = () => {
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
 
-  // Determine the height of the header when visible to position the main content precisely
-  // You might need to adjust this value based on the actual rendered height of your header.
-  // A value like '65px' is an initial estimate (header padding + content height + 1px gap).
-  const headerHeight = '65px'; // <-- ADJUST THIS VALUE IF NEEDED
-
   return (
     <HeaderVisibilityProvider>
       <div className="flex flex-col h-full w-full max-w-5xl mx-auto relative overflow-hidden">
@@ -84,11 +79,8 @@ const Index = () => {
         )}
 
         {/* Scrollable Content Area with precise clipping boundaries */}
-        {/* Using absolute positioning to place it exactly below the header */}
-        <main
-          className="absolute left-0 right-0 bottom-0 overflow-hidden"
-          style={{ top: !hideHeader ? headerHeight : '0' }} // Position based on header height when visible
-        >
+        {/* Reverted to flexbox layout */}
+        <main className="flex-1 relative overflow-hidden">
           {/* Main scroll container with precise boundaries */}
           <div
             className="h-full px-4 overflow-y-auto overscroll-contain"
