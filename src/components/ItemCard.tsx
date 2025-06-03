@@ -123,9 +123,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
   };
 
   // Calculate delete indicator visibility based on swipe distance
-  // Start showing trash icon very early (just after swipe begins, at 5% of threshold)
+  // Start showing trash icon very early (just after swipe begins, at 15% of threshold)
   const absSwipeOffset = Math.abs(swipeOffset);
-  const deleteIndicatorOpacity = Math.min(absSwipeOffset / (SWIPE_THRESHOLD * 0.05), 1);
+  const deleteIndicatorOpacity = Math.min(absSwipeOffset / (SWIPE_THRESHOLD * 0.15), 1);
 
   // Reset card position when not relevant
   useEffect(() => {
