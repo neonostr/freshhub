@@ -47,7 +47,7 @@ export const HeaderVisibilityProvider: React.FC<{
     setHideHeader
   }}>
       {children}
-    </HeaderVisibilityContext.Provider>;
+    </HeaderVisibilityProvider>;
 };
 export const useHeaderVisibility = (): HeaderVisibilityState => {
   const context = useContext(HeaderVisibilityContext);
@@ -79,7 +79,7 @@ const Index = () => {
         )}
 
         {/* Scrollable Content Area with precise clipping boundaries */}
-        {/* Reverted to flexbox layout */}
+        {/* Using flexbox layout to position below the header */}
         <main className="flex-1 relative overflow-hidden">
           {/* Main scroll container with precise boundaries */}
           <div
