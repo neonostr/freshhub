@@ -8,8 +8,6 @@ import FloatingButtons from '@/components/FloatingButtons';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
-import { Button } from '@/components/ui/button';
-import { Settings } from 'lucide-react';
 import { useHandedness } from '@/context/HandednessContext';
 
 // Create a Zustand store to manage header visibility
@@ -72,19 +70,6 @@ const TutorialWrapper = () => {
 const Index = () => {
   const { items } = useItems();
   const { hideHeader } = useHeaderVisibilityStore();
-  const { handedness } = useHandedness();
-
-  // Settings button positioning - always show, positioned opposite to other buttons
-  const settingsButtonStyle = {
-    position: 'fixed' as const,
-    zIndex: 50,
-    bottom: `calc(env(safe-area-inset-bottom) + 1.5rem)`,
-    [handedness === 'right' ? 'left' : 'right']: '1.5rem', // Opposite side from other buttons
-    width: '3.5rem',
-    height: '3.5rem',
-    borderRadius: '50%',
-    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
-  };
 
   // Filter functionality
   const handleFilterClick = () => {
@@ -119,21 +104,6 @@ const Index = () => {
             <ItemsList />
           </div>
         </main>
-
-        {/* Settings Button - always visible, positioned based on handedness */}
-        <Button
-          style={settingsButtonStyle}
-          size="icon"
-          variant="outline"
-          onClick={() => {
-            const manageButton = document.querySelector('[data-manage-products-trigger]') as HTMLButtonElement;
-            if (manageButton) {
-              manageButton.click();
-            }
-          }}
-        >
-          <Settings className="h-6 w-6" />
-        </Button>
 
         {/* Floating Buttons - only show when there are items */}
         {items.length > 0 && (
