@@ -9,7 +9,6 @@ import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import FloatingButtons from './FloatingButtons';
 import { useHeaderVisibilityStore } from '@/pages/Index';
-
 type SortOption = 'freshness' | 'alphabetical';
 type SortDirection = 'asc' | 'desc';
 
@@ -153,11 +152,11 @@ const ItemsList: React.FC = () => {
 
   return (
     <div>
-      {items.length === 0 ? (
-  <div className="flex flex-col justify-center items-center h-screen text-center">
-    <span className="text-6xl mb-4">🥛</span>
-    <h3 className="text-2xl font-bold mb-2">No items yet</h3>
-    <p className="text-gray-500 text-lg">
+{items.length === 0 ? (
+  <div className="fflex flex-col justify-center items-center h-screen text-center">
+    <div className="text-4xl mb-2">🥛</div>
+    <h3 className="text-xl font-medium mb-2">No items yet</h3>
+    <p className="text-gray-500">
       Add your first item by clicking the + button below
     </p>
   </div>
