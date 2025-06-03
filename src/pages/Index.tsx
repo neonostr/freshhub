@@ -88,7 +88,7 @@ const Index = () => {
             className="h-full px-4 overflow-y-auto overscroll-contain"
             style={{
               // Set paddingTop to 1px when header is visible, 1rem when hidden
-              paddingTop: hideHeader ? '1rem' : '1px',
+              paddingTop: hideHeader ? '1rem' : '3px',
               paddingBottom: `calc(env(safe-area-inset-bottom) + 7rem)`, // Extra space for floating buttons
               scrollPaddingTop: '0.5rem',
               scrollPaddingBottom: '1rem'
