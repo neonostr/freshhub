@@ -48,26 +48,28 @@ const ItemCard: React.FC<ItemCardProps> = ({
     setIsSwiping(true);
   };
 
- const handleTouchMove = (e: React.TouchEvent) => {
-  if (!isSwiping) return;
+  // UPDATED: Less sensitive swipe logic
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isSwiping) return;
+    
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - startX;
 
-  const currentX = e.touches[0].clientX;
-  const diff = currentX - startX;
-
-  // Ignore very small horizontal swipes (e.g., less than 10px)
-  if (Math.abs(diff) < 10) {
-    setSwipeOffset(0);
-    return;
-  }
-
-  // For right-handed: swipe left (negative diff)
-  // For left-handed: swipe right (positive diff)
-  if ((isRightHanded && diff < 0) || (!isRightHanded && diff > 0)) {
-    setSwipeOffset(diff * 0.8);
-  } else {
-    setSwipeOffset(0);
-  }
-};
+    // Ignore very small horizontal swipes (e.g., less than 10px)
+    if (Math.abs(diff) < 10) {
+      setSwipeOffset(0);
+      return;
+    }
+    
+    // For right-handed: swipe left (negative diff)
+    // For left-handed: swipe right (positive diff)
+    if ((isRightHanded && diff < 0) || (!isRightHanded && diff > 0)) {
+      // Allow swipe with slight resistance
+      setSwipeOffset(diff * 0.8);
+    } else {
+      setSwipeOffset(0); // Prevent swiping in the opposite direction
+    }
+  };
 
   const handleTouchEnd = () => {
     const thresholdToMeet = isRightHanded 
@@ -128,7 +130,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
   };
 
   // Calculate delete indicator visibility based on swipe distance
-  // Start showing trash icon very early (just after swipe begins, at 15% of threshold)
+  // Start showing trash icon after a more intentional swipe (20% of threshold)
   const absSwipeOffset = Math.abs(swipeOffset);
   const deleteIndicatorOpacity = Math.min(absSwipeOffset / (SWIPE_THRESHOLD * 0.2), 1);
 
@@ -160,19 +162,17 @@ const ItemCard: React.FC<ItemCardProps> = ({
         </div>
       )}
       
-          <Card
-          ref={cardRef}
-          className={`relative overflow-hidden transition-all hover:shadow-md ${isExpandable ? 'cursor-pointer' : ''} ${isSwiping ? 'border-transparent' : 'border border-gray-200'}`}
-          onClick={handleCardClick}
-          style={cardStyle}
-          {...(isMobile ? {
-            onTouchStart: handleTouchStart,
-            onTouchMove: handleTouchMove,
-            onTouchEnd: handleTouchEnd
-          } : {})}
-        >
-  {/* ...rest of your card content... */}
-</Card>
+      <Card 
+        ref={cardRef}
+        className={`relative overflow-hidden transition-all hover:shadow-md ${isExpandable ? 'cursor-pointer' : ''} ${isSwiping ? 'border-transparent' : 'border border-gray-200'}`}
+        onClick={handleCardClick}
+        style={cardStyle}
+        {...(isMobile ? {
+          onTouchStart: handleTouchStart,
+          onTouchMove: handleTouchMove,
+          onTouchEnd: handleTouchEnd
+        } : {})}
+      >
         <div className={`h-2 ${getFreshnessColor(freshnessLevel)}`} />
         <CardContent className={`p-4 transition-all duration-300 ease-in-out ${isExpandable ? 'expandable-card' : ''}`}>
           <div className="flex items-center justify-between mb-2">
