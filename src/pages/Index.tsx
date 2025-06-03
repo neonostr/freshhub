@@ -69,7 +69,7 @@ const TutorialWrapper = () => {
 
 const Index = () => {
   const { items } = useItems();
-  const { hideHeader } = useHeaderVisibilityStore();
+  const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
 
   // Filter functionality
   const handleFilterClick = () => {
@@ -79,7 +79,7 @@ const Index = () => {
 
   const handleCompactModeClick = () => {
     // Toggle header visibility
-    useHeaderVisibilityStore.getState().setHideHeader(!hideHeader);
+    setHideHeader(!hideHeader);
   };
 
   return (

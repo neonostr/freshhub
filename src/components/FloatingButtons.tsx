@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Filter, Minimize, Maximize } from 'lucide-react';
+import { Filter, Minimize, Maximize, Settings } from 'lucide-react';
 import { useHandedness } from '@/context/HandednessContext';
 
 interface FloatingButtonsProps {
@@ -28,7 +28,12 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
   };
 
-  // Position styles based on handedness - middle and far positions
+  // Position styles based on handedness
+  const addButtonStyle = {
+    ...baseButtonStyle,
+    [handedness === 'right' ? 'right' : 'left']: '1.5rem', // Closest position
+  };
+
   const filterButtonStyle = {
     ...baseButtonStyle,
     [handedness === 'right' ? 'right' : 'left']: '6rem', // Middle position
@@ -39,14 +44,40 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
     [handedness === 'right' ? 'right' : 'left']: '10.5rem', // Far position
   };
 
+  const settingsButtonStyle = {
+    ...baseButtonStyle,
+    [handedness === 'right' ? 'left' : 'right']: '1.5rem', // Opposite side
+  };
+
   const handleFilterClick = () => {
-    // Dispatch an event to toggle the freshness filter in ItemsList
-    window.dispatchEvent(new CustomEvent('toggle-freshness-filter'));
     onFilterClick();
+  };
+
+  const handleSettingsClick = () => {
+    const manageButton = document.querySelector('[data-manage-products-trigger]') as HTMLButtonElement;
+    if (manageButton) {
+      manageButton.click();
+    }
   };
 
   return (
     <>
+      {/* Add Button */}
+      <Button
+        style={addButtonStyle}
+        size="icon"
+        variant="default"
+        onClick={() => {
+          // Trigger the add item dialog
+          const addButton = document.querySelector('[data-add-item-trigger]') as HTMLButtonElement;
+          if (addButton) {
+            addButton.click();
+          }
+        }}
+      >
+        <span className="text-2xl">+</span>
+      </Button>
+
       {/* Filter Button */}
       <Button
         style={filterButtonStyle}
@@ -65,6 +96,16 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({
         onClick={onCompactModeClick}
       >
         {isCompactMode ? <Maximize className="h-6 w-6" /> : <Minimize className="h-6 w-6" />}
+      </Button>
+
+      {/* Settings Button - positioned on opposite side */}
+      <Button
+        style={settingsButtonStyle}
+        size="icon"
+        variant="outline"
+        onClick={handleSettingsClick}
+      >
+        <Settings className="h-6 w-6" />
       </Button>
     </>
   );

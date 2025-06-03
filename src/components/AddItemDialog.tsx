@@ -221,6 +221,7 @@ const AddItemDialog: React.FC = () => {
             style={getAddButtonStyle()}
             size="icon"
             onClick={() => console.log("AddItemDialog: Plus button clicked")}
+            data-add-item-trigger
           >
             <Plus className="h-6 w-6" />
           </Button>
