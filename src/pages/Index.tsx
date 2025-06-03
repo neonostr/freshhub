@@ -42,7 +42,6 @@ export const HeaderVisibilityProvider: React.FC<{
     hideHeader,
     setHideHeader
   } = useHeaderVisibilityStore();
-  // Corrected the return statement to wrap children with the context provider
   return (
     <HeaderVisibilityContext.Provider value={{
       hideHeader,
@@ -82,8 +81,8 @@ const Index = () => {
         )}
 
         {/* Scrollable Content Area with precise clipping boundaries */}
-        {/* Using flexbox layout to position below the header */}
-        <main className="flex-1 relative overflow-hidden">
+        {/* Using flexbox layout and negative margin to position below the header */}
+        <main className="flex-1 relative overflow-hidden" style={{ marginTop: '-1px' }}> {/* Added negative margin */}
           {/* Main scroll container with precise boundaries */}
           <div
             className="h-full px-4 overflow-y-auto overscroll-contain"
