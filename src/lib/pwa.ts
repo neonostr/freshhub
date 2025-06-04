@@ -1,12 +1,17 @@
 
 // PWA utility functions for detection and state management
 
+// Extend Navigator interface to include iOS Safari's standalone property
+interface NavigatorStandalone extends Navigator {
+  standalone?: boolean;
+}
+
 export function isPWAMode(): boolean {
   // Check if the app is running as a PWA
   if (typeof window === 'undefined') return false;
   
   // Check if running in standalone mode (iOS Safari)
-  if (window.navigator.standalone === true) return true;
+  if ((window.navigator as NavigatorStandalone).standalone === true) return true;
   
   // Check if running in standalone mode (Android Chrome, Desktop)
   if (window.matchMedia('(display-mode: standalone)').matches) return true;
