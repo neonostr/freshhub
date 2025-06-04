@@ -118,7 +118,7 @@ const Index = () => {
       bottom: '0rem', // Adjust to match your button height
       height: '5.21rem', // Adjust as needed
       background: 'red', // For testing
-      borderRadius: '1rem',
+      borderRadius: '0rem',
     }}
   ></div>
         </main>
