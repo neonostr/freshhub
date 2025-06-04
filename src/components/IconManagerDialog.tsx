@@ -60,16 +60,20 @@ const IconManagerDialog: React.FC = () => {
 
   // Listen for settings button click events
   React.useEffect(() => {
-    const handleSettingsClick = () => {
-      setIsOpen(true);
-    };
-    
-    window.addEventListener('open-settings-dialog', handleSettingsClick);
-    
-    return () => {
-      window.removeEventListener('open-settings-dialog', handleSettingsClick);
-    };
-  }, []);
+  const handleSettingsClick = (event: Event) => {
+    setIsOpen(true);
+    // If a tab is specified, set it
+    if ((event as CustomEvent).detail && (event as CustomEvent).detail.tab) {
+      setCurrentTab((event as CustomEvent).detail.tab);
+    }
+  };
+
+  window.addEventListener('open-settings-dialog', handleSettingsClick);
+
+  return () => {
+    window.removeEventListener('open-settings-dialog', handleSettingsClick);
+  };
+}, []);
 
   // Get sorted icons list by label
   const sortedIcons = Object.values(allIcons).filter(icon => !isCustomProduct(icon.value)).sort((a, b) => a.label.localeCompare(b.label));
