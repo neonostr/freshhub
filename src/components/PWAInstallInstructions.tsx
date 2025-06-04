@@ -192,7 +192,7 @@ const PWAInstallInstructions: React.FC<PWAInstallInstructionsProps> = ({
                   1
                 </div>
                 <div>
-                  <h4 className="font-medium text-sm">Use Chrome or Edge</h4>
+                  <h4 className="font-medium text-sm">Use Chrome, Edge or Safari</h4>
                   <p className="text-sm text-muted-foreground">
                     These browsers support PWA installation
                   </p>
