@@ -109,12 +109,12 @@ const Landing = () => {
   <span className="text-xs text-muted-foreground">
     vibed by{' '}
     <a
-      href="https://your-url-here.com"
+      href="https://njump.me/npub1lyqkzmcq5cl5l8rcs82gwxsrmu75emnjj84067kuhm48e9w93cns2hhj2g"
       target="_blank"
       rel="noopener noreferrer"
       className="underline hover:text-primary transition-colors"
     >
-      neo
+      neo21
     </a>
   </span>
 </footer>
