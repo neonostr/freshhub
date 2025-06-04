@@ -156,9 +156,9 @@ const ItemsList: React.FC = () => {
       {items.length === 0 ? (
         <div className="flex flex-col justify-center items-center text-center min-h-[50vh] py-12">
           <div className="text-4xl mb-2">🥛</div>
-          <h3 className="text-xl font-medium mb-2">Start your list</h3>
+          <h3 className="text-xl font-medium mb-2">Your list is empty</h3>
           <p className="text-gray-500">
-            Click <b>+</b> to add your first item
+            Click + to add your first item
           </p>
         </div>
       ) : (
