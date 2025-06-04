@@ -1,0 +1,95 @@
+
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import PWAInstallInstructions from '@/components/PWAInstallInstructions';
+import { usePWA } from '@/hooks/usePWA';
+
+const Landing = () => {
+  const [showPWAInstructions, setShowPWAInstructions] = useState(false);
+  const { isInstallable, promptInstall } = usePWA();
+
+  const handleGetStarted = () => {
+    // Navigate to main app
+    window.location.href = '/app';
+  };
+
+  const handleInstallApp = async () => {
+    if (isInstallable) {
+      const success = await promptInstall();
+      if (!success) {
+        setShowPWAInstructions(true);
+      }
+    } else {
+      setShowPWAInstructions(true);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+      <div className="max-w-md w-full space-y-8 text-center">
+        {/* Main Welcome Section */}
+        <div className="space-y-4">
+          <h1 className="text-4xl font-bold text-foreground">
+            Welcome to FreshHub
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            All your shelf life in one spot
+          </p>
+        </div>
+
+        {/* Get Started Button */}
+        <Button 
+          onClick={handleGetStarted}
+          size="lg"
+          className="w-full"
+        >
+          Get Started
+        </Button>
+
+        {/* Get the App Section */}
+        <Card className="p-6 space-y-4">
+          <h2 className="text-xl font-semibold text-foreground">
+            Get the App
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Install FreshHub on your device for the best experience
+          </p>
+          
+          <div className="space-y-3">
+            <Button 
+              onClick={handleInstallApp}
+              variant="outline"
+              className="w-full"
+            >
+              Install App
+            </Button>
+            
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <div className="flex items-start gap-2">
+                <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                <span>Faster loading and offline access</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                <span>Native app-like experience</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                <span>Quick access from your home screen</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* PWA Install Instructions Dialog */}
+      <PWAInstallInstructions
+        isOpen={showPWAInstructions}
+        onClose={() => setShowPWAInstructions(false)}
+      />
+    </div>
+  );
+};
+
+export default Landing;
