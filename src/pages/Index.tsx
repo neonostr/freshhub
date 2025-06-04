@@ -112,19 +112,15 @@ const Index = () => {
           </div>
 
           {/* Bottom clipping zone with gradient */}
-<div
+    <div
   className="fixed left-0 right-0 pointer-events-none"
   style={{
     bottom: 0,
     height: 'calc(5.21rem + env(safe-area-inset-bottom))', // 3rem visible everywhere, plus safe area on iOS
     background: 'red',
-    zIndex: 100,
+    zIndex: 10,
   }}
 ></div>
-
-
-
-          
         </main>
 
         <IconManagerDialog />
