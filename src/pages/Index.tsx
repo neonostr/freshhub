@@ -117,7 +117,7 @@ const Index = () => {
   style={{
     bottom: 0,
     height: 'calc(5.21rem + env(safe-area-inset-bottom))', // 3rem visible everywhere, plus safe area on iOS
-    background: 'linear-gradient(to top, #fff 30%, rgba(255,255,255,0.8) 50%, transparent 70%)',
+    background: 'linear-gradient(to top, #fff 50%, rgba(255,255,255,0.8) 75%, transparent 100%)',
     zIndex: 10,
   }}
 ></div>
