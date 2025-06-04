@@ -183,11 +183,8 @@ const AddItemDialog: React.FC = () => {
     setOpen(false);
     // Trigger the manage products dialog to open
     setTimeout(() => {
-      const manageButton = document.querySelector('[data-manage-products-trigger]') as HTMLButtonElement;
-      if (manageButton) {
-        manageButton.click();
-      }
-    }, 100);
+  window.dispatchEvent(new CustomEvent('open-settings-dialog', { detail: { tab: 'selection' } }));
+}, 100);
   };
 
   // Debug logging for render
