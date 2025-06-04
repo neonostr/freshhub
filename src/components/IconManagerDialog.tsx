@@ -19,6 +19,9 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useSubscription } from '@/context/SubscriptionContext';
 import PremiumUpgradeDialog from './PremiumUpgradeDialog';
+import PWAInstallInstructions from './PWAInstallInstructions';
+import { usePWA } from '@/hooks/usePWA';
+import { Card } from '@/components/ui/card';
 
 const IconManagerDialog: React.FC = () => {
   const { toast } = useToast();
@@ -42,6 +45,9 @@ const IconManagerDialog: React.FC = () => {
   // Get header visibility state - directly from the store
   const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
 
+  // PWA hook for install functionality
+  const { isInstallable, promptInstall, isRunningAsPwa } = usePWA();
+
   // States for UI management
   const [editingProduct, setEditingProduct] = useState<EditableProductProps | null>(null);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
@@ -50,6 +56,7 @@ const IconManagerDialog: React.FC = () => {
   const [currentTab, setCurrentTab] = useState('selection');
   const [premiumDialogOpen, setPremiumDialogOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [showPWAInstructions, setShowPWAInstructions] = useState(false);
 
   // Listen for settings button click events
   React.useEffect(() => {
@@ -158,7 +165,7 @@ const IconManagerDialog: React.FC = () => {
     }
   };
 
-  // Handle saving edited product
+  // Handle saving edited product changes
   const handleSaveProductChanges = () => {
     if (editingProduct) {
       // First update the name if it changed
@@ -204,11 +211,24 @@ const IconManagerDialog: React.FC = () => {
     setIsAddingProduct(true);
   };
 
+  // Handle install app button click
+  const handleInstallApp = async () => {
+    if (isInstallable) {
+      const success = await promptInstall();
+      if (!success) {
+        setShowPWAInstructions(true);
+      }
+    } else {
+      setShowPWAInstructions(true);
+    }
+  };
+
   // Extract basic product types from ALL_ICONS for custom products
   const foodProductTypes = Object.values(ALL_ICONS).map(product => ({
     name: product.label,
     value: product.value
   })).slice(0, 20);
+  
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -222,11 +242,12 @@ const IconManagerDialog: React.FC = () => {
           
           <div className="flex flex-col h-[500px]">
             <Tabs defaultValue="selection" className="w-full h-full flex flex-col" value={currentTab} onValueChange={setCurrentTab}>
-              <TabsList className="grid grid-cols-4">
+              <TabsList className="grid grid-cols-5">
                 <TabsTrigger value="selection">Products</TabsTrigger>
                 <TabsTrigger value="shelfLife">Shelf Life</TabsTrigger>
                 <TabsTrigger value="custom">Custom</TabsTrigger>
                 <TabsTrigger value="settings">Settings</TabsTrigger>
+                <TabsTrigger value="about">About</TabsTrigger>
               </TabsList>
               
               <div className="flex-1 overflow-hidden mt-4">
@@ -338,55 +359,10 @@ const IconManagerDialog: React.FC = () => {
                   </div>
                 </TabsContent>
                 
-                {/* Settings tab with updated About section */}
+                {/* Settings tab - now only contains preferences */}
                 <TabsContent value="settings" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
                   <div className="space-y-6 overflow-y-auto p-1">
-                    
                     <div className="space-y-3">
-                      <h3 className="text-lg font-medium">About Fresh Tracker</h3>
-                      <div className="bg-muted/50 p-4 rounded-md">
-                        <p className="text-sm mb-2">
-                          Fresh Tracker helps you monitor how long your perishable items have been open.
-                        </p>
-                        <ul className="text-sm space-y-2 list-disc pl-5">
-                          <li><strong>100% Private:</strong> Your data never leaves your device</li>
-                          <li><strong>Works Offline:</strong> No internet connection required</li>
-                          <li><strong>No Tracking:</strong> No analytics or data collection</li>
-                          <li><strong>Premium Features:</strong> Unlock custom products and track unlimited items with a premium subscription</li>
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <h3 className="text-lg font-medium">Understanding Freshness Labels</h3>
-                      <div className="bg-muted/50 p-4 rounded-md">
-                        <p className="text-sm mb-3">
-                          Fresh Tracker shows the number of days until an item expires:
-                        </p>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-green text-black w-16 text-center">3+ days</span>
-                            <p className="text-sm">Item has 3 or more days until expiry</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-yellow text-black w-16 text-center">2-3 days</span>
-                            <p className="text-sm">Item has 2-3 days until expiry</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-orange text-black w-16 text-center">0-1 days</span>
-                            <p className="text-sm">Item has 0-1 days until expiry</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-red text-white w-16 text-center">Expired</span>
-                            <p className="text-sm">Item has expired (0 or negative days left)</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="space-y-3 pt-2">
                       <h3 className="text-lg font-medium">Preferences</h3>
                       <div className="space-y-4">
                         <div>
@@ -429,6 +405,91 @@ const IconManagerDialog: React.FC = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </TabsContent>
+                
+                {/* About tab - contains freshness labels, about section, install app, and version */}
+                <TabsContent value="about" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
+                  <div className="space-y-6 overflow-y-auto p-1">
+                    
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-medium">Understanding Freshness Labels</h3>
+                      <div className="bg-muted/50 p-4 rounded-md">
+                        <p className="text-sm mb-3">
+                          Fresh Tracker shows the number of days until an item expires:
+                        </p>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-green text-black w-16 text-center">3+ days</span>
+                            <p className="text-sm">Item has 3 or more days until expiry</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-yellow text-black w-16 text-center">2-3 days</span>
+                            <p className="text-sm">Item has 2-3 days until expiry</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-orange text-black w-16 text-center">0-1 days</span>
+                            <p className="text-sm">Item has 0-1 days until expiry</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-fresh-red text-white w-16 text-center">Expired</span>
+                            <p className="text-sm">Item has expired (0 or negative days left)</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-medium">About Fresh Tracker</h3>
+                      <div className="bg-muted/50 p-4 rounded-md">
+                        <p className="text-sm mb-2">
+                          Fresh Tracker helps you monitor how long your perishable items have been open.
+                        </p>
+                        <ul className="text-sm space-y-2 list-disc pl-5">
+                          <li><strong>100% Private:</strong> Your data never leaves your device</li>
+                          <li><strong>Works Offline:</strong> No internet connection required</li>
+                          <li><strong>No Tracking:</strong> No analytics or data collection</li>
+                          <li><strong>Premium Features:</strong> Unlock custom products and track unlimited items with a premium subscription</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Install App Section - only show if not running as PWA */}
+                    {!isRunningAsPwa && (
+                      <Card className="p-6 space-y-4">
+                        <h2 className="text-xl font-semibold text-foreground">
+                          Get the App
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                          Install FreshHub on your device for the best experience
+                        </p>
+                        
+                        <div className="space-y-3">
+                          <Button 
+                            onClick={handleInstallApp}
+                            variant="outline"
+                            className="w-full"
+                          >
+                            Install App
+                          </Button>
+                          
+                          <div className="space-y-2 text-xs text-muted-foreground">
+                            <div className="flex items-start gap-2">
+                              <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                              <span>Faster loading and offline access</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                              <span>Native app-like experience</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                              <span>Quick access from your home screen</span>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    )}
                     
                     {/* Add version display at the bottom */}
                     <div className="pt-4 text-center">
@@ -535,13 +596,7 @@ const IconManagerDialog: React.FC = () => {
             </div>
           )}
           
-          {currentTab === 'custom' && !isAddingProduct && !editingProduct && (
-            <Button type="button" className="mt-4 w-full" onClick={() => setIsOpen(false)}>
-              <Check className="mr-1 h-4 w-4" /> Done
-            </Button>
-          )}
-          
-          {currentTab === 'settings' && (
+          {(currentTab === 'custom' && !isAddingProduct && !editingProduct) || currentTab === 'settings' || currentTab === 'about' && (
             <Button type="button" className="mt-4 w-full" onClick={() => setIsOpen(false)}>
               <Check className="mr-1 h-4 w-4" /> Done
             </Button>
@@ -572,6 +627,12 @@ const IconManagerDialog: React.FC = () => {
       
       {/* Premium upgrade dialog */}
       <PremiumUpgradeDialog open={premiumDialogOpen} onOpenChange={setPremiumDialogOpen} />
+      
+      {/* PWA Install Instructions Dialog */}
+      <PWAInstallInstructions
+        isOpen={showPWAInstructions}
+        onClose={() => setShowPWAInstructions(false)}
+      />
     </>
   );
 };
