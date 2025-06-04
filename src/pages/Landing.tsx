@@ -46,7 +46,7 @@ const Landing = () => {
         {/* Main Welcome Section */}
         <div className="space-y-4">
           <h1 className="text-4xl font-bold text-foreground">
-            Welcome to <span className="underline">FreshHub</span>
+            Welcome to <span className="underline text-[#49DE80]">FreshHub</span>
           </h1>
           <p className="text-lg text-muted-foreground">
             All your shelf life in one spot
