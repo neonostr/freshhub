@@ -54,6 +54,7 @@ export function detectPlatform(): Platform {
 }
 
 const INSTALL_BANNER_DISMISSED_KEY = 'pwa-install-banner-dismissed';
+const CAME_FROM_LANDING_KEY = 'came-from-landing';
 
 export function dismissInstallBanner(): void {
   if (typeof window !== 'undefined') {
@@ -67,14 +68,30 @@ export function isInstallBannerDismissed(): boolean {
   return localStorage.getItem(INSTALL_BANNER_DISMISSED_KEY) === 'true';
 }
 
-export function shouldShowInstallBanner(isInstallable: boolean): boolean {
+export function setCameFromLanding(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(CAME_FROM_LANDING_KEY, 'true');
+  }
+}
+
+export function hasCameFromLanding(): boolean {
+  if (typeof window === 'undefined') return false;
+  
+  return localStorage.getItem(CAME_FROM_LANDING_KEY) === 'true';
+}
+
+export function shouldShowInstallBanner(isInstallable: boolean, hasItems: boolean): boolean {
   // Show banner only if:
   // 1. NOT running as PWA
   // 2. NOT dismissed by user
-  // 3. AND (is mobile device OR is installable via browser prompt)
+  // 3. User came from landing page (clicked Get Started)
+  // 4. User has at least one item (started using the app)
+  // 5. AND (is mobile device OR is installable via browser prompt)
   return (
     !isPWAMode() &&
     !isInstallBannerDismissed() &&
+    hasCameFromLanding() &&
+    hasItems &&
     (isMobileDevice() || isInstallable)
   );
 }

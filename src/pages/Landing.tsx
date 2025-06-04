@@ -1,15 +1,25 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import { usePWA } from '@/hooks/usePWA';
+import { setCameFromLanding } from '@/lib/pwa';
 
 const Landing = () => {
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
-  const { isInstallable, promptInstall } = usePWA();
+  const { isInstallable, promptInstall, isRunningAsPwa } = usePWA();
+
+  // Redirect to app if already running as PWA
+  useEffect(() => {
+    if (isRunningAsPwa) {
+      window.location.href = '/app';
+    }
+  }, [isRunningAsPwa]);
 
   const handleGetStarted = () => {
+    // Set flag that user came from landing page
+    setCameFromLanding();
     // Navigate to main app
     window.location.href = '/app';
   };
@@ -24,6 +34,11 @@ const Landing = () => {
       setShowPWAInstructions(true);
     }
   };
+
+  // Don't render anything if running as PWA (will redirect)
+  if (isRunningAsPwa) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">

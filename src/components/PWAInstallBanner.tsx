@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { usePWA } from '@/hooks/usePWA';
+import { useItems } from '@/context/ItemsContext';
 
 interface PWAInstallBannerProps {
   onLearnHow?: () => void;
@@ -11,8 +12,10 @@ interface PWAInstallBannerProps {
 
 const PWAInstallBanner: React.FC<PWAInstallBannerProps> = ({ onLearnHow }) => {
   const { showInstallBanner, isInstallable, promptInstall, dismissBanner } = usePWA();
+  const { items } = useItems();
 
-  if (!showInstallBanner) {
+  // Only show banner if user has at least one item (has started using the app)
+  if (!showInstallBanner || items.length === 0) {
     return null;
   }
 
@@ -30,7 +33,9 @@ const PWAInstallBanner: React.FC<PWAInstallBannerProps> = ({ onLearnHow }) => {
   };
 
   return (
-    <Card className="fixed bottom-4 left-4 right-4 z-50 border bg-card shadow-lg">
+    <Card className="fixed left-4 right-4 z-40 border bg-card shadow-lg" style={{
+      bottom: `calc(env(safe-area-inset-bottom, 0px) + 6rem)` // Position above floating buttons
+    }}>
       <div className="flex items-center justify-between p-4">
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-sm text-card-foreground">
