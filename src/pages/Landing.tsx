@@ -105,7 +105,7 @@ const Landing = () => {
         onClose={() => setShowPWAInstructions(false)}
       />
 
- <footer className="w-full flex justify-center pb-4">
+ <footer className="fixed bottom-2 left-0 w-full flex justify-center pointer-events-none z-50">
   <span className="text-xs text-muted-foreground">
     vibed by{' '}
     <a
