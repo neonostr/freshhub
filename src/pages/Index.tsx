@@ -3,6 +3,8 @@ import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
 import IconManagerDialog from '@/components/IconManagerDialog';
 import SwipeTutorial from '@/components/SwipeTutorial';
+import PWAInstallBanner from '@/components/PWAInstallBanner';
+import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
@@ -68,6 +70,7 @@ const TutorialWrapper = () => {
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
+  const [showPWAInstructions, setShowPWAInstructions] = useState(false);
 
   return (
     <HeaderVisibilityProvider>
@@ -91,9 +94,9 @@ const Index = () => {
           <div
             className="h-full px-4 overflow-y-auto overscroll-contain"
             style={{
-              // Adjust paddingTop to find the perfect gap AND include safe area inset when header is hidden
-              paddingTop: hideHeader ? `calc(1rem + env(safe-area-inset-top))` : '7px', // <-- Adjust 7px here
-              paddingBottom: `calc(env(safe-area-inset-bottom) + 7rem)`, // Extra space for floating buttons
+              // Minimal gap: 1px below header text, end 1px above floating buttons
+              paddingTop: hideHeader ? `calc(1rem + env(safe-area-inset-top))` : '1px',
+              paddingBottom: `calc(env(safe-area-inset-bottom) + 5rem)`, // Space for floating buttons + PWA banner
               scrollPaddingTop: '0.5rem',
               scrollPaddingBottom: '1rem'
             }}
@@ -108,6 +111,17 @@ const Index = () => {
         <IconManagerDialog />
         <AddItemDialog />
         <TutorialWrapper />
+        
+        {/* PWA Install Banner */}
+        <PWAInstallBanner 
+          onLearnHow={() => setShowPWAInstructions(true)}
+        />
+        
+        {/* PWA Install Instructions Dialog */}
+        <PWAInstallInstructions
+          isOpen={showPWAInstructions}
+          onClose={() => setShowPWAInstructions(false)}
+        />
       </div>
     </HeaderVisibilityProvider>
   );
