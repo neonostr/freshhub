@@ -3,7 +3,7 @@
   "name": "FreshHub",
   "short_name": "FreshHub",
   "description": "All your shelf life in one spot",
-  "start_url": "/?source=pwa",
+  "start_url": "/app",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
