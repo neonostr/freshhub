@@ -88,7 +88,7 @@ const Index = () => {
         {/* Scrollable Content Area with precise clipping boundaries */}
         <main className="flex-1 relative overflow-hidden">
           {/* Top clipping gradient - always visible */}
-          <div className="absolute top-4 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
 
           {/* Main scroll container with precise boundaries */}
           <div
