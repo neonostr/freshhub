@@ -105,7 +105,7 @@ const Index = () => {
               paddingTop: hideHeader ? `calc(1rem + env(safe-area-inset-top))` : '1px',
               paddingBottom: `calc(env(safe-area-inset-bottom) + 6rem)`, // Space for floating buttons + PWA banner
               scrollPaddingTop: '0.5rem',
-              scrollPaddingBottom: '1rem'
+              scrollPaddingBottom: '2rem'
             }}
           >
             <ItemsList />
@@ -117,7 +117,7 @@ const Index = () => {
   style={{
     bottom: 0,
     height: 'calc(5.21rem + env(safe-area-inset-bottom))', // 3rem visible everywhere, plus safe area on iOS
-    background: 'linear-gradient(to top, #fff 50%, rgba(255,255,255,0.8) 75%, transparent 100%)',
+    background: 'linear-gradient(to top, #fff, rgba(255,255,255,0.8), transparent)',
     zIndex: 10,
   }}
 ></div>
