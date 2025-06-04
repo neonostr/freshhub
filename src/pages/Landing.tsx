@@ -106,8 +106,18 @@ const Landing = () => {
       />
 
  <footer className="w-full flex justify-center pb-4">
-        <span className="text-xs text-muted-foreground">vibed by neo</span>
-      </footer>
+  <span className="text-xs text-muted-foreground">
+    vibed by{' '}
+    <a
+      href="https://your-url-here.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline hover:text-primary transition-colors"
+    >
+      neo
+    </a>
+  </span>
+</footer>
         
     </div>
   );
