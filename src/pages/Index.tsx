@@ -112,7 +112,10 @@ const Index = () => {
           </div>
 
           {/* Bottom clipping zone with gradient */}
-          <div className="absolute bottom-0 left-0 right-0 h-36 bg-red-500 z-100"></div>
+         <div
+  className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background via-background/80 to-transparent z-100 pointer-events-none"
+  style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+></div>
         </main>
 
         <IconManagerDialog />
