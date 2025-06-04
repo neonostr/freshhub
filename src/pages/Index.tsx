@@ -116,7 +116,7 @@ const Index = () => {
     className="absolute left-0 right-0 z-10 pointer-events-none"
     style={{
       bottom: '0rem', // Adjust to match your button height
-      height: '5rem', // Adjust as needed
+      height: '5.21rem', // Adjust as needed
       background: 'red', // For testing
       borderRadius: '1rem',
     }}
