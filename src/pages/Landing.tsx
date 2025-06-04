@@ -109,13 +109,13 @@ const Landing = () => {
   <span className="text-xs text-muted-foreground">
     vibed by{' '}
     <a
-      href="https://njump.me/npub1lyqkzmcq5cl5l8rcs82gwxsrmu75emnjj84067kuhm48e9w93cns2hhj2g"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="hover:underline focus:underline hover:text-primary transition-colors"
+  href="https://njump.me/npub1lyqkzmcq5cl5l8rcs82gwxsrmu75emnjj84067kuhm48e9w93cns2hhj2g"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="hover:underline focus:underline hover:text-primary transition-colors"
 >
-      neo21
-    </a>
+  neo21
+</a>
   </span>
 </footer>
         
