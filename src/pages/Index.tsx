@@ -113,15 +113,14 @@ const Index = () => {
 
           {/* Bottom clipping zone with gradient */}
       <div
-    className="absolute left-0 right-0 pointer-events-none"
+    className="fixed left-0 right-0 z-10 pointer-events-none"
     style={{
       bottom: '0rem', // Adjust to match your button height
       height: '5.21rem', // Adjust as needed
       background: 'red', // For testing
-      zIndex: 9999, // <--- add this
+      borderRadius: '0rem',
     }}
   ></div>
-          
         </main>
 
         <IconManagerDialog />
