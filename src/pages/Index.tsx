@@ -92,7 +92,7 @@ const Index = () => {
           
           <div
   className="absolute left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"
-  style={{ top: '-0.25rem' }} // or any negative value you want
+  style={{ top: '-0.5rem' }} // or any negative value you want
 ></div>
           
           
