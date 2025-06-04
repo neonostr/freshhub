@@ -105,7 +105,7 @@ const Index = () => {
               paddingTop: hideHeader ? `calc(1rem + env(safe-area-inset-top))` : '1px',
               paddingBottom: `calc(env(safe-area-inset-bottom) + 6rem)`, // Space for floating buttons + PWA banner
               scrollPaddingTop: '0.5rem',
-              scrollPaddingBottom: '2rem'
+              scrollPaddingBottom: '6rem'
             }}
           >
             <ItemsList />
