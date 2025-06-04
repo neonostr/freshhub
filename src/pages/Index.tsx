@@ -103,9 +103,9 @@ const Index = () => {
             style={{
               // Minimal gap: 1px below header text, end 1px above floating buttons
               paddingTop: hideHeader ? `calc(1rem + env(safe-area-inset-top))` : '1px',
-              paddingBottom: `calc(env(safe-area-inset-bottom) + 6rem)`, // Space for floating buttons + PWA banner
+              paddingBottom: `calc(env(safe-area-inset-bottom) + 8rem)`, // Space for floating buttons + PWA banner
               scrollPaddingTop: '0.5rem',
-              scrollPaddingBottom: '6rem'
+              scrollPaddingBottom: '1rem'
             }}
           >
             <ItemsList />
