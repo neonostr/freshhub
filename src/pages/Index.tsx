@@ -79,7 +79,7 @@ const Index = () => {
         {/* Fixed Header */}
         {!hideHeader && (
           // Added style to include safe area inset at the top
-          <header className="flex-shrink-0 pt-6 px-4 text-center bg-background relative z-20 mb-6" id="app-header" style={{ paddingTop: `calc(1rem + env(safe-area-inset-top))` }}>
+          <header className="flex-shrink-0 pt-6 px-4 text-center bg-background relative z-20 mb-2" id="app-header" style={{ paddingTop: `calc(1rem + env(safe-area-inset-top))` }}>
             <h1 className="text-3xl font-bold"><span className="underline decoration-[#49DE80]">FreshHub</span></h1>
             <p className="text-gray-500 mt-1">All your shelf life in one spot</p>
           </header>
