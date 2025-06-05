@@ -90,6 +90,8 @@ export function shouldShowInstallBanner(isInstallable: boolean, hasItems: boolea
   return (
     !isPWAMode() &&
     !isInstallBannerDismissed() &&
-    hasItems
+    hasCameFromLanding() &&
+    hasItems &&
+    (isMobileDevice() || isInstallable)
   );
 }
