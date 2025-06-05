@@ -4,7 +4,6 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { usePWA } from '@/hooks/usePWA';
-import { useItems } from '@/context/ItemsContext';
 
 interface PWAInstallBannerProps {
   onLearnHow?: () => void;
@@ -12,10 +11,10 @@ interface PWAInstallBannerProps {
 
 const PWAInstallBanner: React.FC<PWAInstallBannerProps> = ({ onLearnHow }) => {
   const { showInstallBanner, isInstallable, promptInstall, dismissBanner } = usePWA();
-  const { items } = useItems();
 
-  // Only show banner if user has at least one item (has started using the app)
-  if (!showInstallBanner || items.length === 0) {
+  console.log('PWAInstallBanner render - showInstallBanner:', showInstallBanner);
+
+  if (!showInstallBanner) {
     return null;
   }
 

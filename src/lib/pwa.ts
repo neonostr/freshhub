@@ -1,4 +1,3 @@
-
 // PWA utility functions for detection and state management
 
 // Extend Navigator interface to include iOS Safari's standalone property
@@ -53,45 +52,73 @@ export function detectPlatform(): Platform {
   }
 }
 
-const INSTALL_BANNER_DISMISSED_KEY = 'pwa-install-banner-dismissed';
-const CAME_FROM_LANDING_KEY = 'came-from-landing';
+const INSTALL_BANNER_SHOWN_COUNT_KEY = 'pwa-install-banner-shown-count';
+const INSTALL_BANNER_SESSION_SHOWN_KEY = 'pwa-install-banner-session-shown';
 
-export function dismissInstallBanner(): void {
+export function getInstallBannerShownCount(): number {
+  if (typeof window === 'undefined') return 0;
+  
+  const count = localStorage.getItem(INSTALL_BANNER_SHOWN_COUNT_KEY);
+  return count ? parseInt(count, 10) : 0;
+}
+
+export function incrementInstallBannerShownCount(): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem(INSTALL_BANNER_DISMISSED_KEY, 'true');
+    const currentCount = getInstallBannerShownCount();
+    localStorage.setItem(INSTALL_BANNER_SHOWN_COUNT_KEY, (currentCount + 1).toString());
   }
 }
 
-export function isInstallBannerDismissed(): boolean {
+export function hasShownBannerInCurrentSession(): boolean {
   if (typeof window === 'undefined') return false;
   
-  return localStorage.getItem(INSTALL_BANNER_DISMISSED_KEY) === 'true';
+  return sessionStorage.getItem(INSTALL_BANNER_SESSION_SHOWN_KEY) === 'true';
 }
 
+export function markBannerShownInCurrentSession(): void {
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem(INSTALL_BANNER_SESSION_SHOWN_KEY, 'true');
+  }
+}
+
+export function dismissInstallBanner(): void {
+  if (typeof window !== 'undefined') {
+    incrementInstallBannerShownCount();
+    markBannerShownInCurrentSession();
+  }
+}
+
+export function shouldShowInstallBanner(hasItems: boolean): boolean {
+  // Don't show if running as PWA
+  if (isPWAMode()) return false;
+  
+  // Don't show if user hasn't added any items yet
+  if (!hasItems) return false;
+  
+  // Don't show if already shown 3 times
+  const shownCount = getInstallBannerShownCount();
+  if (shownCount >= 3) return false;
+  
+  // Don't show if already shown in current session
+  if (hasShownBannerInCurrentSession()) return false;
+  
+  return true;
+}
+
+// Legacy functions - keeping for backward compatibility
 export function setCameFromLanding(): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem(CAME_FROM_LANDING_KEY, 'true');
+    localStorage.setItem('came-from-landing', 'true');
   }
 }
 
 export function hasCameFromLanding(): boolean {
   if (typeof window === 'undefined') return false;
   
-  return localStorage.getItem(CAME_FROM_LANDING_KEY) === 'true';
+  return localStorage.getItem('came-from-landing') === 'true';
 }
 
-export function shouldShowInstallBanner(isInstallable: boolean, hasItems: boolean): boolean {
-  // Show banner only if:
-  // 1. NOT running as PWA
-  // 2. NOT dismissed by user
-  // 3. User came from landing page (clicked Get Started)
-  // 4. User has at least one item (started using the app)
-  // 5. AND (is mobile device OR is installable via browser prompt)
-  return (
-    !isPWAMode() &&
-    !isInstallBannerDismissed() &&
-    hasCameFromLanding() &&
-    hasItems &&
-    (isMobileDevice() || isInstallable)
-  );
+export function isInstallBannerDismissed(): boolean {
+  // Legacy function - now replaced by count-based system
+  return getInstallBannerShownCount() >= 3;
 }
