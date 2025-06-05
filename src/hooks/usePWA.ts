@@ -50,9 +50,7 @@ export function usePWA(): UsePWAReturn {
 
     // Listen for items changes to update hasItems state
     const updateItemsState = () => {
-      // Use the correct localStorage key that matches what ItemsContext uses
-      const items = JSON.parse(localStorage.getItem('freshItems') || '[]');
-      console.log('usePWA: updateItemsState - found', items.length, 'items');
+      const items = JSON.parse(localStorage.getItem('freshness-items') || '[]');
       setHasItems(items.length > 0);
     };
 
@@ -79,7 +77,7 @@ export function usePWA(): UsePWAReturn {
   useEffect(() => {
     // Update banner visibility based on new logic
     const shouldShow = shouldShowInstallBanner(hasItems);
-    console.log('usePWA: shouldShowInstallBanner:', shouldShow, 'hasItems:', hasItems, 'isPWA:', isPWAMode());
+    console.log('shouldShowInstallBanner:', shouldShow, 'hasItems:', hasItems);
     setShowInstallBanner(shouldShow);
     
     // Mark banner as shown in current session when it becomes visible

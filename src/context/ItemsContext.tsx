@@ -50,9 +50,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       }
       
       setIsInitialized(true);
-      
-      // Dispatch event to notify other components about items
-      window.dispatchEvent(new CustomEvent('items-updated'));
     } catch (error) {
       console.error("ItemsContext: Error initializing:", error);
     }
@@ -61,13 +58,10 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   // Save items to storage when they change
   useEffect(() => {
     // Only save if we've already initialized (to prevent wiping storage on first render)
-    if (isInitialized && items.length >= 0) {
+    if (isInitialized && items.length > 0) {
       try {
         console.log(`ItemsContext: Saving ${items.length} items to local storage`);
         saveItems(items);
-        
-        // Dispatch event to notify other components about items update
-        window.dispatchEvent(new CustomEvent('items-updated'));
         
         // For first time users, show tutorial when they add their first item
         if (isFirstTimeUser && items.length === 1 && window.innerWidth <= 768) {
@@ -239,9 +233,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
           try {
             saveItems(newItems);
             console.log(`ItemsContext: Saved ${newItems.length} items to storage`);
-            
-            // Dispatch event to notify other components about items update
-            window.dispatchEvent(new CustomEvent('items-updated'));
           } catch (saveError) {
             console.error("ItemsContext: Error saving items after add:", saveError);
             addingItemRef.current = false;
@@ -278,9 +269,6 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
           try {
             saveItems(filtered);
             console.log(`ItemsContext: Saved ${filtered.length} items after deletion`);
-            
-            // Dispatch event to notify other components about items update
-            window.dispatchEvent(new CustomEvent('items-updated'));
           } catch (saveError) {
             console.error("ItemsContext: Error saving items after delete:", saveError);
           }

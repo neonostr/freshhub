@@ -89,43 +89,19 @@ export function dismissInstallBanner(): void {
 }
 
 export function shouldShowInstallBanner(hasItems: boolean): boolean {
-  const isRunningAsPwa = isPWAMode();
-  const shownCount = getInstallBannerShownCount();
-  const shownInSession = hasShownBannerInCurrentSession();
-  
-  console.log('shouldShowInstallBanner check:', {
-    hasItems,
-    isRunningAsPwa,
-    shownCount,
-    shownInSession,
-    maxReached: shownCount >= 3
-  });
-  
   // Don't show if running as PWA
-  if (isRunningAsPwa) {
-    console.log('shouldShowInstallBanner: false - running as PWA');
-    return false;
-  }
+  if (isPWAMode()) return false;
   
   // Don't show if user hasn't added any items yet
-  if (!hasItems) {
-    console.log('shouldShowInstallBanner: false - no items');
-    return false;
-  }
+  if (!hasItems) return false;
   
   // Don't show if already shown 3 times
-  if (shownCount >= 3) {
-    console.log('shouldShowInstallBanner: false - max count reached');
-    return false;
-  }
+  const shownCount = getInstallBannerShownCount();
+  if (shownCount >= 3) return false;
   
   // Don't show if already shown in current session
-  if (shownInSession) {
-    console.log('shouldShowInstallBanner: false - already shown in session');
-    return false;
-  }
+  if (hasShownBannerInCurrentSession()) return false;
   
-  console.log('shouldShowInstallBanner: true - all conditions met');
   return true;
 }
 

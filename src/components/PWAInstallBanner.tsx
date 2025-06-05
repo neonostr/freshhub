@@ -32,7 +32,7 @@ const PWAInstallBanner: React.FC<PWAInstallBannerProps> = ({ onLearnHow }) => {
   };
 
   return (
-    <Card className="fixed left-4 right-4 z-99999 border bg-card shadow-lg" style={{
+    <Card className="fixed left-4 right-4 z-40 border bg-card shadow-lg" style={{
       bottom: `calc(env(safe-area-inset-bottom, 0px) + 6rem)` // Position above floating buttons
     }}>
       <div className="flex items-center justify-between p-4">
