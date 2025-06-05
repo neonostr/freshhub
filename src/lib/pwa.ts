@@ -84,12 +84,12 @@ export function shouldShowInstallBanner(isInstallable: boolean, hasItems: boolea
   // Show banner only if:
   // 1. NOT running as PWA
   // 2. NOT dismissed by user
-  // 3. User has at least one item (started using the app)
-  // 4. AND (is mobile device OR is installable via browser prompt)
+  // 3. User came from landing page (clicked Get Started)
+  // 4. User has at least one item (started using the app)
+  // 5. AND (is mobile device OR is installable via browser prompt)
   return (
     !isPWAMode() &&
     !isInstallBannerDismissed() &&
     hasItems &&
-    //(isMobileDevice() || isInstallable)
   );
 }
