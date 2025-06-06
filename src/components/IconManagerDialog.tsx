@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -479,23 +480,24 @@ const IconManagerDialog: React.FC = () => {
                           </Button>
                           
                           <div className="space-y-2 text-xs text-muted-foreground">
-  <div className="flex items-start gap-2">
-    <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
-    <span>Persistent data storage</span>
-  </div>
-  <div className="flex items-start gap-2">
-    <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
-    <span>Native app-like experience</span>
-  </div>
-  <div className="flex items-start gap-2">
-    <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
-    <span>Faster loading and offline access</span>
-  </div>
-  <div className="flex items-start gap-2">
-    <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
-    <span>Quick access from your home screen</span>
-  </div>
-</div>
+                            <div className="flex items-start gap-2">
+                              <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                              <span>Persistent data storage</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                              <span>Native app-like experience</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                              <span>Faster loading and offline access</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                              <span>Quick access from your home screen</span>
+                            </div>
+                          </div>
+                        </div>
                       </Card>
                     )}
                     
@@ -503,108 +505,112 @@ const IconManagerDialog: React.FC = () => {
                     <div className="pt-4 text-center">
                       <p className="text-xs text-muted-foreground">Version 1.0.0</p>
                     </div>
+                  </div>
                 </TabsContent>
-          
-          {/* Action buttons for different states */}
-          {currentTab === 'selection' && (
-            <Button type="button" className="mt-4 w-full" onClick={() => setIsOpen(false)}>
-              <Check className="mr-1 h-4 w-4" /> Done
-            </Button>
-          )}
-          
-          {currentTab === 'shelfLife' && (
-            <Button type="button" className="mt-4 w-full" onClick={() => setIsOpen(false)}>
-              <Check className="mr-1 h-4 w-4" /> Done
-            </Button>
-          )}
-          
-          {currentTab === 'custom' && isAddingProduct && (
-            <div className="flex gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsAddingProduct(false)} className="w-1/3">
-                <X className="mr-1 h-4 w-4" /> Cancel
-              </Button>
-              <Button onClick={() => {
-                const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
-                const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
-                if (nameInput && shelfLifeInput) {
-                  const name = nameInput.value;
-                  const shelfLife = parseInt(shelfLifeInput.value, 10);
-                  if (!name.trim()) {
-                    toast({
-                      title: "Name required",
-                      description: "Please provide a name for the product",
-                      variant: "destructive"
-                    });
-                    return;
-                  }
-                  if (isNaN(shelfLife) || shelfLife <= 0) {
-                    toast({
-                      title: "Invalid shelf life",
-                      description: "Please provide a valid shelf life (days)",
-                      variant: "destructive"
-                    });
-                    return;
-                  }
-                  const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
-                  const newProduct: IconOption = {
-                    value: productId,
-                    label: name.trim(),
-                    shelfLife: shelfLife
-                  };
-                  handleAddCustomProduct(newProduct);
-                }
-              }} className="w-2/3">
-                <Plus className="mr-1 h-4 w-4" /> Add Product
-              </Button>
-            </div>
-          )}
-          
-          {currentTab === 'custom' && editingProduct && (
-            <div className="flex gap-2 mt-4">
-              <Button variant="outline" onClick={() => setEditingProduct(null)} className="w-1/3">
-                <X className="mr-1 h-4 w-4" /> Cancel
-              </Button>
-              <Button onClick={() => {
-                const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
-                const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
-                if (nameInput && shelfLifeInput) {
-                  const name = nameInput.value;
-                  const shelfLife = parseInt(shelfLifeInput.value, 10);
-                  if (!name.trim()) {
-                    toast({
-                      title: "Name required",
-                      description: "Please provide a name for the product",
-                      variant: "destructive"
-                    });
-                    return;
-                  }
-                  if (isNaN(shelfLife) || shelfLife <= 0) {
-                    toast({
-                      title: "Invalid shelf life",
-                      description: "Please provide a valid shelf life (days)",
-                      variant: "destructive"
-                    });
-                    return;
-                  }
-                  const updatedProduct: IconOption = {
-                    value: editingProduct.productId,
-                    label: name.trim(),
-                    shelfLife: shelfLife
-                  };
-                  addCustomProduct(updatedProduct);
-                  setEditingProduct(null);
-                }
-              }} className="w-2/3">
-                <Check className="mr-1 h-4 w-4" /> Save
-              </Button>
-            </div>
-          )}
-          
-          {(currentTab === 'custom' && !isAddingProduct && !editingProduct) || currentTab === 'settings' || currentTab === 'about' && (
-            <Button type="button" className="mt-4 w-full" onClick={() => setIsOpen(false)}>
-              <Check className="mr-1 h-4 w-4" /> Done
-            </Button>
-          )}
+              </div>
+              
+              {/* Action buttons for different states */}
+              {currentTab === 'selection' && (
+                <Button type="button" className="mt-4 w-full" onClick={() => setIsOpen(false)}>
+                  <Check className="mr-1 h-4 w-4" /> Done
+                </Button>
+              )}
+              
+              {currentTab === 'shelfLife' && (
+                <Button type="button" className="mt-4 w-full" onClick={() => setIsOpen(false)}>
+                  <Check className="mr-1 h-4 w-4" /> Done
+                </Button>
+              )}
+              
+              {currentTab === 'custom' && isAddingProduct && (
+                <div className="flex gap-2 mt-4">
+                  <Button variant="outline" onClick={() => setIsAddingProduct(false)} className="w-1/3">
+                    <X className="mr-1 h-4 w-4" /> Cancel
+                  </Button>
+                  <Button onClick={() => {
+                    const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
+                    const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
+                    if (nameInput && shelfLifeInput) {
+                      const name = nameInput.value;
+                      const shelfLife = parseInt(shelfLifeInput.value, 10);
+                      if (!name.trim()) {
+                        toast({
+                          title: "Name required",
+                          description: "Please provide a name for the product",
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      if (isNaN(shelfLife) || shelfLife <= 0) {
+                        toast({
+                          title: "Invalid shelf life",
+                          description: "Please provide a valid shelf life (days)",
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      const productId = 'custom_' + Math.random().toString(36).substring(2, 15);
+                      const newProduct: IconOption = {
+                        value: productId,
+                        label: name.trim(),
+                        shelfLife: shelfLife
+                      };
+                      handleAddCustomProduct(newProduct);
+                    }
+                  }} className="w-2/3">
+                    <Plus className="mr-1 h-4 w-4" /> Add Product
+                  </Button>
+                </div>
+              )}
+              
+              {currentTab === 'custom' && editingProduct && (
+                <div className="flex gap-2 mt-4">
+                  <Button variant="outline" onClick={() => setEditingProduct(null)} className="w-1/3">
+                    <X className="mr-1 h-4 w-4" /> Cancel
+                  </Button>
+                  <Button onClick={() => {
+                    const nameInput = document.getElementById('new-product-name') as HTMLInputElement;
+                    const shelfLifeInput = document.getElementById('new-product-shelf-life') as HTMLInputElement;
+                    if (nameInput && shelfLifeInput) {
+                      const name = nameInput.value;
+                      const shelfLife = parseInt(shelfLifeInput.value, 10);
+                      if (!name.trim()) {
+                        toast({
+                          title: "Name required",
+                          description: "Please provide a name for the product",
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      if (isNaN(shelfLife) || shelfLife <= 0) {
+                        toast({
+                          title: "Invalid shelf life",
+                          description: "Please provide a valid shelf life (days)",
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      const updatedProduct: IconOption = {
+                        value: editingProduct.productId,
+                        label: name.trim(),
+                        shelfLife: shelfLife
+                      };
+                      addCustomProduct(updatedProduct);
+                      setEditingProduct(null);
+                    }
+                  }} className="w-2/3">
+                    <Check className="mr-1 h-4 w-4" /> Save
+                  </Button>
+                </div>
+              )}
+              
+              {((currentTab === 'custom' && !isAddingProduct && !editingProduct) || currentTab === 'settings' || currentTab === 'about') && (
+                <Button type="button" className="mt-4 w-full" onClick={() => setIsOpen(false)}>
+                  <Check className="mr-1 h-4 w-4" /> Done
+                </Button>
+              )}
+            </Tabs>
+          </div>
         </DialogContent>
       </Dialog>
       
