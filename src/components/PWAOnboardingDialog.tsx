@@ -36,7 +36,7 @@ const PWAOnboardingDialog: React.FC<PWAOnboardingDialogProps> = ({
           className="mt-2 text-xs text-gray-400 hover:text-gray-600"
           onClick={onClose}
         >
-          Maybe later
+          No, thank you
         </button>
       </div>
     </div>
