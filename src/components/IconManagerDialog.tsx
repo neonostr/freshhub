@@ -477,7 +477,7 @@ const IconManagerDialog: React.FC = () => {
                             Install App
                           </Button>
                           
-<div className="space-y-2 text-xs text-muted-foreground">
+                          <div className="space-y-2 text-xs text-muted-foreground">
   <div className="flex items-start gap-2">
     <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
     <span>Persistent data storage</span>
