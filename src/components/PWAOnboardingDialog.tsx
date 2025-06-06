@@ -21,8 +21,8 @@ const PWAOnboardingDialog: React.FC<PWAOnboardingDialogProps> = ({
         <p className="text-gray-600 mb-4 text-sm">
           Install FreshHub on your device for the best experience
         </p>
-       <button
-  className="py-4 px-8 rounded-xl bg-[#0E1527] text-white font-bold text-base flex items-center justify-center gap-2 hover:bg-[#1a2236] mx-auto"
+<button
+  className="py-2.5 px-5 rounded-lg bg-[#0E1527] text-white font-bold text-base flex items-center justify-center gap-2 hover:bg-[#1a2236] mx-auto"
   onClick={onInstallClick}
 >
   <Download className="w-5 h-5" />
