@@ -125,10 +125,6 @@ const Index = () => {
     };
   }, [isRunningAsPwa, shouldShowTutorial, items.length]);
 
-  // When the swipe tutorial is completed, show the PWA onboarding
-  const handleTutorialComplete = () => {
-    setShowPWAOnboarding(true);
-  };
 
   // When the PWA onboarding is closed, mark it as seen
   const handlePWAOnboardingClose = () => {
