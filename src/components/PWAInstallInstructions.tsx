@@ -192,7 +192,7 @@ const PWAInstallInstructions: React.FC<PWAInstallInstructionsProps> = ({
                   1
                 </div>
                 <div>
-                  <h4 className="font-medium text-sm">Use Chrome, Edge or Safari</h4>
+                  <h4 className="font-medium text-sm">Use Chrome or Edge</h4>
                   <p className="text-sm text-muted-foreground">
                     These browsers support PWA installation
                   </p>
@@ -238,6 +238,10 @@ const PWAInstallInstructions: React.FC<PWAInstallInstructionsProps> = ({
               <li className="flex items-start gap-2">
                 <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
                 <span>Native app-like experience</span>
+              </li>
+                   <li className="flex items-start gap-2">
+                <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                <span>Persistent data storage</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
