@@ -76,6 +76,12 @@ const Index = () => {
   const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
 
+    // When the swipe tutorial is completed, just mark it as seen
+  const handleTutorialComplete = () => {
+    console.log("Index: Tutorial completed");
+    // No need to show PWA onboarding here - it will show after second item is added
+  };
+
   // When the swipe tutorial is completed, just mark it as seen
   const handleTutorialComplete = () => {
     console.log("Index: Tutorial completed");
