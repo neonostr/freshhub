@@ -25,9 +25,9 @@ const PWAOnboardingDialog: React.FC<PWAOnboardingDialogProps> = ({
   className="w-full py-4 rounded-xl bg-[#0E1527] text-white font-bold text-base flex items-center justify-center gap-2 hover:bg-[#1a2236]"
   onClick={onInstallClick}
 >
-          <Download className="w-5 h-5" />
-          Install App
-        </button>
+  <Download className="w-5 h-5" />
+  Install App
+</Button>
         <ul className="text-left text-gray-500 space-y-1 text-xs mb-2 mx-auto max-w-xs">
           <li>• Persistent data storage</li>
           <li>• Native app-like experience</li>
