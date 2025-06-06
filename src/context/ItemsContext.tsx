@@ -14,6 +14,8 @@ interface ItemsContextType {
   setIsFirstTimeUser: (value: boolean) => void;
   shouldShowTutorial: boolean;
   dismissTutorial: () => void;
+  shouldShowPWAOnboarding: boolean;  // Add this line
+  dismissPWAOnboarding: () => void;  // Add this line
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
@@ -22,6 +24,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
   const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
+  const [shouldShowPWAOnboarding, setShouldShowPWAOnboarding] = useState<boolean>(false);  // Add this line
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   
   // Use refs to prevent multiple simultaneous operations
@@ -56,7 +59,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Save items to storage when they change
-  useEffect(() => {
+   useEffect(() => {
     // Only save if we've already initialized (to prevent wiping storage on first render)
     if (isInitialized && items.length > 0) {
       try {
@@ -64,9 +67,14 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
         saveItems(items);
         
         // For first time users, show tutorial when they add their first item
-        if (isFirstTimeUser && items.length === 1 && window.innerWidth <= 768) {
-          console.log("ItemsContext: Showing tutorial for first item added");
-          setShouldShowTutorial(true);
+        if (isFirstTimeUser && items.length === 1) {
+          if (window.innerWidth <= 768) {
+            console.log("ItemsContext: Showing tutorial for first item added");
+            setShouldShowTutorial(true);
+          } else {
+            console.log("ItemsContext: Showing PWA onboarding for first item added");
+            setShouldShowPWAOnboarding(true);
+          }
         }
       } catch (error) {
         console.error("ItemsContext: Error saving items:", error);
@@ -83,6 +91,10 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error("ItemsContext: Error dismissing tutorial:", error);
     }
+  };
+
+   const dismissPWAOnboarding = () => {
+    setShouldShowPWAOnboarding(false);
   };
   
   // Listen for custom product deletion events with debouncing
@@ -365,6 +377,8 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       setIsFirstTimeUser,
       shouldShowTutorial,
       dismissTutorial
+      shouldShowPWAOnboarding,  // Add this line
+      dismissPWAOnboarding,     // Add this line
     }}>
       {children}
     </ItemsContext.Provider>
