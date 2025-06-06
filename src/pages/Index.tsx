@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -86,24 +87,35 @@ const Index = () => {
   const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
 
-  // Check if we should show PWA onboarding for users who won't see the swipe tutorial
+  // Listen for when users add their first item to show PWA onboarding
   useEffect(() => {
     // Don't show if already running as PWA
     if (isRunningAsPwa) return;
     
-    // Don't show if we're showing the swipe tutorial
+    // Don't show if user will see the swipe tutorial (they'll get PWA onboarding after tutorial)
     if (shouldShowTutorial) return;
     
     // Check if user has already seen PWA onboarding
     const hasSeenPWAOnboarding = localStorage.getItem('hasSeenPWAOnboarding');
     if (hasSeenPWAOnboarding) return;
+
+    // Listen for when items are added
+    const handleItemsUpdated = () => {
+      const items = JSON.parse(localStorage.getItem('freshness-items') || '[]');
+      if (items.length > 0) {
+        // Show PWA onboarding after user adds their first item
+        setTimeout(() => {
+          setShowPWAOnboarding(true);
+        }, 500); // Small delay after adding item
+      }
+    };
+
+    // Listen for custom events when items are added
+    window.addEventListener('items-updated', handleItemsUpdated);
     
-    // Show PWA onboarding for users who won't see the swipe tutorial
-    const timer = setTimeout(() => {
-      setShowPWAOnboarding(true);
-    }, 1000); // Small delay to let the page load
-    
-    return () => clearTimeout(timer);
+    return () => {
+      window.removeEventListener('items-updated', handleItemsUpdated);
+    };
   }, [shouldShowTutorial, isRunningAsPwa]);
 
   // When the swipe tutorial is completed, show the PWA onboarding
