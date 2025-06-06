@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -17,6 +16,7 @@ interface HeaderVisibilityState {
   hideHeader: boolean;
   setHideHeader: (hide: boolean) => void;
 }
+
 export const useHeaderVisibilityStore = create<HeaderVisibilityState>(set => ({
   hideHeader: false,
   // Default to showing the header
@@ -31,6 +31,7 @@ export const useHeaderVisibilityStore = create<HeaderVisibilityState>(set => ({
 
 // Create a context for components that don't have direct access to zustand
 const HeaderVisibilityContext = createContext<HeaderVisibilityState | undefined>(undefined);
+
 export const HeaderVisibilityProvider: React.FC<{
   children: React.ReactNode;
 }> = ({
@@ -43,10 +44,12 @@ export const HeaderVisibilityProvider: React.FC<{
       useHeaderVisibilityStore.getState().setHideHeader(savedHideHeader === 'true');
     }
   }, []);
+
   const {
     hideHeader,
     setHideHeader
   } = useHeaderVisibilityStore();
+
   return (
     <HeaderVisibilityContext.Provider value={{
       hideHeader,
@@ -56,6 +59,7 @@ export const HeaderVisibilityProvider: React.FC<{
     </HeaderVisibilityContext.Provider>
   );
 };
+
 export const useHeaderVisibility = (): HeaderVisibilityState => {
   const context = useContext(HeaderVisibilityContext);
   if (!context) {
@@ -101,17 +105,21 @@ const Index = () => {
 
     // Listen for when items are added
     const handleItemsUpdated = () => {
+      console.log("Index: Received items-updated event");
       const items = JSON.parse(localStorage.getItem('freshness-items') || '[]');
+      console.log("Index: Current items count:", items.length);
       if (items.length > 0) {
         // Show PWA onboarding after user adds their first item
-        setTimeout(() => {
-          setShowPWAOnboarding(true);
-        }, 500); // Small delay after adding item
+        console.log("Index: Showing PWA onboarding dialog");
+        setShowPWAOnboarding(true);
       }
     };
 
     // Listen for custom events when items are added
     window.addEventListener('items-updated', handleItemsUpdated);
+    
+    // Initial check for items
+    handleItemsUpdated();
     
     return () => {
       window.removeEventListener('items-updated', handleItemsUpdated);
