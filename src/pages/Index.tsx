@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -15,44 +16,64 @@ interface HeaderVisibilityState {
   hideHeader: boolean;
   setHideHeader: (hide: boolean) => void;
 }
-
-const useHeaderVisibilityStore = create<HeaderVisibilityState>((set) => ({
+export const useHeaderVisibilityStore = create<HeaderVisibilityState>(set => ({
   hideHeader: false,
-  setHideHeader: (hide) => set({ hideHeader: hide }),
+  // Default to showing the header
+  setHideHeader: hideHeader => {
+    // Save to localStorage
+    localStorage.setItem('hideHeader', hideHeader.toString());
+    set({
+      hideHeader
+    });
+  }
 }));
 
-// Create a context for the header visibility
+// Create a context for components that don't have direct access to zustand
 const HeaderVisibilityContext = createContext<HeaderVisibilityState | undefined>(undefined);
-
-// Create a provider component
-const HeaderVisibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const store = useHeaderVisibilityStore();
+export const HeaderVisibilityProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({
+  children
+}) => {
+  useEffect(() => {
+    // Initialize from localStorage if available
+    const savedHideHeader = localStorage.getItem('hideHeader');
+    if (savedHideHeader !== null) {
+      useHeaderVisibilityStore.getState().setHideHeader(savedHideHeader === 'true');
+    }
+  }, []);
+  const {
+    hideHeader,
+    setHideHeader
+  } = useHeaderVisibilityStore();
   return (
-    <HeaderVisibilityContext.Provider value={store}>
+    <HeaderVisibilityContext.Provider value={{
+      hideHeader,
+      setHideHeader
+    }}>
       {children}
     </HeaderVisibilityContext.Provider>
   );
 };
-
-// Create a hook to use the header visibility context
-export const useHeaderVisibility = () => {
+export const useHeaderVisibility = (): HeaderVisibilityState => {
   const context = useContext(HeaderVisibilityContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useHeaderVisibility must be used within a HeaderVisibilityProvider');
   }
   return context;
 };
 
 // Component to conditionally render the SwipeTutorial
-const TutorialWrapper = () => {
-  const { shouldShowTutorial, dismissTutorial, setShouldShowPWAOnboarding } = useItems();
+const TutorialWrapper = ({ onTutorialComplete }: { onTutorialComplete?: () => void }) => {
+  const { shouldShowTutorial, dismissTutorial } = useItems();
   
   if (!shouldShowTutorial) return null;
   
   const handleTutorialDismiss = () => {
     dismissTutorial();
-    // Show PWA onboarding after tutorial is dismissed
-    setShouldShowPWAOnboarding(true);
+    if (onTutorialComplete) {
+      onTutorialComplete();
+    }
   };
   
   return <SwipeTutorial onDismiss={handleTutorialDismiss} />;
@@ -60,12 +81,22 @@ const TutorialWrapper = () => {
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
-  const { shouldShowPWAOnboarding, dismissPWAOnboarding } = useItems();
+  const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
+
+  // When the swipe tutorial is completed, show the PWA onboarding
+  const handleTutorialComplete = () => {
+    setShowPWAOnboarding(true);
+  };
+
+  // When the PWA onboarding is closed, just close it
+  const handlePWAOnboardingClose = () => {
+    setShowPWAOnboarding(false);
+  };
 
   // When the user clicks "Install App", show the install instructions dialog
   const handleInstallClick = () => {
-    dismissPWAOnboarding();
+    setShowPWAOnboarding(false);
     setShowPWAInstructions(true);
   };
 
@@ -111,11 +142,15 @@ const Index = () => {
 
         <IconManagerDialog />
         <AddItemDialog />
-        <TutorialWrapper />
+        <TutorialWrapper onTutorialComplete={handleTutorialComplete} />
+        
+        <PWAInstallBanner 
+          onLearnHow={() => setShowPWAInstructions(true)}
+        />
         
         <PWAOnboardingDialog
-          open={shouldShowPWAOnboarding}
-          onClose={dismissPWAOnboarding}
+          open={showPWAOnboarding}
+          onClose={handlePWAOnboardingClose}
           onInstallClick={handleInstallClick}
         />
         <PWAInstallInstructions
