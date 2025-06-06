@@ -89,6 +89,11 @@ export function dismissInstallBanner(): void {
 }
 
 export function shouldShowInstallBanner(hasItems: boolean): boolean {
+  // Always return false to deactivate the banner
+  return false;
+  
+  // Original logic commented out for future reference
+  /*
   // Don't show if running as PWA
   if (isPWAMode()) return false;
   
@@ -103,6 +108,7 @@ export function shouldShowInstallBanner(hasItems: boolean): boolean {
   if (hasShownBannerInCurrentSession()) return false;
   
   return true;
+  */
 }
 
 // Legacy functions - keeping for backward compatibility
