@@ -13,11 +13,11 @@ const PWAOnboardingDialog: React.FC<PWAOnboardingDialogProps> = ({ open, onClose
   <Dialog open={open} onOpenChange={onClose}>
     <DialogContent className="max-w-md">
       <DialogHeader>
-        <DialogTitle>Install as App</DialogTitle>
+        <DialogTitle>Install FreshHub as an App</DialogTitle>
         <DialogDescription>
-          For the best experience, we recommend installing FreshHub as an app (PWA).<br /><br />
+          Maximize your experience by installing FreshHub as a App.<br /><br />
           <span>
-            This ensures your data is stored securely and is not affected by browser history or cache clearing.
+            Ensure safe data storage, immune to browser history and cache resets.
           </span>
         </DialogDescription>
       </DialogHeader>
