@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
@@ -14,8 +13,9 @@ interface ItemsContextType {
   setIsFirstTimeUser: (value: boolean) => void;
   shouldShowTutorial: boolean;
   dismissTutorial: () => void;
-  shouldShowPWAOnboarding: boolean;  // Add this line
-  dismissPWAOnboarding: () => void;  // Add this line
+  shouldShowPWAOnboarding: boolean;
+  dismissPWAOnboarding: () => void;
+  setShouldShowPWAOnboarding: (show: boolean) => void;
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
@@ -24,7 +24,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
   const [shouldShowTutorial, setShouldShowTutorial] = useState<boolean>(false);
-  const [shouldShowPWAOnboarding, setShouldShowPWAOnboarding] = useState<boolean>(false);  // Add this line
+  const [shouldShowPWAOnboarding, setShouldShowPWAOnboarding] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   
   // Use refs to prevent multiple simultaneous operations
@@ -59,7 +59,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Save items to storage when they change
-   useEffect(() => {
+  useEffect(() => {
     // Only save if we've already initialized (to prevent wiping storage on first render)
     if (isInitialized && items.length > 0) {
       try {
@@ -93,7 +93,7 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-   const dismissPWAOnboarding = () => {
+  const dismissPWAOnboarding = () => {
     setShouldShowPWAOnboarding(false);
   };
   
@@ -376,9 +376,10 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
       isFirstTimeUser,
       setIsFirstTimeUser,
       shouldShowTutorial,
-      dismissTutorial
-      shouldShowPWAOnboarding,  // Add this line
-      dismissPWAOnboarding,     // Add this line
+      dismissTutorial,
+      shouldShowPWAOnboarding,
+      dismissPWAOnboarding,
+      setShouldShowPWAOnboarding
     }}>
       {children}
     </ItemsContext.Provider>
