@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -8,6 +7,7 @@ import PWAInstallBanner from '@/components/PWAInstallBanner';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import PWAOnboardingDialog from '@/components/PWAOnboardingDialog';
 import { useItems } from '@/context/ItemsContext';
+import { usePWA } from '@/hooks/usePWA';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
 
@@ -81,22 +81,46 @@ const TutorialWrapper = ({ onTutorialComplete }: { onTutorialComplete?: () => vo
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
+  const { shouldShowTutorial, isFirstTimeUser } = useItems();
+  const { isRunningAsPwa } = usePWA();
   const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
+
+  // Check if we should show PWA onboarding for users who won't see the swipe tutorial
+  useEffect(() => {
+    // Don't show if already running as PWA
+    if (isRunningAsPwa) return;
+    
+    // Don't show if we're showing the swipe tutorial
+    if (shouldShowTutorial) return;
+    
+    // Check if user has already seen PWA onboarding
+    const hasSeenPWAOnboarding = localStorage.getItem('hasSeenPWAOnboarding');
+    if (hasSeenPWAOnboarding) return;
+    
+    // Show PWA onboarding for users who won't see the swipe tutorial
+    const timer = setTimeout(() => {
+      setShowPWAOnboarding(true);
+    }, 1000); // Small delay to let the page load
+    
+    return () => clearTimeout(timer);
+  }, [shouldShowTutorial, isRunningAsPwa]);
 
   // When the swipe tutorial is completed, show the PWA onboarding
   const handleTutorialComplete = () => {
     setShowPWAOnboarding(true);
   };
 
-  // When the PWA onboarding is closed, just close it
+  // When the PWA onboarding is closed, mark it as seen
   const handlePWAOnboardingClose = () => {
     setShowPWAOnboarding(false);
+    localStorage.setItem('hasSeenPWAOnboarding', 'true');
   };
 
   // When the user clicks "Install App", show the install instructions dialog
   const handleInstallClick = () => {
     setShowPWAOnboarding(false);
+    localStorage.setItem('hasSeenPWAOnboarding', 'true');
     setShowPWAInstructions(true);
   };
 
