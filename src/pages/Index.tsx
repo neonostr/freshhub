@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -72,15 +71,8 @@ const TutorialWrapper = () => {
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
-  const [showSwipeTutorial, setShowSwipeTutorial] = useState(false);
   const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
-
-  // When the swipe tutorial is closed, show the PWA onboarding
-  const handleSwipeTutorialClose = () => {
-    setShowSwipeTutorial(false);
-    setShowPWAOnboarding(true);
-  };
 
   // When the PWA onboarding is closed, just close it
   const handlePWAOnboardingClose = () => {
@@ -153,7 +145,6 @@ const Index = () => {
           onLearnHow={() => setShowPWAInstructions(true)}
         />
         
-        <SwipeTutorial open={showSwipeTutorial} onClose={handleSwipeTutorialClose} />
         <PWAOnboardingDialog
           open={showPWAOnboarding}
           onClose={handlePWAOnboardingClose}
