@@ -76,7 +76,13 @@ const Index = () => {
   const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
 
-  // Show PWA onboarding dialog when user adds their first item
+  // When the swipe tutorial is completed, just mark it as seen
+  const handleTutorialComplete = () => {
+    console.log("Index: Tutorial completed");
+    // No need to show PWA onboarding here - it will show after second item is added
+  };
+
+  // Show PWA onboarding dialog when user adds their second item
   useEffect(() => {
     const handleItemsUpdated = () => {
       console.log("Index: Received items-updated event");
@@ -86,7 +92,7 @@ const Index = () => {
       // 1. Not already running as PWA
       // 2. Not seeing tutorial
       // 3. Haven't seen PWA onboarding before
-      // 4. Have at least one item
+      // 4. Have at least two items
       // 5. Haven't shown the dialog in this session
       const hasSeenPWAOnboarding = localStorage.getItem('hasSeenPWAOnboarding') === 'true';
       const hasShownDialogThisSession = sessionStorage.getItem('hasShownPWAOnboarding') === 'true';
@@ -104,7 +110,7 @@ const Index = () => {
           !hasSeenPWAOnboarding && 
           items.length > 1 &&
           !hasShownDialogThisSession) {
-        console.log("Index: Showing PWA onboarding dialog");
+        console.log("Index: Showing PWA onboarding dialog after second item");
         setShowPWAOnboarding(true);
         // Mark that we've shown the dialog in this session
         sessionStorage.setItem('hasShownPWAOnboarding', 'true');
@@ -124,7 +130,6 @@ const Index = () => {
       window.removeEventListener('items-updated', handleItemsUpdated);
     };
   }, [isRunningAsPwa, shouldShowTutorial, items.length]);
-
 
   // When the PWA onboarding is closed, mark it as seen
   const handlePWAOnboardingClose = () => {
