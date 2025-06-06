@@ -44,12 +44,10 @@ export const HeaderVisibilityProvider: React.FC<{
       useHeaderVisibilityStore.getState().setHideHeader(savedHideHeader === 'true');
     }
   }, []);
-
   const {
     hideHeader,
     setHideHeader
   } = useHeaderVisibilityStore();
-
   return (
     <HeaderVisibilityContext.Provider value={{
       hideHeader,
@@ -93,21 +91,36 @@ const Index = () => {
 
   // Listen for when users add their first item to show PWA onboarding
   useEffect(() => {
+    console.log('Index: Setting up PWA onboarding effect');
+    console.log('- isRunningAsPwa:', isRunningAsPwa);
+    console.log('- shouldShowTutorial:', shouldShowTutorial);
+    console.log('- hasSeenPWAOnboarding:', localStorage.getItem('hasSeenPWAOnboarding'));
+    
     // Don't show if already running as PWA
-    if (isRunningAsPwa) return;
+    if (isRunningAsPwa) {
+      console.log('Index: Not showing dialog - already running as PWA');
+      return;
+    }
     
     // Don't show if user will see the swipe tutorial (they'll get PWA onboarding after tutorial)
-    if (shouldShowTutorial) return;
+    if (shouldShowTutorial) {
+      console.log('Index: Not showing dialog - will show tutorial first');
+      return;
+    }
     
     // Check if user has already seen PWA onboarding
     const hasSeenPWAOnboarding = localStorage.getItem('hasSeenPWAOnboarding');
-    if (hasSeenPWAOnboarding) return;
+    if (hasSeenPWAOnboarding) {
+      console.log('Index: Not showing dialog - user has already seen it');
+      return;
+    }
 
     // Listen for when items are added
     const handleItemsUpdated = () => {
       console.log("Index: Received items-updated event");
-      const items = JSON.parse(localStorage.getItem('freshness-items') || '[]');
+      const items = JSON.parse(localStorage.getItem('freshItems') || '[]');
       console.log("Index: Current items count:", items.length);
+      
       if (items.length > 0) {
         // Show PWA onboarding after user adds their first item
         console.log("Index: Showing PWA onboarding dialog");

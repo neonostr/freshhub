@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { Item } from '@/types/item';
 import { loadItems, saveItems } from '@/utils/itemUtils';
@@ -233,6 +232,10 @@ export const ItemsProvider = ({ children }: { children: ReactNode }) => {
           try {
             saveItems(newItems);
             console.log(`ItemsContext: Saved ${newItems.length} items to storage`);
+            
+            // Dispatch items-updated event after saving
+            window.dispatchEvent(new CustomEvent('items-updated'));
+            console.log("ItemsContext: Dispatched items-updated event");
           } catch (saveError) {
             console.error("ItemsContext: Error saving items after add:", saveError);
             addingItemRef.current = false;
