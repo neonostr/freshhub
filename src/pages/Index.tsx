@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -5,6 +6,7 @@ import IconManagerDialog from '@/components/IconManagerDialog';
 import SwipeTutorial from '@/components/SwipeTutorial';
 import PWAInstallBanner from '@/components/PWAInstallBanner';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
+import PWAOnboardingDialog from '@/components/PWAOnboardingDialog';
 import { useItems } from '@/context/ItemsContext';
 import { create } from 'zustand';
 import { createContext, useContext } from 'react';
@@ -70,7 +72,26 @@ const TutorialWrapper = () => {
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
+  const [showSwipeTutorial, setShowSwipeTutorial] = useState(false);
+  const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
+
+  // When the swipe tutorial is closed, show the PWA onboarding
+  const handleSwipeTutorialClose = () => {
+    setShowSwipeTutorial(false);
+    setShowPWAOnboarding(true);
+  };
+
+  // When the PWA onboarding is closed, just close it
+  const handlePWAOnboardingClose = () => {
+    setShowPWAOnboarding(false);
+  };
+
+  // When the user clicks "Install App", show the install instructions dialog
+  const handleInstallClick = () => {
+    setShowPWAOnboarding(false);
+    setShowPWAInstructions(true);
+  };
 
   return (
     <HeaderVisibilityProvider>
@@ -132,7 +153,12 @@ const Index = () => {
           onLearnHow={() => setShowPWAInstructions(true)}
         />
         
-        {/* PWA Install Instructions Dialog */}
+        <SwipeTutorial open={showSwipeTutorial} onClose={handleSwipeTutorialClose} />
+        <PWAOnboardingDialog
+          open={showPWAOnboarding}
+          onClose={handlePWAOnboardingClose}
+          onInstallClick={handleInstallClick}
+        />
         <PWAInstallInstructions
           isOpen={showPWAInstructions}
           onClose={() => setShowPWAInstructions(false)}
