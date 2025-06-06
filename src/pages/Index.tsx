@@ -99,39 +99,22 @@ const Index = () => {
     const hasSeenPWAOnboarding = localStorage.getItem('hasSeenPWAOnboarding');
     if (hasSeenPWAOnboarding) return;
 
-    // Function to check if user has items
-    const checkForItems = () => {
+    // Listen for when items are added
+    const handleItemsUpdated = () => {
       const items = JSON.parse(localStorage.getItem('freshness-items') || '[]');
       if (items.length > 0) {
         // Show PWA onboarding after user adds their first item
         setTimeout(() => {
           setShowPWAOnboarding(true);
         }, 500); // Small delay after adding item
-        return true; // Stop checking
       }
-      return false;
     };
-
-    // Initial check
-    if (checkForItems()) return;
 
     // Listen for custom events when items are added
-    const handleItemsUpdated = () => {
-      checkForItems();
-    };
-
-    // Set up periodic checking as backup (every 2 seconds)
-    const intervalId = setInterval(() => {
-      if (checkForItems()) {
-        clearInterval(intervalId);
-      }
-    }, 2000);
-
     window.addEventListener('items-updated', handleItemsUpdated);
     
     return () => {
       window.removeEventListener('items-updated', handleItemsUpdated);
-      clearInterval(intervalId);
     };
   }, [shouldShowTutorial, isRunningAsPwa]);
 
