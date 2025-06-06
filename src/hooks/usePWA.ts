@@ -75,16 +75,11 @@ export function usePWA(): UsePWAReturn {
   }, []);
 
   useEffect(() => {
-    // Update banner visibility based on new logic
-    const shouldShow = shouldShowInstallBanner(hasItems);
-    console.log('shouldShowInstallBanner:', shouldShow, 'hasItems:', hasItems);
-    setShowInstallBanner(shouldShow);
-    
-    // Mark banner as shown in current session when it becomes visible
-    if (shouldShow) {
-      markBannerShownInCurrentSession();
-    }
-  }, [hasItems]);
+  // Update banner visibility based on new logic
+  const shouldShow = shouldShowInstallBanner(hasItems);
+  console.log('shouldShowInstallBanner:', shouldShow, 'hasItems:', hasItems);
+  setShowInstallBanner(shouldShow);
+}, [hasItems]);
 
   const promptInstall = useCallback(async (): Promise<boolean> => {
     if (!deferredPrompt) {
