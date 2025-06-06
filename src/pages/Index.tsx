@@ -45,15 +45,14 @@ export const useHeaderVisibility = () => {
 
 // Component to conditionally render the SwipeTutorial
 const TutorialWrapper = () => {
-  const { shouldShowTutorial, dismissTutorial } = useItems();
-  const { setShowPWAOnboarding } = useItems();
+  const { shouldShowTutorial, dismissTutorial, setShouldShowPWAOnboarding } = useItems();
   
   if (!shouldShowTutorial) return null;
   
   const handleTutorialDismiss = () => {
     dismissTutorial();
     // Show PWA onboarding after tutorial is dismissed
-    setShowPWAOnboarding(true);
+    setShouldShowPWAOnboarding(true);
   };
   
   return <SwipeTutorial onDismiss={handleTutorialDismiss} />;
