@@ -1,7 +1,4 @@
-
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 
 interface PWAOnboardingDialogProps {
   open: boolean;
@@ -9,25 +6,41 @@ interface PWAOnboardingDialogProps {
   onInstallClick: () => void;
 }
 
-const PWAOnboardingDialog: React.FC<PWAOnboardingDialogProps> = ({ open, onClose, onInstallClick }) => (
-  <Dialog open={open} onOpenChange={onClose}>
-    <DialogContent className="max-w-md">
-      <DialogHeader>
-        <DialogTitle>Install FreshHub as an App</DialogTitle>
-        <DialogDescription>
-          Maximize your experience by installing FreshHub as a App.<br /><br />
-          <span>
-            Ensure safe data storage, immune to browser history and cache resets.
-          </span>
-        </DialogDescription>
-      </DialogHeader>
-      <div className="flex justify-center mt-6">
-        <Button onClick={onInstallClick} className="w-full">
+const PWAOnboardingDialog: React.FC<PWAOnboardingDialogProps> = ({
+  open,
+  onClose,
+  onInstallClick,
+}) => {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+      <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+        <h2 className="text-2xl font-bold mb-2">Get the App</h2>
+        <p className="text-gray-600 mb-6">
+          Install FreshHub on your device for the best experience
+        </p>
+        <button
+          className="w-full py-3 mb-6 rounded-lg border border-gray-200 font-semibold text-lg bg-white hover:bg-gray-50 transition"
+          onClick={onInstallClick}
+        >
           Install App
-        </Button>
+        </button>
+        <ul className="text-left text-gray-500 space-y-2 text-base">
+          <li>• Persistent data storage</li>
+          <li>• Native app-like experience</li>
+          <li>• Faster loading and offline access</li>
+          <li>• Quick access from your home screen</li>
+        </ul>
+        <button
+          className="mt-6 text-sm text-gray-400 hover:text-gray-600"
+          onClick={onClose}
+        >
+          Maybe later
+        </button>
       </div>
-    </DialogContent>
-  </Dialog>
-);
+    </div>
+  );
+};
 
 export default PWAOnboardingDialog;
