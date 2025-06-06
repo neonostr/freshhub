@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
@@ -78,6 +79,7 @@ const Landing = () => {
               variant="outline"
               className="w-full"
             >
+              <Download className="w-5 h-5" />
               Install App
             </Button>
             
