@@ -102,7 +102,7 @@ const Index = () => {
       if (!isRunningAsPwa && 
           !shouldShowTutorial && 
           !hasSeenPWAOnboarding && 
-          items.length > 0 &&
+          items.length > 1 &&
           !hasShownDialogThisSession) {
         console.log("Index: Showing PWA onboarding dialog");
         setShowPWAOnboarding(true);
