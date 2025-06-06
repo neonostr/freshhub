@@ -19,24 +19,16 @@ interface HeaderVisibilityState {
 
 export const useHeaderVisibilityStore = create<HeaderVisibilityState>(set => ({
   hideHeader: false,
-  // Default to showing the header
   setHideHeader: hideHeader => {
-    // Save to localStorage
     localStorage.setItem('hideHeader', hideHeader.toString());
-    set({
-      hideHeader
-    });
+    set({ hideHeader });
   }
 }));
 
 // Create a context for components that don't have direct access to zustand
 const HeaderVisibilityContext = createContext<HeaderVisibilityState | undefined>(undefined);
 
-export const HeaderVisibilityProvider: React.FC<{
-  children: React.ReactNode;
-}> = ({
-  children
-}) => {
+export const HeaderVisibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     // Initialize from localStorage if available
     const savedHideHeader = localStorage.getItem('hideHeader');
@@ -44,15 +36,10 @@ export const HeaderVisibilityProvider: React.FC<{
       useHeaderVisibilityStore.getState().setHideHeader(savedHideHeader === 'true');
     }
   }, []);
-  const {
-    hideHeader,
-    setHideHeader
-  } = useHeaderVisibilityStore();
+
+  const { hideHeader, setHideHeader } = useHeaderVisibilityStore();
   return (
-    <HeaderVisibilityContext.Provider value={{
-      hideHeader,
-      setHideHeader
-    }}>
+    <HeaderVisibilityContext.Provider value={{ hideHeader, setHideHeader }}>
       {children}
     </HeaderVisibilityContext.Provider>
   );
@@ -84,60 +71,59 @@ const TutorialWrapper = ({ onTutorialComplete }: { onTutorialComplete?: () => vo
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
-  const { shouldShowTutorial, isFirstTimeUser } = useItems();
+  const { shouldShowTutorial, isFirstTimeUser, items } = useItems();
   const { isRunningAsPwa } = usePWA();
   const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
 
-  // Listen for when users add their first item to show PWA onboarding
+  // Show PWA onboarding dialog when user adds their first item
   useEffect(() => {
-    console.log('Index: Setting up PWA onboarding effect');
-    console.log('- isRunningAsPwa:', isRunningAsPwa);
-    console.log('- shouldShowTutorial:', shouldShowTutorial);
-    console.log('- hasSeenPWAOnboarding:', localStorage.getItem('hasSeenPWAOnboarding'));
-    
-    // Don't show if already running as PWA
-    if (isRunningAsPwa) {
-      console.log('Index: Not showing dialog - already running as PWA');
-      return;
-    }
-    
-    // Don't show if user will see the swipe tutorial (they'll get PWA onboarding after tutorial)
-    if (shouldShowTutorial) {
-      console.log('Index: Not showing dialog - will show tutorial first');
-      return;
-    }
-    
-    // Check if user has already seen PWA onboarding
-    const hasSeenPWAOnboarding = localStorage.getItem('hasSeenPWAOnboarding');
-    if (hasSeenPWAOnboarding) {
-      console.log('Index: Not showing dialog - user has already seen it');
-      return;
-    }
-
-    // Listen for when items are added
     const handleItemsUpdated = () => {
       console.log("Index: Received items-updated event");
-      const items = JSON.parse(localStorage.getItem('freshItems') || '[]');
       console.log("Index: Current items count:", items.length);
       
-      if (items.length > 0) {
-        // Show PWA onboarding after user adds their first item
+      // Only show if:
+      // 1. Not already running as PWA
+      // 2. Not seeing tutorial
+      // 3. Haven't seen PWA onboarding before
+      // 4. Have at least one item
+      // 5. Haven't shown the dialog in this session
+      const hasSeenPWAOnboarding = localStorage.getItem('hasSeenPWAOnboarding') === 'true';
+      const hasShownDialogThisSession = sessionStorage.getItem('hasShownPWAOnboarding') === 'true';
+      
+      console.log("Index: PWA onboarding conditions:", {
+        isRunningAsPwa,
+        shouldShowTutorial,
+        hasSeenPWAOnboarding,
+        itemsCount: items.length,
+        hasShownDialogThisSession
+      });
+      
+      if (!isRunningAsPwa && 
+          !shouldShowTutorial && 
+          !hasSeenPWAOnboarding && 
+          items.length > 0 &&
+          !hasShownDialogThisSession) {
         console.log("Index: Showing PWA onboarding dialog");
         setShowPWAOnboarding(true);
+        // Mark that we've shown the dialog in this session
+        sessionStorage.setItem('hasShownPWAOnboarding', 'true');
       }
     };
 
-    // Listen for custom events when items are added
-    window.addEventListener('items-updated', handleItemsUpdated);
-    
     // Initial check for items
-    handleItemsUpdated();
+    if (items.length > 0) {
+      console.log("Index: Initial items check - showing PWA onboarding");
+      handleItemsUpdated();
+    }
+
+    // Listen for items-updated event
+    window.addEventListener('items-updated', handleItemsUpdated);
     
     return () => {
       window.removeEventListener('items-updated', handleItemsUpdated);
     };
-  }, [shouldShowTutorial, isRunningAsPwa]);
+  }, [isRunningAsPwa, shouldShowTutorial, items.length]);
 
   // When the swipe tutorial is completed, show the PWA onboarding
   const handleTutorialComplete = () => {
@@ -159,7 +145,6 @@ const Index = () => {
 
   return (
     <HeaderVisibilityProvider>
-      {/* Changed h-full to h-screen and added bg-background */}
       <div className="flex flex-col h-screen w-full max-w-5xl mx-auto relative overflow-hidden bg-background">
         {!hideHeader && (
           <header className="flex-shrink-0 pt-6 px-4 text-center bg-background relative z-20 mb-2" id="app-header" style={{ paddingTop: `calc(1rem + env(safe-area-inset-top))` }}>
