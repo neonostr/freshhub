@@ -112,7 +112,7 @@ const Index = () => {
     };
 
     // Initial check for items
-    if (items.length > 0) {
+    if (items.length > 1) {
       console.log("Index: Initial items check - showing PWA onboarding");
       handleItemsUpdated();
     }
