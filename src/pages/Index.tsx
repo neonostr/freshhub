@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ItemsList from '@/components/ItemsList';
 import AddItemDialog from '@/components/AddItemDialog';
@@ -16,48 +15,29 @@ interface HeaderVisibilityState {
   hideHeader: boolean;
   setHideHeader: (hide: boolean) => void;
 }
-export const useHeaderVisibilityStore = create<HeaderVisibilityState>(set => ({
+
+const useHeaderVisibilityStore = create<HeaderVisibilityState>((set) => ({
   hideHeader: false,
-  // Default to showing the header
-  setHideHeader: hideHeader => {
-    // Save to localStorage
-    localStorage.setItem('hideHeader', hideHeader.toString());
-    set({
-      hideHeader
-    });
-  }
+  setHideHeader: (hide) => set({ hideHeader: hide }),
 }));
 
-// Create a context for components that don't have direct access to zustand
+// Create a context for the header visibility
 const HeaderVisibilityContext = createContext<HeaderVisibilityState | undefined>(undefined);
-export const HeaderVisibilityProvider: React.FC<{
-  children: React.ReactNode;
-}> = ({
-  children
-}) => {
-  useEffect(() => {
-    // Initialize from localStorage if available
-    const savedHideHeader = localStorage.getItem('hideHeader');
-    if (savedHideHeader !== null) {
-      useHeaderVisibilityStore.getState().setHideHeader(savedHideHeader === 'true');
-    }
-  }, []);
-  const {
-    hideHeader,
-    setHideHeader
-  } = useHeaderVisibilityStore();
+
+// Create a provider component
+const HeaderVisibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const store = useHeaderVisibilityStore();
   return (
-    <HeaderVisibilityContext.Provider value={{
-      hideHeader,
-      setHideHeader
-    }}>
+    <HeaderVisibilityContext.Provider value={store}>
       {children}
     </HeaderVisibilityContext.Provider>
   );
 };
-export const useHeaderVisibility = (): HeaderVisibilityState => {
+
+// Create a hook to use the header visibility context
+export const useHeaderVisibility = () => {
   const context = useContext(HeaderVisibilityContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useHeaderVisibility must be used within a HeaderVisibilityProvider');
   }
   return context;
@@ -81,22 +61,12 @@ const TutorialWrapper = ({ onTutorialComplete }: { onTutorialComplete?: () => vo
 
 const Index = () => {
   const { hideHeader } = useHeaderVisibilityStore();
-  const [showPWAOnboarding, setShowPWAOnboarding] = useState(false);
+  const { shouldShowPWAOnboarding, dismissPWAOnboarding } = useItems();
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
-
-  // When the swipe tutorial is completed, show the PWA onboarding
-  const handleTutorialComplete = () => {
-    setShowPWAOnboarding(true);
-  };
-
-  // When the PWA onboarding is closed, just close it
-  const handlePWAOnboardingClose = () => {
-    setShowPWAOnboarding(false);
-  };
 
   // When the user clicks "Install App", show the install instructions dialog
   const handleInstallClick = () => {
-    setShowPWAOnboarding(false);
+    dismissPWAOnboarding();
     setShowPWAInstructions(true);
   };
 
@@ -142,15 +112,11 @@ const Index = () => {
 
         <IconManagerDialog />
         <AddItemDialog />
-        <TutorialWrapper onTutorialComplete={handleTutorialComplete} />
-        
-        <PWAInstallBanner 
-          onLearnHow={() => setShowPWAInstructions(true)}
-        />
+        <TutorialWrapper />
         
         <PWAOnboardingDialog
-          open={showPWAOnboarding}
-          onClose={handlePWAOnboardingClose}
+          open={shouldShowPWAOnboarding}
+          onClose={dismissPWAOnboarding}
           onInstallClick={handleInstallClick}
         />
         <PWAInstallInstructions
