@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, Trash2, Check, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Check, X, Download } from 'lucide-react';
 import { useIconManager } from '@/context/IconManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -474,6 +474,7 @@ const IconManagerDialog: React.FC = () => {
                             variant="outline"
                             className="w-full"
                           >
+                          <Download className="w-5 h-5" />
                             Install App
                           </Button>
                           
@@ -502,11 +503,7 @@ const IconManagerDialog: React.FC = () => {
                     <div className="pt-4 text-center">
                       <p className="text-xs text-muted-foreground">Version 1.0.0</p>
                     </div>
-                  </div>
                 </TabsContent>
-              </div>
-            </Tabs>
-          </div>
           
           {/* Action buttons for different states */}
           {currentTab === 'selection' && (
