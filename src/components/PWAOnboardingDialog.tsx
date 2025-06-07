@@ -1,41 +1,50 @@
 import React from 'react';
 import { Download } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
-interface PWAOnboardingDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onInstallClick: () => void;
-}
-
-const PWAOnboardingDialog: React.FC<PWAOnboardingDialogProps> = ({
-  open,
-  onClose,
-  onInstallClick,
-}) => {
+const PWAOnboardingDialog = ({ open, onClose, onInstallClick }) => {
   if (!open) return null;
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-      <div className="bg-white rounded-2xl shadow-xl p-5 max-w-xs w-full text-center border border-gray-100">
-        <h2 className="text-lg font-bold mb-1">Get the App</h2>
-        <p className="text-gray-600 mb-4 text-sm">
-          Install FreshHub on your device for the best experience
-        </p>
-<button
-  className="mt-4 mb-4 py-2.5 px-5 rounded-lg bg-[#0E1527] text-white font-bold text-base flex items-center justify-center gap-2 hover:bg-[#1a2236] mx-auto"
-  onClick={onInstallClick}
->
-  <Download className="w-5 h-5" />
-  Install App
-</button>
-        <ul className="text-left text-gray-500 space-y-1 text-xs mb-2 mx-auto max-w-xs">
-          <li>• Persistent data storage</li>
-          <li>• Native app-like experience</li>
-          <li>• Faster loading and offline access</li>
-          <li>• Quick access from your home screen</li>
-        </ul>
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-gray-100">
+        <Card className="p-6 space-y-4">
+          <h2 className="text-xl font-semibold text-foreground">
+            Get the App
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Install FreshHub on your device for the best experience
+          </p>
+          <div className="space-y-3">
+            <Button 
+              onClick={onInstallClick}
+              variant="outline"
+              className="w-full"
+            >
+              Install App
+            </Button>
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <div className="flex items-start gap-2">
+                <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                <span>Persistent data storage</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                <span>Native app-like experience</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                <span>Faster loading and offline access</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
+                <span>Quick access from your home screen</span>
+              </div>
+            </div>
+          </div>
+        </Card>
         <button
-          className="mt-2 text-xs text-gray-400 hover:text-gray-600"
+          className="mt-2 text-xs text-gray-400 hover:text-gray-600 w-full"
           onClick={onClose}
         >
           No, thank you
@@ -46,3 +55,26 @@ const PWAOnboardingDialog: React.FC<PWAOnboardingDialogProps> = ({
 };
 
 export default PWAOnboardingDialog;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
