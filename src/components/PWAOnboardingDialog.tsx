@@ -1,7 +1,7 @@
 import React from 'react';
-import { Download } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 
 const PWAOnboardingDialog = ({ open, onClose, onInstallClick }) => {
   if (!open) return null;
@@ -16,11 +16,11 @@ const PWAOnboardingDialog = ({ open, onClose, onInstallClick }) => {
             Install FreshHub on your device for the best experience
           </p>
           <div className="space-y-3">
-            <Button 
+            <Button
               onClick={onInstallClick}
-              variant="outline"
-              className="w-full"
+              className="w-full bg-[#0E1527] text-white font-bold text-base py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[#1a2236]"
             >
+              <Download className="w-5 h-5" />
               Install App
             </Button>
             <div className="space-y-2 text-xs text-muted-foreground">
@@ -55,26 +55,3 @@ const PWAOnboardingDialog = ({ open, onClose, onInstallClick }) => {
 };
 
 export default PWAOnboardingDialog;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
