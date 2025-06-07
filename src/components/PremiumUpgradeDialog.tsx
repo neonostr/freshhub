@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { generateInvoice, checkPaymentStatus, formatInvoice } from '@/services/lightningPaymentService';
@@ -119,44 +119,46 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Bitcoin className="h-5 w-5" />
-              Upgrade to Premium
-            </DialogTitle>
-            <DialogDescription>
-              Upgrade to Premium for unlimited items and custom products. Pay 21 sats (test price) one-time fee.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-6 py-4">
-            {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-                {error}
+        <DialogContent className="p-0 border-none">
+          {!invoice ? (
+            <div className="p-8 max-w-md w-full text-center bg-white rounded-2xl border border-gray-200 shadow-xl">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 mb-2">
+                  <Bitcoin className="w-7 h-7 text-yellow-500" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Upgrade to Premium</h2>
+                <p className="text-base text-gray-500 mb-2">
+                  Unlock unlimited items and custom products.<br />
+                  Pay <span className="font-semibold text-gray-700">21 sats</span> (test price) one-time fee.
+                </p>
+                <ul className="text-sm text-gray-500 space-y-1 mb-4 text-left mx-auto max-w-xs">
+                  <li>• Track unlimited items</li>
+                  <li>• Create custom products</li>
+                  <li>• One-time payment, no subscription</li>
+                  <li>• All features, forever</li>
+                </ul>
+                <button
+                  onClick={handleGenerateInvoice}
+                  className="w-full py-3 rounded-xl bg-[#0E1527] text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg hover:bg-[#1a2236] transition"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Generating invoice...
+                    </>
+                  ) : (
+                    <>
+                      <Bitcoin className="w-5 h-5" />
+                      Generate Bitcoin Lightning Invoice
+                    </>
+                  )}
+                </button>
               </div>
-            )}
-            
-            {!invoice ? (
-              <Button
-                onClick={handleGenerateInvoice}
-                className="w-full"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating invoice...
-                  </>
-                ) : (
-                  <>
-                    <Bitcoin className="mr-2 h-4 w-4" />
-                    Generate Bitcoin Lightning Invoice
-                  </>
-                )}
-              </Button>
-            ) : (
-              <div className="space-y-4">
+            </div>
+          ) : (
+            <div className="p-8 max-w-md w-full text-center bg-white rounded-2xl border border-gray-200 shadow-xl">
+              <div className="flex flex-col items-center space-y-4">
                 <div className="text-center">
                   <h3 className="font-medium mb-1">Scan QR Code to Pay</h3>
                   <p className="text-sm text-gray-500">
@@ -166,7 +168,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
                 
                 <QRCodeDisplay value={invoice} />
                 
-                <div className="flex justify-between items-center border rounded-md p-2 bg-muted/50">
+                <div className="flex justify-between items-center border rounded-md p-2 bg-muted/50 w-full">
                   <div className="text-sm font-mono truncate max-w-[200px]">
                     {formatInvoice(invoice)}
                   </div>
@@ -186,8 +188,14 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
                   </div>
                 )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+          
+          {error && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm mt-4">
+              {error}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
