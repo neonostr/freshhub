@@ -7,14 +7,17 @@ const PWAOnboardingDialog = ({ open, onClose, onInstallClick }) => {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-      <Card className="p-8 max-w-md w-full text-center border border-gray-100 space-y-4">
-        <h2 className="text-xl font-semibold text-foreground">
-          Get the App
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Install FreshHub on your device for the best experience
-        </p>
-        <div className="space-y-3">
+      <Card
+        className="p-8 max-w-md w-full text-center border border-gray-200 flex flex-col"
+        style={{ minHeight: 420 }}
+      >
+        <div className="flex-1 flex flex-col justify-center space-y-3">
+          <h2 className="text-xl font-semibold text-foreground">
+            Get the App
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Install FreshHub on your device for the best experience
+          </p>
           <Button
             onClick={onInstallClick}
             className="w-full bg-[#0E1527] text-white flex items-center justify-center gap-2"
