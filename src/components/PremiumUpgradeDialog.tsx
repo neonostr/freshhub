@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useSubscription } from '@/context/SubscriptionContext';
-import { usePWA } from '@/hooks/usePWA';
 import { generateInvoice, checkPaymentStatus, formatInvoice } from '@/services/lightningPaymentService';
 import QRCodeDisplay from './QRCodeDisplay';
 import ThankYouDialog from './ThankYouDialog';
@@ -11,9 +10,16 @@ import { Bitcoin, Copy, Check, Loader2, Download } from 'lucide-react';
 interface PremiumUpgradeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  isRunningAsPwa: boolean;
+  onShowPWAInstructions: () => void;
 }
 
-const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpenChange }) => {
+const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({
+  open,
+  onOpenChange,
+  isRunningAsPwa,
+  onShowPWAInstructions,
+}) => {
   const [invoice, setInvoice] = useState('');
   const [verifyUrl, setVerifyUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +28,6 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
   const [isCopied, setIsCopied] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
   const { setPremium } = useSubscription();
-  const { isRunningAsPwa, isInstallable, promptInstall } = usePWA();
 
   // Reset state when dialog opens
   useEffect(() => {
@@ -118,18 +123,11 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
     };
   }, []);
 
-  // Handle install app button
-  const handleInstallApp = async () => {
-    if (isInstallable) {
-      await promptInstall();
-    }
-  };
-
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md min-h-[420px] max-h-[90vh] overflow-y-auto flex flex-col justify-center">
-          <div className="flex flex-col items-center w-full h-full justify-center py-2">
+        <DialogContent className="sm:max-w-md h-full min-h-screen max-h-screen flex flex-col justify-start">
+          <div className="flex flex-col flex-1 w-full h-full justify-start py-2">
             {/* PWA Reminder */}
             {!isRunningAsPwa && (
               <div className="w-full bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-2 mb-4 flex items-center gap-2">
@@ -138,7 +136,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
                   For best experience and to save your license, please{' '}
                   <button
                     className="underline font-semibold hover:text-yellow-600"
-                    onClick={handleInstallApp}
+                    onClick={onShowPWAInstructions}
                   >
                     install FreshHub as an app
                   </button>{' '}
@@ -172,7 +170,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
             {/* License Info */}
             <div className="text-xs text-gray-400 mb-4 text-center max-w-xs">
               <span>
-                <strong>Note:</strong> Your premium unlock is tied to this device and installation. We never track you, so if you delete the app, you’ll need to unlock again.
+                <strong>Note:</strong> Your premium unlock is tied to this device and installation. We never track you, so if you delete the app, you'll need to unlock again.
               </span>
             </div>
 
