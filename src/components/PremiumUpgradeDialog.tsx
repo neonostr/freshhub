@@ -128,10 +128,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent
-          className="sm:max-w-md min-h-[540px] flex flex-col justify-center"
-          style={{ minHeight: 540 }} // adjust as needed to match Manage Products
-        >
+        <DialogContent className="sm:max-w-md min-h-[420px] max-h-[90vh] overflow-y-auto flex flex-col justify-center">
           <div className="flex flex-col items-center w-full h-full justify-center py-2">
             {/* PWA Reminder */}
             {!isRunningAsPwa && (
