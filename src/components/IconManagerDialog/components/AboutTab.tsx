@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { TabsContent } from '@/components/ui/tabs';
-import { Download } from 'lucide-react';
+import { Download, Share2 } from 'lucide-react';
 import { usePWA } from '@/hooks/usePWA';
 
 interface AboutTabProps {
@@ -12,6 +11,30 @@ interface AboutTabProps {
 
 const AboutTab: React.FC<AboutTabProps> = ({ onInstallApp }) => {
   const { isRunningAsPwa } = usePWA();
+
+  const handleShare = async () => {
+    const landingPageUrl = window.location.origin; // This will be the landing page URL
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'FreshHub - All your shelf life in one spot',
+          text: 'Check out this awesome app for tracking food freshness!',
+          url: landingPageUrl,
+        });
+      } catch (error) {
+        console.log('Error sharing:', error);
+      }
+    } else {
+      // Fallback to copying to clipboard
+      try {
+        await navigator.clipboard.writeText(landingPageUrl);
+        alert('App link copied to clipboard!');
+      } catch (error) {
+        console.error('Failed to copy link:', error);
+      }
+    }
+  };
 
   return (
     <TabsContent value="about" className="h-full flex flex-col m-0 data-[state=active]:flex data-[state=inactive]:hidden">
@@ -98,6 +121,24 @@ const AboutTab: React.FC<AboutTabProps> = ({ onInstallApp }) => {
             </div>
           </Card>
         )}
+        
+        <div className="space-y-3">
+          <h3 className="text-lg font-medium">Share FreshHub</h3>
+          <div className="bg-muted/50 p-4 rounded-md">
+            <p className="text-sm mb-3">
+              Love FreshHub? Share it with friends and family!
+            </p>
+            <Button 
+              onClick={handleShare}
+              variant="outline"
+              className="w-full"
+              size="sm"
+            >
+              <Share2 className="w-4 h-4" />
+              Share App
+            </Button>
+          </div>
+        </div>
         
         <div className="pt-4 text-center">
           <p className="text-xs text-muted-foreground">Version 1.0.0</p>
