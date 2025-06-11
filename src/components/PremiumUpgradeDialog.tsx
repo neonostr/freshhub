@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -130,7 +131,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-md min-h-[420px] max-h-[90vh] overflow-y-auto flex flex-col justify-center">
           <div className="flex flex-col items-center w-full h-full justify-center py-2">
-            {/* PWA Reminder */}
+            {/* PWA Reminder - only show if not running as PWA */}
             {!isRunningAsPwa && (
               <div className="w-full bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-2 mb-4 flex items-center gap-2">
                 <Download className="w-4 h-4 text-yellow-500" />
@@ -147,55 +148,64 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
               </div>
             )}
 
-            {/* Bitcoin Icon */}
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 mb-2 mt-2">
-              <Bitcoin className="w-7 h-7 text-yellow-500" />
-            </div>
+            {/* Show upgrade info only if no invoice generated yet */}
+            {!invoice && (
+              <>
+                {/* Upgrade Icon */}
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 mb-2 mt-2">
+                  <svg className="w-7 h-7 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l4 4-4 4" />
+                  </svg>
+                </div>
 
-            {/* Title */}
-            <h2 className="text-2xl font-bold text-gray-900 text-center mb-1">Upgrade to Premium</h2>
+                {/* Title */}
+                <h2 className="text-2xl font-bold text-gray-900 text-center mb-1">Upgrade to Premium</h2>
 
-            {/* Description */}
-            <p className="text-base text-gray-500 mb-2 text-center">
-              Unlock unlimited items and custom products.<br />
-              Pay <span className="font-semibold text-gray-700">21 sats</span> (test price) one-time fee.
-            </p>
+                {/* Description */}
+                <p className="text-base text-gray-500 mb-2 text-center">
+                  Unlock unlimited items and custom products.<br />
+                  Pay <span className="font-semibold text-gray-700">21 sats</span> (test price) one-time fee.
+                </p>
 
-            {/* Features */}
-            <ul className="text-sm text-gray-500 space-y-1 mb-4 text-left mx-auto max-w-xs">
-              <li>• Track unlimited items</li>
-              <li>• Create custom products</li>
-              <li>• One-time payment, no subscription</li>
-              <li>• All features, forever</li>
-            </ul>
+                {/* Features */}
+                <ul className="text-sm text-gray-500 space-y-1 mb-4 text-left mx-auto max-w-xs">
+                  <li>• Track unlimited items</li>
+                  <li>• Create custom products</li>
+                  <li>• One-time payment, no subscription</li>
+                  <li>• All features, forever</li>
+                </ul>
 
-            {/* License Info */}
-            <div className="text-xs text-gray-400 mb-4 text-center max-w-xs">
-              <span>
-                <strong>Note:</strong> Your premium unlock is tied to this device and installation. We never track you, so if you delete the app, you’ll need to unlock again.
-              </span>
-            </div>
+                {/* License Info */}
+                <div className="text-xs text-gray-400 mb-4 text-center max-w-xs">
+                  <span>
+                    <strong>Note:</strong> Your premium unlock is tied to this device and installation. We never track you, so if you delete the app, you'll need to unlock again.
+                  </span>
+                </div>
 
-            {/* Invoice/Payment Section */}
-            {!invoice ? (
-              <Button
-                onClick={handleGenerateInvoice}
-                className="w-full text-base font-bold flex items-center justify-center gap-2 py-4"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Generating invoice...
-                  </>
-                ) : (
-                  <>
-                    <Bitcoin className="w-5 h-5" />
-                    Generate Bitcoin Lightning Invoice
-                  </>
-                )}
-              </Button>
-            ) : (
+                {/* Generate Invoice Button */}
+                <Button
+                  onClick={handleGenerateInvoice}
+                  className="w-full text-base font-bold flex items-center justify-center gap-2 py-4"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Generating invoice...
+                    </>
+                  ) : (
+                    <>
+                      <Bitcoin className="w-5 h-5" />
+                      Generate Bitcoin Lightning Invoice
+                    </>
+                  )}
+                </Button>
+              </>
+            )}
+
+            {/* Payment Section - only show when invoice is generated */}
+            {invoice && (
               <div className="w-full flex flex-col items-center space-y-4">
                 <div className="text-center">
                   <h3 className="font-medium mb-1">Scan QR Code to Pay</h3>
