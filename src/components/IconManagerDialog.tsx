@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -143,6 +142,11 @@ const IconManagerDialog: React.FC = () => {
     }
   };
 
+  // Handle upgrade click from settings tab
+  const handleUpgradeFromSettings = () => {
+    dialogState.setPremiumDialogOpen(true);
+  };
+
   return (
     <>
       <Dialog open={dialogState.isOpen} onOpenChange={dialogState.setIsOpen}>
@@ -195,7 +199,7 @@ const IconManagerDialog: React.FC = () => {
                   updateEditingField={updateEditingField}
                 />
                 
-                <SettingsTab />
+                <SettingsTab onUpgradeClick={handleUpgradeFromSettings} />
                 
                 <AboutTab onInstallApp={handleInstallApp} />
               </div>
