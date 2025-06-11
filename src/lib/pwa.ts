@@ -1,3 +1,4 @@
+
 // PWA utility functions for detection and state management
 
 // Extend Navigator interface to include iOS Safari's standalone property
@@ -29,7 +30,7 @@ export function isMobileDevice(): boolean {
   );
 }
 
-export type Platform = 'ios-safari' | 'android-chrome' | 'desktop-chrome' | 'desktop-other';
+export type Platform = 'ios-safari' | 'android-chrome' | 'desktop-chrome' | 'desktop-safari' | 'desktop-other';
 
 export function detectPlatform(): Platform {
   if (typeof window === 'undefined') return 'desktop-other';
@@ -47,6 +48,8 @@ export function detectPlatform(): Platform {
     return 'android-chrome';
   } else if (isDesktop && isChrome) {
     return 'desktop-chrome';
+  } else if (isDesktop && isSafari) {
+    return 'desktop-safari';
   } else {
     return 'desktop-other';
   }

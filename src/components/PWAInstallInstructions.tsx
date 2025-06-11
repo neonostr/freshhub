@@ -132,6 +132,50 @@ const PWAInstallInstructions: React.FC<PWAInstallInstructionsProps> = ({
           </div>
         );
 
+      case 'desktop-safari':
+        return (
+          <div className="space-y-4">
+            <Badge variant="secondary" className="mb-4">
+              Safari Desktop
+            </Badge>
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
+                  1
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">Open Safari Menu</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Click "File" in the menu bar
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
+                  2
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">Select "Add to Dock"</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Look for "Add to Dock" option in the File menu
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
+                  3
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">Confirm installation</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Click "Add" to install FreshHub to your Dock
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
       case 'desktop-chrome':
         return (
           <div className="space-y-4">
