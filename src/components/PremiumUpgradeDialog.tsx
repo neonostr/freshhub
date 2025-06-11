@@ -7,7 +7,8 @@ import { usePWA } from '@/hooks/usePWA';
 import { generateInvoice, checkPaymentStatus, formatInvoice } from '@/services/lightningPaymentService';
 import QRCodeDisplay from './QRCodeDisplay';
 import ThankYouDialog from './ThankYouDialog';
-import { Bitcoin, Copy, Check, Loader2, Download } from 'lucide-react';
+import PWAInstallInstructions from './PWAInstallInstructions';
+import { Bitcoin, Copy, Check, Loader2, Download, Crown } from 'lucide-react';
 
 interface PremiumUpgradeDialogProps {
   open: boolean;
@@ -22,6 +23,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
   const [error, setError] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [showPWAInstructions, setShowPWAInstructions] = useState(false);
   const { setPremium } = useSubscription();
   const { isRunningAsPwa, isInstallable, promptInstall } = usePWA();
 
@@ -122,7 +124,12 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
   // Handle install app button
   const handleInstallApp = async () => {
     if (isInstallable) {
-      await promptInstall();
+      const success = await promptInstall();
+      if (!success) {
+        setShowPWAInstructions(true);
+      }
+    } else {
+      setShowPWAInstructions(true);
     }
   };
 
@@ -153,10 +160,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
               <>
                 {/* Upgrade Icon */}
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 mb-2 mt-2">
-                  <svg className="w-7 h-7 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l4 4-4 4" />
-                  </svg>
+                  <Crown className="w-7 h-7 text-yellow-500" />
                 </div>
 
                 {/* Title */}
@@ -248,6 +252,11 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
       <ThankYouDialog
         open={showThankYou}
         onOpenChange={setShowThankYou}
+      />
+
+      <PWAInstallInstructions
+        isOpen={showPWAInstructions}
+        onClose={() => setShowPWAInstructions(false)}
       />
     </>
   );
