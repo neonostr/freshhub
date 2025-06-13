@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -51,9 +50,6 @@ const Landing = () => {
           </h1>
           <p className="text-lg text-muted-foreground">
             All your shelf life in one spot
-          </p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            FreshHub is a private, user-friendly web app designed to help you track the freshness of your groceries. With perfect privacy in mind, zero data collection and works completely offline. Refresh your kitchen routine, minimize waste, and keep your groceries in peak condition with FreshHub
           </p>
         </div>
       
@@ -114,20 +110,19 @@ const Landing = () => {
         onClose={() => setShowPWAInstructions(false)}
       />
 
- <footer className="fixed bottom-6 left-0 w-full flex justify-center z-50">
-  <span className="text-xs text-muted-foreground">
-    Developed by{' '}
-    <a
-  href="https://njump.me/npub1lyqkzmcq5cl5l8rcs82gwxsrmu75emnjj84067kuhm48e9w93cns2hhj2g"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="hover:underline focus:underline hover:text-primary transition-colors"
->
-  Neo
-</a>
-  </span>
-</footer>
-        
+      <footer className="fixed bottom-6 left-0 w-full flex justify-center z-50">
+        <span className="text-xs text-muted-foreground">
+          Developed by{' '}
+          <a
+            href="https://njump.me/npub1lyqkzmcq5cl5l8rcs82gwxsrmu75emnjj84067kuhm48e9w93cns2hhj2g"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline focus:underline hover:text-primary transition-colors"
+          >
+            Neo
+          </a>
+        </span>
+      </footer>
     </div>
   );
 };
