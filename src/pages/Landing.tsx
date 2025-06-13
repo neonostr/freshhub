@@ -5,37 +5,6 @@ import { Card } from '@/components/ui/card';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import { usePWA } from '@/hooks/usePWA';
 import { setCameFromLanding } from '@/lib/pwa';
-import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-
-const OnboardingDialog = () => {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (!localStorage.getItem("hasSeenOnboarding")) {
-      setOpen(true);
-    }
-  }, []);
-
-  const handleClose = () => {
-    setOpen(false);
-    localStorage.setItem("hasSeenOnboarding", "true");
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
-        <DialogTitle>Welcome to FreshHub!</DialogTitle>
-        <DialogDescription>
-          FreshHub helps you track when you opened food, so you waste less and save money.<br />
-          Add your items and get reminders before they expire.
-        </DialogDescription>
-        <DialogFooter>
-          <Button onClick={handleClose}>Got it!</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
 
 const Landing = () => {
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
@@ -69,7 +38,6 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-      <OnboardingDialog />
       <div className="max-w-md w-full space-y-8 text-center">
         {/* Main Welcome Section */}
         <div className="space-y-4">
@@ -79,7 +47,7 @@ const Landing = () => {
           <p className="text-lg text-muted-foreground">
             All your shelf life in one spot
           </p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs text-gray-400 mt-1">
             Track when you opened food and get reminders before it goes bad.
           </p>
         </div>
