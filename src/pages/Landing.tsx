@@ -45,7 +45,7 @@ const Landing = () => {
             Welcome to <span className="underline decoration-[#49DE80]">FreshHub</span>
           </h1>
           <p className="text-lg text-muted-foreground">
-            All your shelf life in one spot
+            Never waste food again
           </p>
         </div>
       
