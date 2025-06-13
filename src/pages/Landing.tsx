@@ -58,11 +58,6 @@ const Landing = () => {
           Get Started
         </Button>
 
-        {/* Explainer line right below the button */}
-        <p className="text-xs text-gray-400 mt-0 mb-4">
-          Track when you opened food and get reminders before it goes bad.
-        </p>
-
         {/* Get the App Section */}
         <Card className="p-6 space-y-4">
           <h2 className="text-xl font-semibold text-foreground">
