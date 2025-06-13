@@ -63,7 +63,7 @@ const Landing = () => {
           <Button
             variant="outline"
             size="lg"
-            className="w-full mt-2 text-gray-500 border-gray-300 hover:text-gray-700 hover:border-gray-400"
+            className="w-full mt-4 text-gray-500 border-gray-300 hover:text-gray-700 hover:border-gray-400"
             style={{ background: 'none' }}
             onClick={() => setShowLearnMore(true)}
           >
