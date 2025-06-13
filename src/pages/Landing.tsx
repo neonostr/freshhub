@@ -47,18 +47,19 @@ const Landing = () => {
       <div className="max-w-md w-full space-y-8 text-center">
         {/* Main Welcome Section */}
         <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-foreground">
-            Welcome to <span className="underline decoration-[#49DE80]">FreshHub</span>
-          </h1>
-          <div className="text-lg text-muted-foreground flex items-center justify-center gap-1">
-            <span>All your shelf life in one spot</span>
+         <h1 className="text-4xl font-bold text-foreground">
+  Welcome to <span className="underline decoration-[#49DE80]">FreshHub</span>
+</h1>
+<p className="text-lg text-muted-foreground">
+  All your shelf life in one spot
+</p>
+<p className="text-sm text-muted-foreground mt-1">
+  Track when you opened food and get reminders before it goes bad.
+</p>
             <HoverCard>
               <HoverCardTrigger asChild>
                 <button className="inline-flex items-center justify-center">
-                  <Info
-  className="w-3 h-3 text-muted-foreground align-super ml-[px]"
-  style={{ position: 'relative', top: '-0.21em' }}
-/>
+                  <Info className="w-3 h-3 text-gray-300 ml-1" style={{ position: 'relative', top: '-0.4em' }} />
                 </button>
               </HoverCardTrigger>
               <HoverCardContent className="w-80 text-sm">
