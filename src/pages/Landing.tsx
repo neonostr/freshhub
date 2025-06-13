@@ -56,7 +56,7 @@ const Landing = () => {
               <HoverCardTrigger asChild>
                 <button className="inline-flex items-center justify-center">
                   <Info
-  className="w-3 h-3 text-muted-foreground align-super ml-[1px]"
+  className="w-3 h-3 text-muted-foreground align-super ml-[0.21px]"
   style={{ position: 'relative', top: '-0.4em' }}
 />
                 </button>
