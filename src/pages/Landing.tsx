@@ -76,8 +76,8 @@ const Landing = () => {
           <DialogContent>
             <DialogTitle>What is FreshHub?</DialogTitle>
             <DialogDescription>
-              FreshHub helps you track when you opened food, so you waste less and save money.<br />
-              Add your items and get reminders before they expire. Simple, private, and easy to use!
+              FreshHub helps you organize your groceries and keep them fresh. Track the shelf life of items like eggs and milk to avoid waste and save money.<br />
+              Log your items for clear insights and sort by remaining days. Simple, private, and intuitive.
             </DialogDescription>
             <DialogFooter>
               <Button onClick={() => setShowLearnMore(false)}>Close</Button>
