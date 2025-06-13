@@ -55,7 +55,7 @@ const Landing = () => {
             <HoverCard>
               <HoverCardTrigger asChild>
                 <button className="inline-flex items-center justify-center">
-                  <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+                  <Info className="w-3 h-3 text-gray-300 align-super ml-1" style={{ verticalAlign: 'super' }} />
                 </button>
               </HoverCardTrigger>
               <HoverCardContent className="w-80 text-sm">
