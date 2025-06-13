@@ -40,7 +40,7 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-      <div className="max-w-md w-full space-y-8 text-center">
+      <div className="max-w-md w-full space-y-12 text-center">
         {/* Main Welcome Section */}
         <div className="space-y-4">
           <h1 className="text-4xl font-bold text-foreground">
@@ -76,8 +76,7 @@ const Landing = () => {
           <DialogContent>
             <DialogTitle>What is FreshHub?</DialogTitle>
             <DialogDescription>
-              FreshHub helps you organize your groceries and keep them fresh. Track the shelf life of items like eggs and milk to avoid waste and save money.<br />
-              Log your items for clear insights and sort by remaining days. Simple, private, and intuitive.
+              FreshHub helps you organize your groceries and keep them fresh. Track the shelf life of items like eggs and milk to avoid waste and save money. Log your items for clear insights and sort by remaining days. Simple, private, and intuitive.
             </DialogDescription>
             <DialogFooter>
               <Button onClick={() => setShowLearnMore(false)}>Close</Button>
