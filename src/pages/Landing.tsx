@@ -51,25 +51,25 @@ const Landing = () => {
           </p>
         </div>
       
-        {/* Get Started Button */}
-        <Button 
-          onClick={handleGetStarted}
-          size="lg"
-          className="w-full"
-        >
-          Get Started
-        </Button>
-
-        {/* Minimalist outlined Learn More button, same height and width, minimal gap */}
-        <Button
-          variant="outline"
-          size="lg"
-          className="w-full mt-0 text-gray-500 border-gray-300 hover:text-gray-700 hover:border-gray-400"
-          style={{ background: 'none' }}
-          onClick={() => setShowLearnMore(true)}
-        >
-          Learn more
-        </Button>
+        {/* Button Group: Get Started & Learn More */}
+        <div className="flex flex-col gap-0">
+          <Button 
+            onClick={handleGetStarted}
+            size="lg"
+            className="w-full"
+          >
+            Get Started
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            className="w-full mt-0 text-gray-500 border-gray-300 hover:text-gray-700 hover:border-gray-400"
+            style={{ background: 'none' }}
+            onClick={() => setShowLearnMore(true)}
+          >
+            Learn more
+          </Button>
+        </div>
 
         {/* Learn More Dialog */}
         <Dialog open={showLearnMore} onOpenChange={setShowLearnMore}>
