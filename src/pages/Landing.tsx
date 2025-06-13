@@ -60,11 +60,11 @@ const Landing = () => {
           Get Started
         </Button>
 
-        {/* Minimalist outlined Learn More button */}
+        {/* Minimalist outlined Learn More button, same height and width, minimal gap */}
         <Button
           variant="outline"
-          size="sm"
-          className="w-full mt-2 text-gray-500 border-gray-300 hover:text-gray-700 hover:border-gray-400"
+          size="lg"
+          className="w-full mt-1 text-gray-500 border-gray-300 hover:text-gray-700 hover:border-gray-400"
           style={{ background: 'none' }}
           onClick={() => setShowLearnMore(true)}
         >
