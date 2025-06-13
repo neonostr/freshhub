@@ -60,15 +60,16 @@ const Landing = () => {
           Get Started
         </Button>
 
-        {/* Very subtle Learn More button */}
-        <button
-          className="block mx-auto mt-2 text-xs text-gray-400 underline hover:text-gray-500 transition-colors"
-          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+        {/* Minimalist outlined Learn More button */}
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full mt-2 text-gray-500 border-gray-300 hover:text-gray-700 hover:border-gray-400"
+          style={{ background: 'none' }}
           onClick={() => setShowLearnMore(true)}
-          tabIndex={0}
         >
           Learn more
-        </button>
+        </Button>
 
         {/* Learn More Dialog */}
         <Dialog open={showLearnMore} onOpenChange={setShowLearnMore}>
