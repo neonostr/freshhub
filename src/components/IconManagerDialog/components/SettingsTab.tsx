@@ -108,7 +108,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ onUpgradeClick }) => {
                 </ul>
 
                 <p className="text-sm text-gray-600 mb-4">
-                  Pay <span className="font-semibold text-gray-700">21 sats</span> (test price) one-time fee.
+                  Pay <span className="font-semibold text-gray-700">2100 sats</span> one-time fee.
                 </p>
 
                 <Button
