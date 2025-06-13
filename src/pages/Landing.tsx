@@ -52,6 +52,9 @@ const Landing = () => {
           <p className="text-lg text-muted-foreground">
             All your shelf life in one spot
           </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            FreshHub is a private, user-friendly web app designed to help you track the freshness of your groceries. With perfect privacy in mind, zero data collection and works completely offline. Refresh your kitchen routine, minimize waste, and keep your groceries in peak condition with FreshHub
+          </p>
         </div>
       
 
