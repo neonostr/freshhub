@@ -59,7 +59,7 @@ const Landing = () => {
         </Button>
 
         {/* Explainer line right below the button */}
-        <p className="text-xs text-gray-400 mt-0.21 mb-4">
+        <p className="text-xs text-gray-400 mt-0 mb-4">
           Track when you opened food and get reminders before it goes bad.
         </p>
 
