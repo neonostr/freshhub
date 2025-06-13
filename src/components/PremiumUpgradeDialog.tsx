@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -169,7 +168,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
                 {/* Description */}
                 <p className="text-base text-gray-500 mb-2 text-center">
                   Unlock unlimited items and custom products.<br />
-                  Pay <span className="font-semibold text-gray-700">21 sats</span> (test price) one-time fee.
+                  Pay <span className="font-semibold text-gray-700">2100 sats</span> one-time fee.
                 </p>
 
                 {/* Features */}
@@ -214,7 +213,7 @@ const PremiumUpgradeDialog: React.FC<PremiumUpgradeDialogProps> = ({ open, onOpe
                 <div className="text-center">
                   <h3 className="font-medium mb-1">Scan QR Code to Pay</h3>
                   <p className="text-sm text-gray-500">
-                    {isVerifying ? "Waiting for payment..." : "Pay 21 sats to upgrade"}
+                    {isVerifying ? "Waiting for payment..." : "Pay 2100 sats to upgrade"}
                   </p>
                 </div>
                 <QRCodeDisplay value={invoice} />

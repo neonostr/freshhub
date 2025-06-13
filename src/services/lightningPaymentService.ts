@@ -1,7 +1,6 @@
-
 const COINOS_BASE_URL = 'https://coinos.io';
 const USERNAME = 'freshify';
-const PAYMENT_AMOUNT_SATS = 21; // Changed from 2100 to 21 for testing
+const PAYMENT_AMOUNT_SATS = 2100; // Updated from 21 to 2100
 
 interface LnurlData {
   callback: string;

@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
-import { Download } from 'lucide-react';
+import { Download, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import { usePWA } from '@/hooks/usePWA';
 import { setCameFromLanding } from '@/lib/pwa';
@@ -48,12 +50,21 @@ const Landing = () => {
           <h1 className="text-4xl font-bold text-foreground">
             Welcome to <span className="underline decoration-[#49DE80]">FreshHub</span>
           </h1>
-          <p className="text-lg text-muted-foreground">
-            All your shelf life in one spot
-          </p>
+          <div className="text-lg text-muted-foreground flex items-center justify-center gap-1">
+            <span>All your shelf life in one spot</span>
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <button className="inline-flex items-center justify-center">
+                  <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+                </button>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-80 text-sm">
+                FreshHub helps you minimize food waste by tracking when items were opened and how long they remain fresh. Never throw out perfectly good food again.
+              </HoverCardContent>
+            </HoverCard>
+          </div>
         </div>
       
-
         {/* Get Started Button */}
         <Button 
           onClick={handleGetStarted}
