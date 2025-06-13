@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
-import { Download, Info } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import { usePWA } from '@/hooks/usePWA';
 import { setCameFromLanding } from '@/lib/pwa';
@@ -12,7 +10,6 @@ const Landing = () => {
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
   const { isInstallable, promptInstall, isRunningAsPwa } = usePWA();
 
-  // Redirect to app if already running as PWA
   useEffect(() => {
     if (isRunningAsPwa) {
       window.location.href = '/app';
@@ -20,9 +17,7 @@ const Landing = () => {
   }, [isRunningAsPwa]);
 
   const handleGetStarted = () => {
-    // Set flag that user came from landing page
     setCameFromLanding();
-    // Navigate to main app
     window.location.href = '/app';
   };
 
@@ -37,7 +32,6 @@ const Landing = () => {
     }
   };
 
-  // Don't render anything if running as PWA (will redirect)
   if (isRunningAsPwa) {
     return null;
   }
@@ -50,22 +44,9 @@ const Landing = () => {
           <h1 className="text-4xl font-bold text-foreground">
             Welcome to <span className="underline decoration-[#49DE80]">FreshHub</span>
           </h1>
-          <div className="text-lg text-muted-foreground flex items-center justify-center gap-1">
-            <span>All your shelf life in one spot</span>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <button className="inline-flex items-center justify-center">
-                  <Info
-  className="w-3 h-3 text-muted-foreground align-super ml-[px]"
-  style={{ position: 'relative', top: '-0.21em' }}
-/>
-                </button>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80 text-sm">
-                FreshHub helps you minimize food waste by tracking when items were opened and how long they remain fresh. Never throw out perfectly good food again.
-              </HoverCardContent>
-            </HoverCard>
-          </div>
+          <p className="text-lg text-muted-foreground">
+            All your shelf life in one spot
+          </p>
         </div>
       
         {/* Get Started Button */}
@@ -76,6 +57,11 @@ const Landing = () => {
         >
           Get Started
         </Button>
+
+        {/* Explainer line right below the button */}
+        <p className="text-xs text-gray-400 mt-2 mb-4">
+          Track when you opened food and get reminders before it goes bad.
+        </p>
 
         {/* Get the App Section */}
         <Card className="p-6 space-y-4">
