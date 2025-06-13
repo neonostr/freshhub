@@ -5,9 +5,11 @@ import { Card } from '@/components/ui/card';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import { usePWA } from '@/hooks/usePWA';
 import { setCameFromLanding } from '@/lib/pwa';
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 
 const Landing = () => {
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
+  const [showLearnMore, setShowLearnMore] = useState(false);
   const { isInstallable, promptInstall, isRunningAsPwa } = usePWA();
 
   useEffect(() => {
@@ -57,6 +59,30 @@ const Landing = () => {
         >
           Get Started
         </Button>
+
+        {/* Very subtle Learn More button */}
+        <button
+          className="block mx-auto mt-2 text-xs text-gray-400 underline hover:text-gray-500 transition-colors"
+          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+          onClick={() => setShowLearnMore(true)}
+          tabIndex={0}
+        >
+          Learn more
+        </button>
+
+        {/* Learn More Dialog */}
+        <Dialog open={showLearnMore} onOpenChange={setShowLearnMore}>
+          <DialogContent>
+            <DialogTitle>What is FreshHub?</DialogTitle>
+            <DialogDescription>
+              FreshHub helps you track when you opened food, so you waste less and save money.<br />
+              Add your items and get reminders before they expire. Simple, private, and easy to use!
+            </DialogDescription>
+            <DialogFooter>
+              <Button onClick={() => setShowLearnMore(false)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Get the App Section */}
         <Card className="p-6 space-y-4">
