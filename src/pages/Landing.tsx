@@ -1,18 +1,46 @@
-
 import React, { useState, useEffect } from 'react';
-import { Download, Info } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import { usePWA } from '@/hooks/usePWA';
 import { setCameFromLanding } from '@/lib/pwa';
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+
+const OnboardingDialog = () => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem("hasSeenOnboarding")) {
+      setOpen(true);
+    }
+  }, []);
+
+  const handleClose = () => {
+    setOpen(false);
+    localStorage.setItem("hasSeenOnboarding", "true");
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogTitle>Welcome to FreshHub!</DialogTitle>
+        <DialogDescription>
+          FreshHub helps you track when you opened food, so you waste less and save money.<br />
+          Add your items and get reminders before they expire.
+        </DialogDescription>
+        <DialogFooter>
+          <Button onClick={handleClose}>Got it!</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 const Landing = () => {
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
   const { isInstallable, promptInstall, isRunningAsPwa } = usePWA();
 
-  // Redirect to app if already running as PWA
   useEffect(() => {
     if (isRunningAsPwa) {
       window.location.href = '/app';
@@ -20,9 +48,7 @@ const Landing = () => {
   }, [isRunningAsPwa]);
 
   const handleGetStarted = () => {
-    // Set flag that user came from landing page
     setCameFromLanding();
-    // Navigate to main app
     window.location.href = '/app';
   };
 
@@ -37,36 +63,25 @@ const Landing = () => {
     }
   };
 
-  // Don't render anything if running as PWA (will redirect)
   if (isRunningAsPwa) {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+      <OnboardingDialog />
       <div className="max-w-md w-full space-y-8 text-center">
         {/* Main Welcome Section */}
         <div className="space-y-4">
-         <h1 className="text-4xl font-bold text-foreground">
-  Welcome to <span className="underline decoration-[#49DE80]">FreshHub</span>
-</h1>
-<p className="text-lg text-muted-foreground">
-  All your shelf life in one spot
-</p>
-<p className="text-sm text-muted-foreground mt-1">
-  Track when you opened food and get reminders before it goes bad.
-</p>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <button className="inline-flex items-center justify-center">
-                  <Info className="w-3 h-3 text-gray-300 ml-1" style={{ position: 'relative', top: '-0.4em' }} />
-                </button>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80 text-sm">
-                FreshHub helps you minimize food waste by tracking when items were opened and how long they remain fresh. Never throw out perfectly good food again.
-              </HoverCardContent>
-            </HoverCard>
-          </div>
+          <h1 className="text-4xl font-bold text-foreground">
+            Welcome to <span className="underline decoration-[#49DE80]">FreshHub</span>
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            All your shelf life in one spot
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Track when you opened food and get reminders before it goes bad.
+          </p>
         </div>
       
         {/* Get Started Button */}
