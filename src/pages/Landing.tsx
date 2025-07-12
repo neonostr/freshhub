@@ -135,7 +135,7 @@ const Landing = () => {
         <span className="text-xs text-muted-foreground">
           Developed by{' '}
           <a
-            href="https://njump.me/npub1lyqkzmcq5cl5l8rcs82gwxsrmu75emnjj84067kuhm48e9w93cns2hhj2g"
+            href="https://neo21.dev"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:underline focus:underline hover:text-primary transition-colors"
