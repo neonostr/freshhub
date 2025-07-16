@@ -2,7 +2,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { TabsContent } from '@/components/ui/tabs';
-import { Download, Share2 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Download, Share2, ExternalLink } from 'lucide-react';
 import { usePWA } from '@/hooks/usePWA';
 
 interface AboutTabProps {
@@ -137,6 +138,41 @@ const AboutTab: React.FC<AboutTabProps> = ({ onInstallApp }) => {
               <Share2 className="w-4 h-4" />
               Share App
             </Button>
+          </div>
+        </div>
+        
+        <div className="space-y-3">
+          <h3 className="text-lg font-medium">About the Developer</h3>
+          <div className="bg-muted/50 p-4 rounded-md">
+            <p className="text-sm mb-4 text-muted-foreground">
+              Meet the person behind this app
+            </p>
+            <div className="flex items-start gap-4">
+              <Avatar className="w-16 h-16 border-2 border-border">
+                <AvatarImage 
+                  src="https://pfp.nostr.build/nostr.build_68aa363a420f42dada27965dc47bbf263ff58950ea14fe2227de7bdaa3d41d9d.png" 
+                  alt="Neo"
+                />
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
+                  N
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-3">
+                <h4 className="text-base font-medium">Hi, I'm Neo</h4>
+                <p className="text-sm text-muted-foreground">
+                  I'm a freedom and privacy tech enthusiast, dedicated to crafting applications that respect your privacy and prioritize your autonomy. I believe in a future where technology serves humanity, not the other way around.
+                </p>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => window.open('https://neo21.dev', '_blank')}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Check Out My Other Apps
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
         
