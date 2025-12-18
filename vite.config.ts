@@ -17,6 +17,11 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       selfDestroying: false,
+      devOptions: {
+        // Enables the service worker during `vite dev` (Lovable preview) so offline can be tested reliably.
+        enabled: true,
+        type: 'module'
+      },
       includeAssets: [
         'favicon.ico',
         'icon-192x192.png',
