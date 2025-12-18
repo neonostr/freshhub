@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -6,21 +6,17 @@ import PWAInstallInstructions from '@/components/PWAInstallInstructions';
 import { usePWA } from '@/hooks/usePWA';
 import { setCameFromLanding } from '@/lib/pwa';
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Landing = () => {
+  const navigate = useNavigate();
   const [showPWAInstructions, setShowPWAInstructions] = useState(false);
   const [showLearnMore, setShowLearnMore] = useState(false);
   const { isInstallable, promptInstall, isRunningAsPwa } = usePWA();
 
-  useEffect(() => {
-    if (isRunningAsPwa) {
-      window.location.href = '/app';
-    }
-  }, [isRunningAsPwa]);
-
   const handleGetStarted = () => {
     setCameFromLanding();
-    window.location.href = '/app';
+    navigate('/app');
   };
 
   const handleInstallApp = async () => {
@@ -35,7 +31,7 @@ const Landing = () => {
   };
 
   if (isRunningAsPwa) {
-    return null;
+    return <Navigate to="/app" replace />;
   }
 
   return (
