@@ -15,13 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
-      selfDestroying: false,
-      devOptions: {
-        // Enables the service worker during `vite dev` (Lovable preview) so offline can be tested reliably.
-        enabled: true,
-        type: 'module'
-      },
+      injectRegister: 'script',
       includeAssets: [
         'favicon.ico',
         'icon-192x192.png',
