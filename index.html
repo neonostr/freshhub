@@ -10,8 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     
-    <!-- PWA Support -->
-    <link rel="manifest" href="/manifest.json" />
+    <!-- PWA Support - manifest injected by vite-plugin-pwa -->
     <link rel="icon" type="image/png" href="/lovable-uploads/e78b0f07-33d3-4cd6-b657-1b0574021f09.png" />
     <link rel="apple-touch-icon" href="/lovable-uploads/e78b0f07-33d3-4cd6-b657-1b0574021f09.png" />
     
@@ -36,7 +35,7 @@
   <body>
     <div id="root"></div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module" async></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
